@@ -7,6 +7,7 @@ import { useT } from '@/hooks/useT';
 import { caseName, caseStatusView, clientName, money } from '@/lib/cases';
 import { Modal } from './Modal';
 import { CaseLastHearingCard } from './CaseLastHearingCard';
+import { CaseEdit } from './CaseEdit';
 import { CaseStatusWarning } from './CaseStatusWarning';
 import { TaskModal } from './TaskModal';
 import { NewEventModal } from './NewEventModal';
@@ -68,6 +69,10 @@ export function CaseDetail({ caseId }: CaseDetailProps) {
 
   const status = caseStatusView(c.status, t);
   const close = () => modalStack.close(modalStack.topId() ?? 0);
+  const openEdit = () => {
+    close();
+    modalStack.open(<CaseEdit caseId={caseId} />);
+  };
   const openStatusWarning = () => {
     modalStack.open(<CaseStatusWarning caseId={caseId} />);
   };
@@ -121,6 +126,40 @@ export function CaseDetail({ caseId }: CaseDetailProps) {
     close();
     dispatch({ type: 'SET_TAB', tab: 'tasks' });
   };
+  const onDeleteCase = () => {
+    const ok = window.confirm(
+      lang === 'ar'
+        ? 'هل تريد حذف هذه القضية نهائياً؟'
+        : 'האם למחוק את התיק לחלוטין?',
+    );
+    if (!ok) return;
+    dispatch({
+      type: 'SET_CASES',
+      cases: state.casesArr.filter((x) => x.id !== caseId),
+    });
+    dispatch({
+      type: 'SET_EVENTS',
+      events: state.eventsList.filter((e) => e.caseId !== caseId),
+    });
+    dispatch({
+      type: 'SET_TASKS',
+      tasks: state.tasksArr.filter((tk) => tk.caseId !== caseId),
+    });
+    dispatch({
+      type: 'SET_FINANCES',
+      finances: state.finances.filter((f) => f.caseId !== caseId),
+    });
+    dispatch({
+      type: 'SET_DOCUMENTS',
+      documents: state.documentsArr.filter((d) => d.caseId !== caseId),
+    });
+    dispatch({
+      type: 'SET_TIMELINE',
+      timeline: state.timelineItems.filter((ti) => ti.caseId !== caseId),
+    });
+    close();
+  };
+
   // vNNN class set applied directly — the CSS rules in globals.css use these
   // selectors. Mirrors what v140/v215/v219/v220 scripts used to add at runtime.
   const modalClass =
@@ -129,6 +168,7 @@ export function CaseDetail({ caseId }: CaseDetailProps) {
 
   const docsLabel = lang === 'ar' ? 'مستندات القضية' : 'מסמכי התיק';
   const newTaskLabel = lang === 'ar' ? 'مهمة جديدة' : 'משימה חדשה';
+  const deleteLabel = lang === 'ar' ? 'حذف الملف' : 'מחק תיק';
 
   const court = lang === 'ar' ? c.courtAr || c.court : c.court || c.courtAr;
   const titleStr = caseName(c, lang);
@@ -183,6 +223,22 @@ export function CaseDetail({ caseId }: CaseDetailProps) {
               {status.label}
             </button>
           </div>
+        </div>
+
+        <div className="case-edit-toolbar">
+          <button type="button" className="case-edit-btn" onClick={openEdit}>
+            <i className="fas fa-pen" />
+            <span>{t('edit')}</span>
+          </button>
+          <button
+            type="button"
+            className="case-delete-btn-v143 case-delete-btn-v215"
+            data-case-delete-v143="1"
+            onClick={onDeleteCase}
+          >
+            <i className="fas fa-trash" />
+            <span>{deleteLabel}</span>
+          </button>
         </div>
 
         <CaseLastHearingCard caseId={caseId} />

@@ -13323,3 +13323,20 @@ body.dark .modal:has(#newCalendarAppointmentForm) .modal-box > h2:first-of-type{
   .tasks-screen-panel .tasks-scroll-list .table{display:none!important;}
   .tasks-screen-panel .tasks-mobile-list-v135{display:block!important;}
 }
+
+/* Case-detail toolbar: paint the edit pill in the same red palette as
+   the delete-case pill so the two buttons sit symmetrically over the
+   action row (edit above "+ אירוע חדש", delete above "פעיל"). Scoped
+   to the case-detail modal so the global .case-edit-btn used by other
+   screens (CalendarEventDetail, FinanceDetail, ClientDetail, etc.)
+   keeps its neutral styling. */
+.modal.case-detail-mobile-v140 .case-edit-toolbar .case-edit-btn,
+.modal.case-detail-desktop-v215 .case-edit-toolbar .case-edit-btn{
+  background:#fff1f2!important;
+  color:#be123c!important;
+  border:1px solid #fecdd3!important;
+}
+.modal.case-detail-mobile-v140 .case-edit-toolbar .case-edit-btn i,
+.modal.case-detail-desktop-v215 .case-edit-toolbar .case-edit-btn i{
+  color:#be123c!important;
+}
