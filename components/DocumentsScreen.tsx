@@ -1,0 +1,333 @@
+'use client';
+
+import { useMemo, useState } from 'react';
+import { useAppState } from '@/hooks/useAppState';
+import { useModalStack } from '@/hooks/useModalStack';
+import { useT } from '@/hooks/useT';
+import { caseName, clientName } from '@/lib/cases';
+import { clientDisplayName } from '@/lib/clients';
+import {
+  documentSearchText,
+  documentTypeLabel,
+  formatDocumentDate,
+  formatDocumentSize,
+} from '@/lib/documents';
+import { CaseDetail } from './CaseDetail';
+import {
+  loadSavedLegalOfficeDirectoryHandle,
+  pickAndSaveDirectory,
+  resetLegalOfficeDataFolder,
+  verifyLegalOfficeDirectoryPermission,
+} from '@/lib/disk';
+import type { DocumentRecord } from '@/types';
+
+/**
+ * Documents screen. Port of renderDocuments (source line 4984) + documentRows
+ * (4973) + filterDocumentsScreen (4990) + bindDocumentScreenRows (5002) +
+ * deleteLocalDocumentRecord (3691).
+ *
+ * Sync / reset buttons interact with the FS Access handle in lib/disk.ts.
+ * Open-document and physical file delete are stubs — they require the full
+ * per-document FS read/write integration which lands as ongoing work in
+ * Stage 5; here the buttons surface the same confirmation/labels as the
+ * source and keep the in-memory record store in sync.
+ */
+export function DocumentsScreen() {
+  const { state, dispatch } = useAppState();
+  const { lang } = useT();
+  const modalStack = useModalStack();
+  const [query, setQuery] = useState('');
+
+  const documents = state.documentsArr || [];
+  const sorted = useMemo(() => {
+    return [...documents].sort(
+      (a, b) =>
+        new Date((b as { uploadedAt?: string }).uploadedAt || b.date || 0).getTime() -
+        new Date((a as { uploadedAt?: string }).uploadedAt || a.date || 0).getTime(),
+    );
+  }, [documents]);
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return sorted;
+    return sorted.filter((d) =>
+      documentSearchText(d, state.casesArr, state.clients, lang)
+        .toLowerCase()
+        .includes(q),
+    );
+  }, [sorted, query, state.casesArr, state.clients, lang]);
+
+  const placeholder =
+    lang === 'ar'
+      ? 'بحث حسب اسم المستند، الموكل، رقم القضية أو المسار'
+      : 'חיפוש לפי שם מסמך, לקוח, מספר תיק או נתיב';
+  const hint =
+    lang === 'ar'
+      ? `يعرض ${filtered.length} من ${documents.length} مستندات.`
+      : `מוצגים ${filtered.length} מתוך ${documents.length} מסמכים.`;
+  const documentsTitle = lang === 'ar' ? 'المستندات' : 'מסמכים';
+  const resetLabel = lang === 'ar' ? 'إعادة ضبط Dropbox' : 'איפוס Dropbox';
+  const syncLabel = lang === 'ar' ? 'مزامنة' : 'סנכרון';
+  const emptyText =
+    lang === 'ar'
+      ? 'لا توجد مستندات مطابقة للبحث'
+      : 'לא נמצאו מסמכים התואמים לחיפוש';
+
+  const openDoc = () => {
+    window.alert(
+      lang === 'ar'
+        ? 'فتح المستند من القرص يتطلب اختيار مجلد Dropbox أولاً.'
+        : 'פתיחת המסמך מהדיסק דורשת בחירת תיקיית Dropbox תחילה.',
+    );
+  };
+  const openDocCase = (caseId: string) => {
+    modalStack.open(<CaseDetail caseId={caseId} />);
+  };
+  const deleteDoc = (docId: string) => {
+    const ok = window.confirm(
+      lang === 'ar'
+        ? 'حذف المستند من قائمة القضية؟ سيتم حذف التسجيل من النظام فقط، ولن يتم حذف الملف المادي من القرص في هذه المرحلة.'
+        : 'למחוק את המסמך מרשימת התיק? בשלב זה יימחק הרישום מהמערכת בלבד, ולא יימחק הקובץ הפיזי מהדיסק.',
+    );
+    if (!ok) return;
+    dispatch({
+      type: 'SET_DOCUMENTS',
+      documents: documents.filter((d) => String(d.id) !== String(docId)),
+    });
+  };
+
+  const onSync = async () => {
+    try {
+      let handle = await loadSavedLegalOfficeDirectoryHandle();
+      if (!handle) handle = await pickAndSaveDirectory(lang);
+      const ok = await verifyLegalOfficeDirectoryPermission(handle);
+      if (!ok) {
+        window.alert(
+          lang === 'ar'
+            ? 'لم يتم منح إذن للقراءة والكتابة في المجلد.'
+            : 'לא ניתנה הרשאת קריאה וכתיבה לתיקייה.',
+        );
+        return;
+      }
+      // Full per-file scan integration ships in Stage 5; here we just confirm
+      // the handle is healthy.
+      window.alert(
+        lang === 'ar' ? 'تم ربط مجلد Dropbox.' : 'תיקיית Dropbox מקושרת.',
+      );
+    } catch (err) {
+      console.error(err);
+      window.alert(
+        lang === 'ar' ? 'تعذرت المزامنة.' : 'הסנכרון נכשל.',
+      );
+    }
+  };
+
+  const onReset = async () => {
+    const ok = window.confirm(
+      lang === 'ar'
+        ? 'إعادة ضبط مجلد Dropbox المحفوظ؟'
+        : 'לאפס את תיקיית Dropbox השמורה?',
+    );
+    if (!ok) return;
+    await resetLegalOfficeDataFolder();
+    window.alert(
+      lang === 'ar'
+        ? 'تمت إعادة الضبط. اضغط مزامنة لاختيار المجلد من جديد.'
+        : 'תיקיית Dropbox אופסה. לחץ סנכרון לבחור את התיקייה מחדש.',
+    );
+  };
+
+  return (
+    <section className="panel documents-screen-panel">
+      <div className="panel-body documents-panel-body">
+        <div className="documents-toolbar">
+          <div className="case-search-wrap">
+            <label>{documentsTitle}</label>
+            <input
+              id="documentsSearchInput"
+              className="case-search-input"
+              type="search"
+              autoComplete="off"
+              placeholder={placeholder}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+            <div className="case-search-meta" id="documentsSearchMeta">
+              {hint}
+            </div>
+          </div>
+          <div className="documents-toolbar-actions">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              id="resetDropboxFolderBtn"
+              onClick={onReset}
+            >
+              <i className="fas fa-rotate-left" />
+              {resetLabel}
+            </button>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              id="syncDocumentsBtn"
+              onClick={onSync}
+            >
+              <i className="fas fa-rotate" />
+              {syncLabel}
+            </button>
+          </div>
+        </div>
+        <div id="documentsTableWrap" className="documents-scroll-list">
+          {filtered.length === 0 ? (
+            <div className="case-empty">{emptyText}</div>
+          ) : (
+            <DocumentsTable docs={filtered} onOpen={openDoc} onOpenCase={openDocCase} onDelete={deleteDoc} />
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function DocumentsTable({
+  docs,
+  onOpen,
+  onOpenCase,
+  onDelete,
+}: {
+  docs: DocumentRecord[];
+  onOpen: (id: string) => void;
+  onOpenCase: (caseId: string) => void;
+  onDelete: (id: string) => void;
+}) {
+  const { state } = useAppState();
+  const { t, lang } = useT();
+  return (
+    <table className="table">
+      <thead>
+        <tr>
+          <th>{lang === 'ar' ? 'المستند' : 'מסמך'}</th>
+          <th>{t('caseType')}</th>
+          <th>{t('clientName')}</th>
+          <th>{lang === 'ar' ? 'تاريخ' : 'תאריך'}</th>
+          <th>{lang === 'ar' ? 'إجراءات' : 'פעולות'}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {docs.map((doc) => {
+          const c =
+            state.casesArr.find((x) => String(x.id) === String(doc.caseId || '')) ||
+            ({} as never);
+          const client =
+            state.clients.find(
+              (x) =>
+                String(x.id) ===
+                String(doc.clientId || (c as { clientId?: string }).clientId || ''),
+            ) || ({} as never);
+          const fileName =
+            doc.fileName ||
+            (doc as { storedFileName?: string }).storedFileName ||
+            doc.title ||
+            '';
+          const title = doc.title || doc.fileName || '';
+          const path = doc.relativePath || '';
+          return (
+            <tr key={doc.id} className="document-screen-row" data-doc-id={doc.id}>
+              <td>
+                <div className="row-title document-desktop-title">
+                  <i className="fas fa-file-lines" /> {title}
+                </div>
+                <div className="sub document-desktop-meta">
+                  {fileName} · {documentTypeLabel(doc, lang)} ·{' '}
+                  {formatDocumentSize((doc as { size?: number }).size, lang)}
+                </div>
+                {path && (
+                  <div className="documents-path-hint document-desktop-path">{path}</div>
+                )}
+                <div className="mobile-document-card">
+                  <div className="mobile-document-file-name">{fileName}</div>
+                  <div className="mobile-document-top">
+                    <div className="mobile-document-actions">
+                      <button
+                        type="button"
+                        className="document-mini-action open"
+                        data-open-doc={doc.id}
+                        aria-label="Dropbox"
+                        onClick={() => onOpen(doc.id)}
+                      >
+                        <i className="fab fa-dropbox" />
+                        Dropbox
+                      </button>
+                      {doc.caseId && (
+                        <button
+                          type="button"
+                          className="document-mini-action case"
+                          data-open-doc-case={doc.caseId}
+                          aria-label={lang === 'ar' ? 'القضية' : 'תיק'}
+                          onClick={() => onOpenCase(doc.caseId!)}
+                        >
+                          <i className="fas fa-folder" />
+                          {lang === 'ar' ? 'ملف' : 'תיק'}
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        className="document-mini-action delete"
+                        data-delete-doc={doc.id}
+                        aria-label={lang === 'ar' ? 'حذف' : 'מחק'}
+                        onClick={() => onDelete(doc.id)}
+                      >
+                        <i className="fas fa-trash" />
+                        {lang === 'ar' ? 'حذف' : 'מחק'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div className="row-title">{caseName(c as never, lang) || '-'}</div>
+                <div className="sub">{(c as { caseNumber?: string }).caseNumber || ''}</div>
+              </td>
+              <td>{clientDisplayName(client as never, lang) || '-'}</td>
+              <td>{formatDocumentDate((doc as { uploadedAt?: string }).uploadedAt, lang)}</td>
+              <td>
+                <div className="document-row-actions">
+                  <button
+                    type="button"
+                    className="document-mini-action open"
+                    data-open-doc={doc.id}
+                    onClick={() => onOpen(doc.id)}
+                  >
+                    <i className="fas fa-folder-open" />
+                    {lang === 'ar' ? 'فتح' : 'פתח'}
+                  </button>
+                  {doc.caseId && (
+                    <button
+                      type="button"
+                      className="document-mini-action case"
+                      data-open-doc-case={doc.caseId}
+                      onClick={() => onOpenCase(doc.caseId!)}
+                    >
+                      <i className="fas fa-folder" />
+                      {lang === 'ar' ? 'القضية' : 'תיק'}
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    className="document-mini-action delete"
+                    data-delete-doc={doc.id}
+                    onClick={() => onDelete(doc.id)}
+                  >
+                    <i className="fas fa-trash" />
+                    {lang === 'ar' ? 'حذف' : 'מחק'}
+                  </button>
+                </div>
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  );
+}
+

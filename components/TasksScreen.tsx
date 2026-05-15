@@ -1,0 +1,258 @@
+'use client';
+
+import { useMemo, useState } from 'react';
+import { useAppState } from '@/hooks/useAppState';
+import { useModalStack } from '@/hooks/useModalStack';
+import { useT } from '@/hooks/useT';
+import { caseName } from '@/lib/cases';
+import { clientDisplayName } from '@/lib/clients';
+import {
+  sortedTasks,
+  taskCase,
+  taskClient,
+  taskDueInfo,
+  taskFilterCounts,
+  taskMatchesQuickFilter,
+  taskPriorityClass,
+  taskPriorityLabel,
+  taskQuickLabel,
+  taskSearchText,
+  taskStatusClass,
+  taskStatusLabel,
+  taskText,
+  tasksLabel,
+  type TaskQuickFilter,
+} from '@/lib/tasks';
+import { TaskModal } from './TaskModal';
+import { CaseDetail } from './CaseDetail';
+import type { Task } from '@/types';
+
+/**
+ * Tasks screen. Port of renderTasks (source line 5044) + taskRows (5040) +
+ * filterTasksScreen (5050) + markTaskDone (5071) + deleteTask (5072).
+ *
+ * The "+ task" button per row opens TaskModal in edit mode; the "case" button
+ * jumps directly to that case's detail modal.
+ */
+export function TasksScreen() {
+  const { state, dispatch } = useAppState();
+  const { t, lang } = useT();
+  const modalStack = useModalStack();
+  const [query, setQuery] = useState('');
+  const [quickFilter, setQuickFilter] = useState<TaskQuickFilter>('all');
+
+  const counts = useMemo(
+    () => taskFilterCounts(state.tasksArr || []),
+    [state.tasksArr],
+  );
+
+  const filtered: Task[] = useMemo(() => {
+    const base = sortedTasks(state.tasksArr || []).filter((x) =>
+      taskMatchesQuickFilter(x, quickFilter),
+    );
+    const q = query.trim().toLowerCase();
+    if (!q) return base;
+    return base.filter((x) =>
+      taskSearchText(x, state.casesArr, state.clients, lang)
+        .toLowerCase()
+        .includes(q),
+    );
+  }, [state.tasksArr, state.casesArr, state.clients, query, lang, quickFilter]);
+
+  const openCount = (state.tasksArr || []).filter((x) => x.status !== 'done').length;
+  const placeholder = taskText(
+    'חיפוש לפי משימה, לקוח, תיק, סטטוס או הערה',
+    'بحث حسب المهمة، الموكل، القضية، الحالة أو الملاحظة',
+    lang,
+  );
+  const hint = taskText(
+    `מוצגות ${filtered.length} מתוך ${(state.tasksArr || []).length} משימות. פתוחות: ${openCount}.`,
+    `يتم عرض ${filtered.length} من ${(state.tasksArr || []).length} مهام. المفتوحة: ${openCount}.`,
+    lang,
+  );
+
+  const markDone = (id: string) => {
+    const next = state.tasksArr.map((x) =>
+      String(x.id) === String(id)
+        ? { ...x, status: 'done', doneAt: new Date().toISOString() }
+        : x,
+    );
+    dispatch({ type: 'SET_TASKS', tasks: next });
+  };
+
+  const remove = (id: string) => {
+    if (
+      !window.confirm(
+        taskText('למחוק את המשימה מהרשימה?', 'حذف المهمة من القائمة؟', lang),
+      )
+    )
+      return;
+    dispatch({
+      type: 'SET_TASKS',
+      tasks: state.tasksArr.filter((x) => String(x.id) !== String(id)),
+    });
+  };
+
+  const edit = (id: string) => modalStack.open(<TaskModal editTaskId={id} />);
+  const gotoCase = (caseId: string) => modalStack.open(<CaseDetail caseId={caseId} />);
+
+  if (filtered.length === 0 && (state.tasksArr || []).length === 0) {
+    return (
+      <section className="panel tasks-screen-panel">
+        <div className="panel-body tasks-panel-body">
+          <div className="tasks-toolbar">
+            <div className="case-search-wrap">
+              <label>{tasksLabel(lang)}</label>
+              <input
+                id="tasksSearchInput"
+                className="case-search-input"
+                type="search"
+                autoComplete="off"
+                placeholder={placeholder}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+              />
+              <div className="case-search-meta">{hint}</div>
+            </div>
+          </div>
+          <div className="tasks-scroll-list">
+            <div className="case-empty">
+              {taskText('אין משימות להצגה', 'لا توجد مهام للعرض', lang)}
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="panel tasks-screen-panel">
+      <div className="panel-body tasks-panel-body">
+        <div className="tasks-toolbar">
+          <div className="case-search-wrap">
+            <label>{tasksLabel(lang)}</label>
+            <input
+              id="tasksSearchInput"
+              className="case-search-input"
+              type="search"
+              autoComplete="off"
+              placeholder={placeholder}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+            <div className="case-search-meta" id="tasksSearchMeta">
+              {hint}
+            </div>
+          </div>
+        </div>
+        <div className="tasks-quick-filters">
+          {(['all', 'today', 'overdue', 'urgent', 'open', 'done'] as TaskQuickFilter[]).map((k) => (
+            <button
+              key={k}
+              type="button"
+              className={
+                'tasks-quick-filter-btn ' +
+                (k === 'urgent' ? 'urgent ' : '') +
+                (quickFilter === k ? 'active' : '')
+              }
+              data-task-quick-filter={k}
+              onClick={() => setQuickFilter(k)}
+            >
+              {taskQuickLabel(k, lang)} <span>{counts[k] || 0}</span>
+            </button>
+          ))}
+        </div>
+        <div id="tasksTableWrap" className="tasks-scroll-list">
+          <table className="table">
+            <thead>
+              <tr>
+                <th>{taskText('משימה', 'المهمة', lang)}</th>
+                <th>{t('clientName')}</th>
+                <th>{t('caseNumber')}</th>
+                <th>{taskText('תאריך יעד', 'تاريخ الاستحقاق', lang)}</th>
+                <th>{t('status')}</th>
+                <th>{taskText('עדיפות', 'الأولوية', lang)}</th>
+                <th>{taskText('פעולות', 'إجراءات', lang)}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((task) => {
+                const c = taskCase(task, state.casesArr);
+                const cl = taskClient(task, state.casesArr, state.clients);
+                const due = taskDueInfo(task, lang);
+                return (
+                  <tr key={task.id} className={due.cls} data-task-row={task.id}>
+                    <td>
+                      <div className="row-title">{task.title || ''}</div>
+                      {task.notes ? <div className="sub">{task.notes}</div> : null}
+                    </td>
+                    <td>{clientDisplayName(cl, lang) || '-'}</td>
+                    <td>
+                      <div className="row-title">{c.caseNumber || '-'}</div>
+                      <div className="sub">{caseName(c, lang) || ''}</div>
+                    </td>
+                    <td>{due.text}</td>
+                    <td>
+                      <span className={'task-status-badge ' + taskStatusClass(task.status)}>
+                        {taskStatusLabel(task.status, lang)}
+                      </span>
+                    </td>
+                    <td>
+                      <span className={'task-priority-badge ' + taskPriorityClass(task.priority)}>
+                        {taskPriorityLabel(task.priority, lang)}
+                      </span>
+                    </td>
+                    <td>
+                      <div className="task-mini-actions">
+                        {task.status !== 'done' && (
+                          <button
+                            type="button"
+                            className="task-mini-action done"
+                            data-task-done={task.id}
+                            onClick={() => markDone(task.id)}
+                          >
+                            <i className="fas fa-check" />
+                            {taskText('בוצע', 'تم', lang)}
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          className="task-mini-action edit"
+                          data-task-edit={task.id}
+                          onClick={() => edit(task.id)}
+                        >
+                          <i className="fas fa-pen" />
+                          {t('edit')}
+                        </button>
+                        {task.caseId && (
+                          <button
+                            type="button"
+                            className="task-mini-action case"
+                            data-task-case={task.caseId}
+                            onClick={() => gotoCase(task.caseId!)}
+                          >
+                            <i className="fas fa-folder-open" />
+                            {taskText('תיק', 'قضية', lang)}
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          className="task-mini-action delete"
+                          data-task-delete={task.id}
+                          onClick={() => remove(task.id)}
+                        >
+                          <i className="fas fa-trash" />
+                          {taskText('מחק', 'حذف', lang)}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  );
+}
