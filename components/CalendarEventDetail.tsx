@@ -55,7 +55,7 @@ export function CalendarEventDetail({ source, id }: CalendarEventDetailProps) {
     source === 'task'
       ? (item as TimelineItem & { dueDateTime?: string; dueDate?: string }).dueDateTime ||
         (item as TimelineItem & { dueDate?: string }).dueDate ||
-        item.date
+        (item as TimelineItem).date
       : (item as CalendarEvent).dateTime ||
         (item as CalendarEvent & { date?: string }).date;
   const d = rawDate ? new Date(rawDate) : new Date();

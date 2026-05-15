@@ -54,7 +54,7 @@ export function CalendarEventEdit({ source, id }: CalendarEventEditProps) {
     source === 'task'
       ? (item as TimelineItem & { dueDateTime?: string; dueDate?: string }).dueDateTime ||
         (item as TimelineItem & { dueDate?: string }).dueDate ||
-        item.date
+        (item as TimelineItem).date
       : (item as CalendarEvent).dateTime || (item as CalendarEvent & { date?: string }).date;
   const initialDate = initialRaw ? new Date(initialRaw) : new Date();
 
