@@ -18,6 +18,10 @@ const isBrowser = typeof window !== 'undefined';
 
 export type DirectoryHandle = FileSystemDirectoryHandle;
 
+type FileSystemHandlePermissionDescriptor = {
+  mode?: 'read' | 'readwrite';
+};
+
 function openHandleDB(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(LEGAL_OFFICE_IDB_NAME, 1);
