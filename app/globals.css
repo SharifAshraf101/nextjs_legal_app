@@ -17492,19 +17492,38 @@ body.dark {
 /* New Event modal — use the standard modal sizing (same as case detail
    and the other major modals) so it visually replaces the case detail
    while open, with the normal dimmed backdrop. */
-/* New Event modal — a centered popup over the case detail. The default
-   dark backdrop dims the case-detail screen underneath, so the case
-   detail stays visible (faded) on both sides of the popup. */
-.modal.new-event-over-detail .modal-box,
-.modal.ls.new-event-over-detail .modal-box,
-.modal.ls.ls.ls.ls.ls.ls.new-event-over-detail .modal-box {
+/* ============================================================ *
+ * New Event modal: fully-transparent backdrop so the case-detail
+ * modal underneath stays 100% visible (and the case-detail's own
+ * dark-dim backdrop is what dims the page behind). Only the new
+ * event's centered card itself paints on top of case detail —
+ * exactly like a small popup floating above the existing screen.
+ * ============================================================ */
+body .modal.new-event-over-detail,
+body .modal.ls.new-event-over-detail,
+body .modal.ls.ls.ls.ls.ls.ls.new-event-over-detail,
+body .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.new-event-over-detail {
+  background: transparent !important;
+  background-color: transparent !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  padding: 18px !important;
+}
+body .modal.new-event-over-detail .modal-box,
+body .modal.ls.new-event-over-detail .modal-box,
+body .modal.ls.ls.ls.ls.ls.ls.new-event-over-detail .modal-box,
+body .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.new-event-over-detail .modal-box {
   width: min(520px, 92vw) !important;
   max-width: min(520px, 92vw) !important;
   height: auto !important;
   max-height: min(88vh, 820px) !important;
+  min-height: 0 !important;
   margin: auto !important;
   overflow-y: auto !important;
-  box-shadow: 0 24px 60px rgba(15,23,42,.35) !important;
+  background: #ffffff !important;
+  border-radius: 22px !important;
+  box-shadow: 0 28px 70px rgba(15,23,42,.55), 0 0 0 1px rgba(15,23,42,.08) !important;
+  position: relative !important;
 }
 
 /* ── Detail rows ── */
