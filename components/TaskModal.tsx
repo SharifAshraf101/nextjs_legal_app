@@ -4,9 +4,9 @@ import { useState, type FormEvent } from 'react';
 import { useAppState } from '@/hooks/useAppState';
 import { useModalStack } from '@/hooks/useModalStack';
 import { useT } from '@/hooks/useT';
+import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 import { caseName, clientName } from '@/lib/cases';
 import { nextTaskId, taskPriorityLabel, taskStatusLabel, taskText } from '@/lib/tasks';
-import { Modal } from './Modal';
 import type { Task } from '@/types';
 
 /**
@@ -25,8 +25,22 @@ export function TaskModal({ preselectedCaseId = '', editTaskId = '' }: TaskModal
   const { state, dispatch } = useAppState();
   const { t, lang } = useT();
   const modalStack = useModalStack();
+  const confirmDelete = useDeleteConfirm();
 
   const existing = (state.tasksArr || []).find((x) => String(x.id) === String(editTaskId));
+
+  const onDeleteTask = async () => {
+    if (!existing) return;
+    const ok = await confirmDelete(
+      taskText('למחוק את המשימה מהרשימה?', 'حذف المهمة من القائمة؟', lang),
+    );
+    if (!ok) return;
+    dispatch({
+      type: 'SET_TASKS',
+      tasks: state.tasksArr.filter((x) => String(x.id) !== String(existing.id)),
+    });
+    modalStack.closeAll();
+  };
   const defaultCaseId = existing?.caseId || preselectedCaseId || state.casesArr[0]?.id || '';
 
   const [title, setTitle] = useState(existing?.title || '');
@@ -84,8 +98,65 @@ export function TaskModal({ preselectedCaseId = '', editTaskId = '' }: TaskModal
     : taskText('משימה חדשה', 'مهمة جديدة', lang);
 
   return (
-    <Modal onClose={close}>
-      <h2>{titleLabel}</h2>
+    <div
+      className="new-task-popup-overlay"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) close();
+      }}
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 700,
+        display: 'grid',
+        placeItems: 'center',
+        padding: 18,
+        pointerEvents: 'auto',
+        background: 'transparent',
+        backdropFilter: 'none',
+      }}
+    >
+      <div
+        className="new-task-popup-box modal-box"
+        style={{
+          position: 'relative',
+          width: 'min(520px, 92vw)',
+          maxHeight: 'min(88vh, 820px)',
+          overflowY: 'auto',
+          background: '#FAF6EE',
+          borderRadius: 22,
+          padding: '60px 22px 22px',
+          boxShadow:
+            '0 28px 70px rgba(15,23,42,.55), 0 0 0 1px rgba(15,23,42,.08)',
+        }}
+      >
+        <button
+          type="button"
+          aria-label={lang === 'ar' ? 'إغلاق' : 'סגור'}
+          onClick={close}
+          className="modal-close-x"
+          style={{
+            position: 'absolute',
+            top: 14,
+            left: '0.25cm',
+            width: 38,
+            height: 38,
+            display: 'inline-grid',
+            placeItems: 'center',
+            border: '1px solid #e2ebf6',
+            borderRadius: 0,
+            background: '#FFFBF2',
+            color: '#0f172a',
+            cursor: 'pointer',
+            fontWeight: 900,
+            fontSize: 18,
+            zIndex: 70,
+          }}
+        >
+          ×
+        </button>
+        <h2 style={{ margin: 0, textAlign: 'center', padding: '0 48px' }}>
+          {titleLabel}
+        </h2>
       <form className="task-form" onSubmit={onSubmit}>
         <label className="full">
           {taskText('שם המשימה', 'اسم المهمة', lang)}
@@ -162,11 +233,22 @@ export function TaskModal({ preselectedCaseId = '', editTaskId = '' }: TaskModal
           <button type="button" className="cancel" onClick={close}>
             {t('cancel')}
           </button>
+          {existing && (
+            <button
+              type="button"
+              className="edit-action-delete-btn"
+              onClick={onDeleteTask}
+            >
+              <i className="fas fa-trash" />
+              <span>{lang === 'ar' ? 'حذف' : 'מחיקה'}</span>
+            </button>
+          )}
           <button type="submit" className="save">
             {t('save')}
           </button>
         </div>
       </form>
-    </Modal>
+      </div>
+    </div>
   );
 }

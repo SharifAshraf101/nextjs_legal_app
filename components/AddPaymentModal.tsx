@@ -7,7 +7,6 @@ import { useT } from '@/hooks/useT';
 import { caseName } from '@/lib/cases';
 import { clientDisplayName } from '@/lib/clients';
 import { defaultPaymentDescription, nextPaymentId } from '@/lib/finance';
-import { Modal } from './Modal';
 import type { Finance } from '@/types';
 
 /**
@@ -66,8 +65,65 @@ export function AddPaymentModal() {
   };
 
   return (
-    <Modal onClose={close}>
-      <h2>{lang === 'ar' ? 'إضافة دفعة' : 'הוספת תשלום'}</h2>
+    <div
+      className="new-payment-popup-overlay"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) close();
+      }}
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 700,
+        display: 'grid',
+        placeItems: 'center',
+        padding: 18,
+        pointerEvents: 'auto',
+        background: 'transparent',
+        backdropFilter: 'none',
+      }}
+    >
+      <div
+        className="new-payment-popup-box modal-box"
+        style={{
+          position: 'relative',
+          width: 'min(520px, 92vw)',
+          maxHeight: 'min(88vh, 820px)',
+          overflowY: 'auto',
+          background: '#FAF6EE',
+          borderRadius: 22,
+          padding: '60px 22px 22px',
+          boxShadow:
+            '0 28px 70px rgba(15,23,42,.55), 0 0 0 1px rgba(15,23,42,.08)',
+        }}
+      >
+        <button
+          type="button"
+          aria-label={lang === 'ar' ? 'إغلاق' : 'סגור'}
+          onClick={close}
+          className="modal-close-x"
+          style={{
+            position: 'absolute',
+            top: 14,
+            left: '0.25cm',
+            width: 38,
+            height: 38,
+            display: 'inline-grid',
+            placeItems: 'center',
+            border: '1px solid #e2ebf6',
+            borderRadius: 0,
+            background: '#FFFBF2',
+            color: '#0f172a',
+            cursor: 'pointer',
+            fontWeight: 900,
+            fontSize: 18,
+            zIndex: 70,
+          }}
+        >
+          ×
+        </button>
+        <h2 style={{ margin: 0, textAlign: 'center', padding: '0 48px' }}>
+          {lang === 'ar' ? 'إضافة دفعة' : 'הוספת תשלום'}
+        </h2>
       <form id="addPaymentForm" className="form-grid finance-add-form" onSubmit={onSubmit}>
         <div className="form-field">
           <label>{t('clientName')}</label>
@@ -127,6 +183,7 @@ export function AddPaymentModal() {
           </button>
         </div>
       </form>
-    </Modal>
+      </div>
+    </div>
   );
 }

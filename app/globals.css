@@ -18,7 +18,7 @@
  * <style>
  * ============================================================ */
 :root{
-      --bg:#f7fbff;--bg-2:#eef7ff;--surface:#ffffff;--surface-soft:#f9fcff;--surface-2:#f1f7ff;--text:#172033;--muted:#6d7890;--line:#dfe9f5;
+      --bg:#FAF6EE;--bg-2:#FAF6EE;--surface:#FAF6EE;--surface-soft:#FAF6EE;--surface-2:#FAF6EE;--text:#172033;--muted:#6d7890;--line:#EDE5D2;
       --primary:#4f7cff;--primary-2:#e8efff;--primary-3:#dbe7ff;--accent:#20bfa9;--accent-2:#e7fbf7;--rose:#fff0f3;--peach:#fff4e8;
       --success:#16a37d;--warning:#d38b17;--danger:#d94444;--shadow:0 18px 45px rgba(45,75,130,.10);--shadow-soft:0 8px 22px rgba(45,75,130,.065);--radius:24px;--sidebar:292px;
     }
@@ -288,10 +288,10 @@
  * <style>
  * ============================================================ */
 /* SELECTED DESIGN 1: Pastel Legal Dashboard */
-:root{--bg:#f5f8fc;--bg-2:#eef4fb;--surface:#fff;--surface-soft:#f9fbff;--surface-2:#f1f6fd;--text:#152033;--muted:#66758d;--line:#e2ebf6;--primary:#2563eb;--primary-2:#dbeafe;--primary-3:#bfdbfe;--accent:#059669;--accent-2:#d1fae5;--warning:#ea580c;--danger:#dc2626;--shadow:0 18px 45px rgba(15,23,42,.09);--shadow-soft:0 10px 26px rgba(15,23,42,.065)}
+:root{--bg:#FAF6EE;--bg-2:#FAF6EE;--surface:#FAF6EE;--surface-soft:#FAF6EE;--surface-2:#FAF6EE;--text:#152033;--muted:#66758d;--line:#EDE5D2;--primary:#2563eb;--primary-2:#dbeafe;--primary-3:#bfdbfe;--accent:#059669;--accent-2:#d1fae5;--warning:#ea580c;--danger:#dc2626;--shadow:0 18px 45px rgba(15,23,42,.09);--shadow-soft:0 10px 26px rgba(15,23,42,.065)}
 body{background:linear-gradient(135deg,#f5f8fc 0%,#fff 48%,#eef4fb 100%)!important;color:var(--text)}
 .language-selector{background:linear-gradient(135deg,#f5f8fc 0%,#fff 58%,#eef4fb 100%)!important}.language-panel{background:rgba(255,255,255,.92)!important;border-color:#e2ebf6!important;box-shadow:var(--shadow)!important}.brand-mark,.side-brand .mark{background:#dbeafe!important;color:#2563eb!important;box-shadow:none!important}.sidebar{background:rgba(255,255,255,.84)!important;border-left:1px solid #dbe7f4!important;box-shadow:-8px 0 26px rgba(15,23,42,.035)!important;backdrop-filter:blur(18px)}.side-brand{background:#fff!important;border-color:#e2ebf6!important;box-shadow:var(--shadow-soft)!important}.nav-btn{border-radius:18px!important;color:#64748b!important}.nav-btn:hover{background:#f8fbff!important;border-color:#dbe7f4!important;color:#152033!important}.nav-btn.active{background:#dbeafe!important;color:#1d4ed8!important;border-color:#bfdbfe!important;box-shadow:none!important;font-weight:900!important}.sidebar-settings-panel{background:#fff!important;border-color:#e2ebf6!important;box-shadow:var(--shadow-soft)!important}.topbar{background:rgba(255,255,255,.84)!important;border-bottom:1px solid #dbe7f4!important;backdrop-filter:blur(18px)}.btn-primary{background:#2563eb!important;color:#fff!important;box-shadow:0 12px 22px rgba(37,99,235,.18)!important}.btn-secondary,.mini-btn{background:#fff!important;border-color:#e2ebf6!important;color:#152033!important}.mini-btn.active{background:#2563eb!important;border-color:#2563eb!important;color:white!important}
-.content.home-content{background:transparent!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:24px 30px 92px!important;overflow:hidden!important}.home-grid-wrap{position:relative!important;width:min(760px,92vw)!important;height:min(640px,calc(100vh - 155px))!important;min-height:500px!important;display:flex!important;align-items:center!important;justify-content:center!important;margin:auto!important;isolation:isolate!important}.home-card-grid{width:100%!important;height:100%!important;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-template-rows:repeat(2,minmax(0,1fr))!important;gap:72px!important}.home-card{background:#fff!important;border:1px solid #e2ebf6!important;border-radius:30px!important;box-shadow:0 16px 34px rgba(15,23,42,.075)!important;min-height:165px!important;padding:22px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;text-align:center!important;gap:13px!important;overflow:hidden!important;cursor:pointer!important;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease!important}.home-card:before,.home-card:after{display:none!important;content:none!important}.home-card:hover{transform:translateY(-4px)!important;box-shadow:0 22px 44px rgba(15,23,42,.11)!important;border-color:#cfe0ff!important}.home-card .card-icon{width:68px!important;height:68px!important;border-radius:24px!important;border:0!important;display:grid!important;place-items:center!important;font-size:30px!important;margin:0 auto!important;box-shadow:none!important;background:#dbeafe!important;color:#2563eb!important}.home-card:nth-child(1) .card-icon{background:#dbeafe!important;color:#2563eb!important}.home-card:nth-child(2) .card-icon{background:#d1fae5!important;color:#059669!important}.home-card:nth-child(3) .card-icon{background:#ede9fe!important;color:#7c3aed!important}.home-card:nth-child(4) .card-icon{background:#ffedd5!important;color:#ea580c!important}.home-card h2{margin:0!important;font-size:22px!important;line-height:1.22!important;font-weight:950!important;color:#152033!important;letter-spacing:-.025em!important}.home-card p{display:none!important}.upcoming-center-btn{position:absolute!important;inset:50% auto auto 50%!important;transform:translate(-50%,-50%)!important;width:118px!important;height:118px!important;border-radius:999px!important;border:2px solid #bfdbfe!important;background:#fff!important;color:#1d4ed8!important;box-shadow:0 18px 40px rgba(37,99,235,.16)!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:7px!important;text-align:center!important;font-weight:950!important;z-index:5!important;cursor:pointer!important}.upcoming-center-btn:hover{transform:translate(-50%,-50%) scale(1.035)!important;box-shadow:0 24px 52px rgba(37,99,235,.20)!important}.upcoming-center-btn i{background:#dbeafe!important;color:#2563eb!important;width:34px!important;height:34px!important;border-radius:14px!important;display:grid!important;place-items:center!important;font-size:16px!important}.upcoming-center-btn span{font-size:12.5px!important;line-height:1.12!important;max-width:82px!important;color:#1d4ed8!important}.panel,.modal-box{background:#fff!important;border-color:#e2ebf6!important;box-shadow:var(--shadow-soft)!important}.form-field input,.form-field select,.form-field textarea{background:#f9fbff!important;border-color:#e2ebf6!important}.form-field input:focus,.form-field select:focus,.form-field textarea:focus{border-color:#bfdbfe!important;background:#fff!important;box-shadow:0 0 0 4px rgba(37,99,235,.10)!important}
+.content.home-content{background:transparent!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:24px 30px 92px!important;overflow:hidden!important}.home-grid-wrap{position:relative!important;width:min(760px,92vw)!important;height:min(640px,calc(100vh - 155px))!important;min-height:500px!important;display:flex!important;align-items:center!important;justify-content:center!important;margin:auto!important;isolation:isolate!important}.home-card-grid{width:100%!important;height:100%!important;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-template-rows:repeat(2,minmax(0,1fr))!important;gap:72px!important}.home-card{background:#fff!important;border:1px solid #e2ebf6!important;border-radius:30px!important;box-shadow:0 16px 34px rgba(15,23,42,.075)!important;min-height:165px!important;padding:22px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;text-align:center!important;gap:13px!important;overflow:hidden!important;cursor:pointer!important;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease!important}.home-card:before,.home-card:after{display:none!important;content:none!important}.home-card:hover{transform:translateY(-4px)!important;box-shadow:0 22px 44px rgba(15,23,42,.11)!important;border-color:#cfe0ff!important}.home-card .card-icon{width:68px!important;height:68px!important;border-radius:24px!important;border:0!important;display:grid!important;place-items:center!important;font-size:30px!important;margin:0 auto!important;box-shadow:none!important;background:#dbeafe!important;color:#2563eb!important}.home-card:nth-child(1) .card-icon{background:#dbeafe!important;color:#2563eb!important}.home-card:nth-child(2) .card-icon{background:#d1fae5!important;color:#059669!important}.home-card:nth-child(3) .card-icon{background:#ede9fe!important;color:#7c3aed!important}.home-card:nth-child(4) .card-icon{background:#ffedd5!important;color:#ea580c!important}.home-card h2{margin:0!important;font-size:22px!important;line-height:1.22!important;font-weight:950!important;color:#152033!important;letter-spacing:-.025em!important}.home-card p{display:none!important}.upcoming-center-btn{position:absolute!important;inset:50% auto auto 50%!important;transform:translate(-50%,-50%)!important;width:118px!important;height:118px!important;border-radius:999px!important;border:2px solid #bfdbfe!important;background:#fff!important;color:#1d4ed8!important;box-shadow:0 18px 40px rgba(37,99,235,.16)!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:7px!important;text-align:center!important;font-weight:950!important;z-index:5!important;cursor:pointer!important}.upcoming-center-btn:hover{transform:translate(-50%,-50%) scale(1.035)!important;box-shadow:0 24px 52px rgba(37,99,235,.20)!important}.upcoming-center-btn i{background:#dbeafe!important;color:#2563eb!important;width:34px!important;height:34px!important;border-radius:14px!important;display:grid!important;place-items:center!important;font-size:16px!important}.upcoming-center-btn span{font-size:12.5px!important;line-height:1.12!important;max-width:82px!important;color:#1d4ed8!important}.panel,.modal-box{background:#FAF6EE!important;border-color:#e2ebf6!important;box-shadow:var(--shadow-soft)!important}.form-field input,.form-field select,.form-field textarea{background:#FAF6EE!important;border-color:#e2ebf6!important}.form-field input:focus,.form-field select:focus,.form-field textarea:focus{border-color:#bfdbfe!important;background:#FAF6EE!important;box-shadow:0 0 0 4px rgba(37,99,235,.10)!important}
 @media(max-width:1050px){.content.home-content{padding:18px 16px 92px!important}.home-grid-wrap{width:min(620px,100%)!important;height:auto!important;min-height:0!important}.home-card-grid{height:auto!important;gap:50px!important}.home-card{min-height:158px!important;border-radius:26px!important}.upcoming-center-btn{width:104px!important;height:104px!important}.mobile-nav{background:rgba(255,255,255,.94)!important;border-top:1px solid #dbe7f4!important;backdrop-filter:blur(18px)!important}}
 @media(max-width:620px){.content.home-content{padding:16px 12px 84px!important}.home-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-template-rows:repeat(2,minmax(0,1fr))!important;gap:32px!important}.home-card{min-height:132px!important;border-radius:22px!important;gap:10px!important;padding:12px 8px!important}.home-card .card-icon{width:50px!important;height:50px!important;border-radius:18px!important;font-size:22px!important}.home-card h2{font-size:14px!important;line-height:1.2!important}.upcoming-center-btn{width:82px!important;height:82px!important;border-width:2px!important}.upcoming-center-btn i{width:26px!important;height:26px!important;border-radius:10px!important;font-size:13px!important}.upcoming-center-btn span{font-size:9.5px!important;max-width:62px!important}}
 
@@ -375,25 +375,26 @@ body{background:linear-gradient(135deg,#f5f8fc 0%,#fff 48%,#eef4fb 100%)!importa
 .content.home-content .home-card-grid .home-card:nth-child(2) .card-icon{width:58px!important;height:58px!important;border-radius:20px!important;background:rgba(255,255,255,.20)!important;border:1px solid rgba(255,255,255,.34)!important;color:#fff!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.28)!important;font-size:24px!important;position:relative!important;z-index:2!important}
 .content.home-content .home-card-grid .home-card:nth-child(1) h2,
 .content.home-content .home-card-grid .home-card:nth-child(2) h2{color:#fff!important;font-size:30px!important;font-weight:950!important;letter-spacing:-.03em!important;text-shadow:0 2px 8px rgba(0,0,0,.12)!important;position:relative!important;z-index:2!important}
-.content.home-content .home-card-grid .home-card:nth-child(1){background:linear-gradient(120deg,#ffd37c 0%,#f5bd4d 45%,#4f5965 100%)!important;border:1.5px solid #f59e0b!important;box-shadow:0 22px 44px rgba(245,158,11,.22)!important}
-.content.home-content .home-card-grid .home-card:nth-child(1):hover{border-color:#d97706!important;box-shadow:0 26px 54px rgba(245,158,11,.28)!important}
+.content.home-content .home-card-grid .home-card:nth-child(1){background:linear-gradient(120deg,#9de7ff 0%,#6fd0ef 45%,#4f5965 100%)!important;border:1.5px solid #38bdf8!important;box-shadow:0 22px 44px rgba(14,165,233,.22)!important}
+.content.home-content .home-card-grid .home-card:nth-child(1):hover{border-color:#0ea5e9!important;box-shadow:0 26px 54px rgba(14,165,233,.28)!important}
 .content.home-content .home-card-grid .home-card:nth-child(2){background:linear-gradient(120deg,#c7b4ff 0%,#a78bfa 42%,#64606f 100%)!important;border:1.5px solid #8b5cf6!important;box-shadow:0 22px 44px rgba(124,58,237,.22)!important}
 .content.home-content .home-card-grid .home-card:nth-child(2):hover{border-color:#7c3aed!important;box-shadow:0 26px 54px rgba(124,58,237,.28)!important}
 @media(max-width:620px){.content.home-content .home-card-grid .home-card:nth-child(1),.content.home-content .home-card-grid .home-card:nth-child(2){padding:18px 12px 20px!important;border-radius:22px!important}.content.home-content .home-card-grid .home-card:nth-child(1)::after,.content.home-content .home-card-grid .home-card:nth-child(2)::after{left:14px!important;right:14px!important;top:48%!important}.content.home-content .home-card-grid .home-card:nth-child(1) .card-icon,.content.home-content .home-card-grid .home-card:nth-child(2) .card-icon{width:42px!important;height:42px!important;border-radius:15px!important;font-size:18px!important}.content.home-content .home-card-grid .home-card:nth-child(1) h2,.content.home-content .home-card-grid .home-card:nth-child(2) h2{font-size:18px!important}}
 
 
-/* Home calendar card styled according to the supplied blue reference */
+/* Home calendar card — gold gradient (swapped from the original blue per
+   user request: calendar took the previous clients/cases gold color) */
 .content.home-content .home-card-grid .home-card:nth-child(3){
   position:relative!important;
-  background:linear-gradient(120deg,#9de7ff 0%,#6fd0ef 45%,#4f5965 100%)!important;
-  border:1.5px solid #38bdf8!important;
+  background:linear-gradient(120deg,#ffd37c 0%,#f5bd4d 45%,#4f5965 100%)!important;
+  border:1.5px solid #f59e0b!important;
   border-radius:30px!important;
   color:#fff!important;
   justify-content:space-between!important;
   gap:0!important;
   padding:30px 24px 32px!important;
   overflow:hidden!important;
-  box-shadow:0 22px 44px rgba(14,165,233,.22)!important;
+  box-shadow:0 22px 44px rgba(245,158,11,.22)!important;
 }
 .content.home-content .home-card-grid .home-card:nth-child(3)::after{
   content:""!important;
@@ -429,8 +430,8 @@ body{background:linear-gradient(135deg,#f5f8fc 0%,#fff 48%,#eef4fb 100%)!importa
   z-index:2!important;
 }
 .content.home-content .home-card-grid .home-card:nth-child(3):hover{
-  border-color:#0ea5e9!important;
-  box-shadow:0 26px 54px rgba(14,165,233,.28)!important;
+  border-color:#d97706!important;
+  box-shadow:0 26px 54px rgba(245,158,11,.28)!important;
 }
 @media(max-width:620px){
   .content.home-content .home-card-grid .home-card:nth-child(3){padding:18px 12px 20px!important;border-radius:22px!important;}
@@ -1808,8 +1809,8 @@ body.font-family-calibri{--app-font-family:Calibri, Arial, sans-serif;}
     --mobile-bottom-nav-h:76px;
   }
 
-  body{background:#fff!important;}
-  .main{background:#fff!important;}
+  body{background:#FAF6EE!important;}
+  .main{background:#FAF6EE!important;}
 
   .content:has(.global-search-panel),
   .content:has(.clients-screen-panel),
@@ -1825,7 +1826,7 @@ body.font-family-calibri{--app-font-family:Calibri, Arial, sans-serif;}
     min-height:calc(100svh - var(--mobile-topbar-h))!important;
     padding:0 0 calc(var(--mobile-bottom-nav-h) + env(safe-area-inset-bottom)) 0!important;
     margin:0!important;
-    background:#fff!important;
+    background:#FAF6EE!important;
     overflow:auto!important;
   }
 
@@ -1846,7 +1847,7 @@ body.font-family-calibri{--app-font-family:Calibri, Arial, sans-serif;}
     border:0!important;
     border-radius:0!important;
     box-shadow:none!important;
-    background:#fff!important;
+    background:#FAF6EE!important;
     overflow:visible!important;
   }
 
@@ -1864,7 +1865,7 @@ body.font-family-calibri{--app-font-family:Calibri, Arial, sans-serif;}
     min-height:calc(100svh - var(--mobile-topbar-h) - var(--mobile-bottom-nav-h) - env(safe-area-inset-bottom))!important;
     padding:14px 12px 24px 12px!important;
     margin:0!important;
-    background:#fff!important;
+    background:#FAF6EE!important;
     display:flex!important;
     flex-direction:column!important;
     gap:12px!important;
@@ -1890,7 +1891,7 @@ body.font-family-calibri{--app-font-family:Calibri, Arial, sans-serif;}
   .tasks-toolbar{
     margin:0!important;
     padding:0!important;
-    background:#fff!important;
+    background:#FAF6EE!important;
     flex:0 0 auto!important;
   }
 
@@ -1910,7 +1911,7 @@ body.font-family-calibri{--app-font-family:Calibri, Arial, sans-serif;}
     min-height:0!important;
     overflow:visible!important;
     padding-inline:0!important;
-    background:#fff!important;
+    background:#FAF6EE!important;
   }
 
   .content:has(.calendar-week-grid) .calendar-week-grid,
@@ -9451,7 +9452,7 @@ body.dark .settings-section-body textarea::placeholder {
 @media (max-width:700px){
   .modal.case-detail-mobile-v140,
   .modal.case-detail-mobile-v140 .modal-box{
-    background:#fff!important;
+    background:#FAF6EE!important;
   }
   .modal.case-detail-mobile-v140 .modal-box{
     padding-top:14px!important;
@@ -11405,7 +11406,7 @@ body.dark #homeSettingsOnlyDrawer.v212-open{
     padding:14px 0 26px!important;
     overflow:auto!important;
     border-radius:0!important;
-    background:#fff!important;
+    background:#FAF6EE!important;
     border:1px solid #dbe7f4!important;
     box-shadow:0 18px 45px rgba(15,23,42,.14)!important;
   }
@@ -14325,10 +14326,10 @@ body.dark .modal:has(#newCalendarAppointmentForm) .modal-box > h2:first-of-type{
 .modal.ls.ls.ls.ls.ls.ls .case-timeline-filter-btn.filter-task.active,
 .modal.ls.ls.ls.ls.ls.ls .case-timeline-filter-btn.filter-call.active,
 .modal.ls.ls.ls.ls.ls.ls .case-timeline-filter-btn.filter-note.active{
-  background:var(--primary)!important;
-  color:#fff!important;
-  border-color:var(--primary)!important;
-  box-shadow:none!important;
+  background:#F5EFE0!important;
+  color:#0F172A!important;
+  border-color:#0EA5E9!important;
+  box-shadow:0 0 0 1px #0EA5E9!important;
 }
 .modal.ls.ls.ls.ls.ls.ls .case-timeline-filter-btn.clear,
 .modal.ls.ls.ls.ls.ls.ls .case-timeline-filter-btn.filter-clear{
@@ -14565,10 +14566,10 @@ body.dark .modal:has(#newCalendarAppointmentForm) .modal-box > h2:first-of-type{
 
 /* ----- Panels (every screen wraps its content in .panel) ---------------- */
 .content.content.content.content:not(.home-content) .panel{
-  background:#FFFFFF!important;
-  border:1px solid #E5E7EB!important;
+  background:#FAF6EE!important;
+  border:1px solid transparent!important;
   border-radius:14px!important;
-  box-shadow:0 1px 2px rgba(15,23,42,.04)!important;
+  box-shadow:none!important;
   padding:0!important;
   overflow:hidden!important;
   margin-bottom:16px!important;
@@ -14580,8 +14581,8 @@ body.dark .modal:has(#newCalendarAppointmentForm) .modal-box > h2:first-of-type{
 .content.content.content.content:not(.home-content) .panel-head,
 .content.content.content.content:not(.home-content) .panel-header{
   padding:20px 24px!important;
-  border-bottom:1px solid #E5E7EB!important;
-  background:#F8FAFC!important;
+  border-bottom:1px solid #EDE5D2!important;
+  background:#FAF6EE!important;
   display:flex!important;
   align-items:center!important;
   justify-content:space-between!important;
@@ -14651,17 +14652,24 @@ body.dark .modal:has(#newCalendarAppointmentForm) .modal-box > h2:first-of-type{
   transition:background 140ms,border-color 140ms,color 140ms!important;
 }
 .content.content.content.content:not(.home-content) .btn:hover{
-  background:#F8FAFC!important;
+  background:#F2ECDD!important;
   border-color:#CBD5E1!important;
 }
 .content.content.content.content:not(.home-content) .btn-primary{
-  background:#1E293B!important;
+  background:#0EA5E9!important;
   color:#FFFFFF!important;
-  border-color:#1E293B!important;
+  border-color:#0EA5E9!important;
 }
 .content.content.content.content:not(.home-content) .btn-primary:hover{
-  background:#0F172A!important;
-  border-color:#0F172A!important;
+  background:#0284C7!important;
+  border-color:#0284C7!important;
+  color:#FFFFFF!important;
+}
+.content.content.content.content:not(.home-content) .btn-primary:active,
+.content.content.content.content:not(.home-content) .btn-primary:focus{
+  background:#0EA5E9!important;
+  border-color:#0EA5E9!important;
+  color:#FFFFFF!important;
 }
 .content.content.content.content:not(.home-content) .btn-primary *{
   color:#FFFFFF!important;
@@ -14749,18 +14757,18 @@ body.dark .modal:has(#newCalendarAppointmentForm) .modal-box > h2:first-of-type{
 .content.content.content.content:not(.home-content) table.table,
 .content.content.content.content:not(.home-content) .table{
   width:100%!important;
-  background:#FFFFFF!important;
-  border:1px solid #E5E7EB!important;
-  border-radius:10px!important;
+  background:#FAF6EE!important;
+  border:0!important;
+  border-radius:0!important;
   overflow:hidden!important;
   box-shadow:none!important;
   border-collapse:separate!important;
   border-spacing:0!important;
 }
 .content.content.content.content:not(.home-content) table.table th{
-  background:#F8FAFC!important;
+  background:#FAF6EE!important;
   color:#64748B!important;
-  border-bottom:1px solid #E5E7EB!important;
+  border-bottom:1px solid #EDE5D2!important;
   font-weight:600!important;
   font-size:11px!important;
   letter-spacing:.06em!important;
@@ -14779,7 +14787,7 @@ body.dark .modal:has(#newCalendarAppointmentForm) .modal-box > h2:first-of-type{
   border-bottom:0!important;
 }
 .content.content.content.content:not(.home-content) table.table tr:hover td{
-  background:#F8FAFC!important;
+  background:#F2ECDD!important;
 }
 
 /* ----- Row patterns: clients/cases/documents/tasks list rows ------------ */
@@ -14790,18 +14798,20 @@ body.dark .modal:has(#newCalendarAppointmentForm) .modal-box > h2:first-of-type{
 .content.content.content.content:not(.home-content) .document-screen-row,
 .content.content.content.content:not(.home-content) .case-document-row,
 .content.content.content.content:not(.home-content) [class*="-row"]:not(thead):not(tbody):not(tr){
-  background:#FFFFFF!important;
-  border:1px solid #E5E7EB!important;
-  border-radius:10px!important;
+  background:#FAF6EE!important;
+  border:0!important;
+  border-bottom:1px solid #EDE5D2!important;
+  border-radius:0!important;
   padding:14px 16px!important;
-  margin-bottom:8px!important;
+  margin-bottom:0!important;
   box-shadow:none!important;
-  transition:border-color 140ms,box-shadow 140ms!important;
+  transition:background 140ms!important;
 }
 .content.content.content.content:not(.home-content) .case-row:hover,
 .content.content.content.content:not(.home-content) .client-row:hover{
-  border-color:#CBD5E1!important;
-  box-shadow:0 1px 3px rgba(15,23,42,.06)!important;
+  background:#F2ECDD!important;
+  border-color:#EDE5D2!important;
+  box-shadow:none!important;
 }
 
 /* ----- Row titles + sub-text -------------------------------------------- */
@@ -14967,9 +14977,10 @@ body.dark .modal:has(#newCalendarAppointmentForm) .modal-box > h2:first-of-type{
   gap:6px!important;
 }
 .content.content.content.content:not(.home-content) .case-timeline-filter-btn.active{
-  background:#1E293B!important;
-  color:#FFFFFF!important;
-  border-color:#1E293B!important;
+  background:#F5EFE0!important;
+  color:#0F172A!important;
+  border-color:#0EA5E9!important;
+  box-shadow:0 0 0 1px #0EA5E9!important;
 }
 .content.content.content.content:not(.home-content) .case-timeline-filter-btn.clear{
   background:#FFFFFF!important;
@@ -15009,7 +15020,7 @@ body.dark .modal:has(#newCalendarAppointmentForm) .modal-box > h2:first-of-type{
   flex-wrap:wrap!important;
 }
 .topbar.topbar.topbar:not(.home-topbar) .page-title h1{
-  color:#0F172A!important;
+  color:#FFFFFF!important;
   font-size:22px!important;
   font-weight:600!important;
   letter-spacing:-.015em!important;
@@ -15017,7 +15028,7 @@ body.dark .modal:has(#newCalendarAppointmentForm) .modal-box > h2:first-of-type{
   line-height:1.2!important;
 }
 .topbar.topbar.topbar:not(.home-topbar) .page-title p{
-  color:#64748B!important;
+  color:rgba(255,255,255,.78)!important;
   font-size:13px!important;
   margin:2px 0 0!important;
 }
@@ -15043,9 +15054,13 @@ body.dark .modal:has(#newCalendarAppointmentForm) .modal-box > h2:first-of-type{
   cursor:pointer!important;
 }
 .topbar.topbar.topbar:not(.home-topbar) .actions .btn-primary{
-  background:#1E293B!important;
+  background:#0EA5E9!important;
   color:#FFFFFF!important;
-  border-color:#1E293B!important;
+  border-color:#0EA5E9!important;
+}
+.topbar.topbar.topbar:not(.home-topbar) .actions .btn-primary:hover{
+  background:#0284C7!important;
+  border-color:#0284C7!important;
 }
 .topbar.topbar.topbar:not(.home-topbar) .actions .btn-primary *{
   color:#FFFFFF!important;
@@ -15054,9 +15069,18 @@ body.dark .modal:has(#newCalendarAppointmentForm) .modal-box > h2:first-of-type{
   background:#F8FAFC!important;
   border-color:#CBD5E1!important;
 }
+/* Sky-blue hover for the topbar primary button — override the earlier
+   rule that flipped it to near-black. */
 .topbar.topbar.topbar:not(.home-topbar) .actions .btn-primary:hover{
-  background:#0F172A!important;
-  border-color:#0F172A!important;
+  background:#0284C7!important;
+  border-color:#0284C7!important;
+  color:#FFFFFF!important;
+}
+.topbar.topbar.topbar:not(.home-topbar) .actions .btn-primary:active,
+.topbar.topbar.topbar:not(.home-topbar) .actions .btn-primary:focus{
+  background:#0EA5E9!important;
+  border-color:#0EA5E9!important;
+  color:#FFFFFF!important;
 }
 @media(max-width:640px){
   .topbar.topbar.topbar:not(.home-topbar){padding:14px 14px!important;}
@@ -15067,8 +15091,8 @@ body.dark .modal:has(#newCalendarAppointmentForm) .modal-box > h2:first-of-type{
 /* Sidebar — restyle (used on desktop). Doesn't affect home specifically;
    the sidebar always renders alongside any content. */
 .sidebar.sidebar.sidebar{
-  background:#FFFFFF!important;
-  border-inline-end:1px solid #E5E7EB!important;
+  background:#FAF6EE!important;
+  border-inline-end:1px solid #E5DECC!important;
   box-shadow:none!important;
   backdrop-filter:none!important;
 }
@@ -15219,19 +15243,26 @@ body:has(.content:not(.home-content)){
    beat every existing chain in the file.
    =========================================================================*/
 
-/* Top action buttons row on case-detail — flatten to unified charcoal/white */
+/* Top action buttons row on case-detail — sky-blue to match the home
+   "אירוע חדש" button (per user request). */
 .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-new-event-btn,
 .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-extra-actions-v140 .case-new-event-btn,
 .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-extra-actions-v215 .case-new-event-btn{
-  background:#1E293B!important;
+  background:#0EA5E9!important;
   color:#FFFFFF!important;
-  border:1px solid #1E293B!important;
+  border:1px solid #0EA5E9!important;
   border-radius:8px!important;
   height:36px!important;
   padding:0 14px!important;
   font-size:13px!important;
   font-weight:500!important;
   box-shadow:none!important;
+}
+.modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-new-event-btn:hover,
+.modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-extra-actions-v140 .case-new-event-btn:hover,
+.modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-extra-actions-v215 .case-new-event-btn:hover{
+  background:#0284C7!important;
+  border-color:#0284C7!important;
 }
 .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-new-event-btn *{
   color:#FFFFFF!important;
@@ -17162,6 +17193,44 @@ body.dark {
   .sidebar .nav-btn:not(.active) i.nav-icon-portal   { color: #FDB787 !important; }
 }
 
+/* ============================================================ *
+ * Modern colorful nav icons — vivid tones for the cream sidebar.
+ * Uses extra-specific selectors (.sidebar × 4 + .nav-btn + i + class)
+ * to beat the existing `.sidebar.sidebar.sidebar .nav-btn.active i`
+ * rule that previously forced charcoal square on the active icon.
+ * ============================================================ */
+@media (min-width: 1051px) {
+  html body:not(.dark) .sidebar.sidebar.sidebar.sidebar .nav-btn i.nav-icon-home,
+  html body:not(.dark) .sidebar.sidebar.sidebar.sidebar .nav-btn.active i.nav-icon-home     { color: #3B82F6 !important; }   /* blue-500 */
+  html body:not(.dark) .sidebar.sidebar.sidebar.sidebar .nav-btn i.nav-icon-search,
+  html body:not(.dark) .sidebar.sidebar.sidebar.sidebar .nav-btn.active i.nav-icon-search   { color: #6366F1 !important; }   /* indigo-500 */
+  html body:not(.dark) .sidebar.sidebar.sidebar.sidebar .nav-btn i.nav-icon-contacts,
+  html body:not(.dark) .sidebar.sidebar.sidebar.sidebar .nav-btn.active i.nav-icon-contacts { color: #10B981 !important; }   /* emerald-500 */
+  html body:not(.dark) .sidebar.sidebar.sidebar.sidebar .nav-btn i.nav-icon-cases,
+  html body:not(.dark) .sidebar.sidebar.sidebar.sidebar .nav-btn.active i.nav-icon-cases    { color: #F59E0B !important; }   /* amber-500 */
+  html body:not(.dark) .sidebar.sidebar.sidebar.sidebar .nav-btn i.nav-icon-documents,
+  html body:not(.dark) .sidebar.sidebar.sidebar.sidebar .nav-btn.active i.nav-icon-documents{ color: #8B5CF6 !important; }   /* violet-500 */
+  html body:not(.dark) .sidebar.sidebar.sidebar.sidebar .nav-btn i.nav-icon-calendar,
+  html body:not(.dark) .sidebar.sidebar.sidebar.sidebar .nav-btn.active i.nav-icon-calendar { color: #06B6D4 !important; }   /* cyan-500 */
+  html body:not(.dark) .sidebar.sidebar.sidebar.sidebar .nav-btn i.nav-icon-tasks,
+  html body:not(.dark) .sidebar.sidebar.sidebar.sidebar .nav-btn.active i.nav-icon-tasks    { color: #EF4444 !important; }   /* red-500 */
+  html body:not(.dark) .sidebar.sidebar.sidebar.sidebar .nav-btn i.nav-icon-finance,
+  html body:not(.dark) .sidebar.sidebar.sidebar.sidebar .nav-btn.active i.nav-icon-finance  { color: #22C55E !important; }   /* green-500 */
+  html body:not(.dark) .sidebar.sidebar.sidebar.sidebar .nav-btn i.nav-icon-portal,
+  html body:not(.dark) .sidebar.sidebar.sidebar.sidebar .nav-btn.active i.nav-icon-portal   { color: #F97316 !important; }   /* orange-500 */
+
+  /* Active icon background — remove the heavy charcoal square so the
+     colorful icon itself remains visible. Subtle tinted circle instead. */
+  html body:not(.dark) .sidebar.sidebar.sidebar.sidebar .nav-btn.active i,
+  html body:not(.dark) .sidebar.sidebar.sidebar.sidebar .nav-btn[aria-current="page"] i {
+    background: rgba(14,165,233,.10) !important;
+    border: 1px solid rgba(14,165,233,.30) !important;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 12px !important;
+  }
+}
+
 /* ── Nav separator & sidebar footer ── */
 .nav-separator {
   background: rgba(255,255,255,.09) !important;
@@ -17199,8 +17268,8 @@ body.dark {
   box-shadow: 0 1px 0 var(--line) !important;
 }
 .topbar.home-topbar {
-  background: #fff !important;
-  border-bottom: 1px solid var(--line) !important;
+  background: #FAF6EE !important;
+  border-bottom: 1px solid #E5DECC !important;
 }
 .page-title h1 {
   color: var(--text) !important;
@@ -17329,7 +17398,7 @@ body.dark {
   border-radius: 10px !important;
 }
 .list-item:hover {
-  background: #fff !important;
+  background: #F2ECDD !important;
   border-color: var(--primary-3) !important;
   box-shadow: var(--shadow-soft) !important;
 }
@@ -18100,5 +18169,1993 @@ body .case-tasks-panel .case-tasks-head .case-tasks-count,
 body .case-documents-panel .case-documents-head .case-documents-count{
   padding:3px 6px!important;
   font-size:9px!important;
+}
+
+/* ============================================================ *
+ * Tasks-head 3-button row: count + "כל המשימות" + "משימה חדשה" *
+ * Forced into a single horizontal row via CSS Grid. The class  *
+ * names below are intentionally unique to this row so no other *
+ * rule anywhere in the file can override them.                 *
+ * ============================================================ */
+.tasks-head-row-tight{
+  display:grid !important;
+  grid-template-columns:auto 1fr 1fr !important;
+  grid-template-rows:auto !important;
+  grid-auto-rows:0 !important;
+  grid-auto-flow:column !important;
+  gap:4px !important;
+  width:100% !important;
+  min-width:0 !important;
+  align-items:center !important;
+  overflow:hidden !important;
+}
+.tasks-head-row-tight .tasks-head-cell{
+  min-width:0 !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:3px !important;
+  font-size:10px !important;
+  line-height:1.2 !important;
+  height:auto !important;
+}
+.tasks-head-row-tight .tasks-head-cell-count{
+  padding:4px 8px !important;
+  font-weight:900 !important;
+  color:var(--primary, #1E293B) !important;
+  background:var(--primary-2, #DBEAFE) !important;
+  border:1px solid var(--primary-3, #CBD5E1) !important;
+  border-radius:999px !important;
+}
+.tasks-head-row-tight .tasks-head-cell-btn{
+  padding:5px 8px !important;
+  background:#fff !important;
+  color:var(--text, #0F172A) !important;
+  border:1px solid var(--line, #E5E7EB) !important;
+  border-radius:10px !important;
+  cursor:pointer !important;
+  font-weight:700 !important;
+}
+.tasks-head-row-tight .tasks-head-cell-btn i{
+  font-size:10px !important;
+  flex:0 0 auto !important;
+}
+.tasks-head-row-tight .tasks-head-cell-btn span{
+  min-width:0 !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+
+/* ============================================================ *
+ * Case-task-row action buttons (בוצע / edit / מחק): keep icon  *
+ * and label on the same line and let the column expand to fit  *
+ * the widest label, so text never overflows the button.        *
+ * ============================================================ */
+body .case-task-row .case-task-actions{
+  flex-direction:column !important;
+  align-items:stretch !important;
+  flex-wrap:nowrap !important;
+  gap:5px !important;
+  min-width:max-content !important;
+}
+body .case-task-row .case-task-actions .task-mini-action,
+body .case-task-row .case-task-actions .btn,
+body .case-task-row .case-task-actions button[class*="edit"],
+body .case-task-row .case-task-actions button[class*="delete"],
+body .case-task-row .case-task-actions button[class*="done"],
+body .case-task-row .case-task-actions button[class*="mark-done"]{
+  display:inline-flex !important;
+  flex-direction:row !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:5px !important;
+  white-space:nowrap !important;
+  overflow:visible !important;
+  text-overflow:clip !important;
+  padding:5px 10px !important;
+  height:auto !important;
+  min-height:26px !important;
+  font-size:11px !important;
+  line-height:1.2 !important;
+  width:100% !important;
+  min-width:max-content !important;
+  box-sizing:border-box !important;
+  word-break:keep-all !important;
+}
+body .case-task-row .case-task-actions .task-mini-action i,
+body .case-task-row .case-task-actions button i{
+  flex:0 0 auto !important;
+  font-size:11px !important;
+}
+
+/* Delete button that sits between Cancel and Save inside Edit screens. */
+.edit-action-delete-btn{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:6px !important;
+  border:1px solid #DC2626 !important;
+  background:linear-gradient(180deg, #EF4444 0%, #DC2626 100%) !important;
+  color:#FFFFFF !important;
+  border-radius:999px !important;
+  padding:10px 18px !important;
+  font-weight:800 !important;
+  font-size:14px !important;
+  cursor:pointer !important;
+  box-shadow:0 6px 16px rgba(220,38,38,.28) !important;
+  transition:transform .14s ease, box-shadow .14s ease !important;
+}
+.edit-action-delete-btn:hover{
+  transform:translateY(-1px) !important;
+  box-shadow:0 10px 22px rgba(220,38,38,.38) !important;
+}
+.edit-action-delete-btn i{
+  font-size:13px !important;
+}
+
+/* =====================================================================
+ * Edit-screen action buttons — final text-color overrides:
+ *   - Save button: BLACK text (was white on blue/accent bg).
+ *   - Delete button: WHITE text, NO icon.
+ * Specificity bumped via .content × 4 + body chain so we beat the
+ * `.case-edit-actions .save { color: #fff }` base rule and the modal
+ * theme rules.
+ * ===================================================================== */
+html body:not(.dark) .save,
+html body:not(.dark) .case-edit-actions .save,
+html body:not(.dark) .calendar-detail-actions .save,
+html body:not(.dark) .client-photo-actions .save,
+html body:not(.dark) .task-form-actions .save,
+html body:not(.dark) .modal .save,
+html body:not(.dark) .modal-box .save,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls .save,
+html body:not(.dark) form .save,
+html body:not(.dark) button.save[type="submit"] {
+  color: #000000 !important;
+}
+html body:not(.dark) .save *,
+html body:not(.dark) .case-edit-actions .save *,
+html body:not(.dark) .modal .save *,
+html body:not(.dark) .modal-box .save *,
+html body:not(.dark) button.save[type="submit"] * {
+  color: #000000 !important;
+}
+
+/* Delete button — white text, hide any leftover trash icon, and keep
+ * the red gradient even inside the case-detail/client-detail modal
+ * where the universal cream rule was repainting it cream. Use the same
+ * .ls × 14 chain to win the cascade. */
+html body:not(.dark) .edit-action-delete-btn,
+html body:not(.dark) .edit-action-delete-btn span,
+html body:not(.dark) .modal .edit-action-delete-btn,
+html body:not(.dark) .modal-box .edit-action-delete-btn,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .edit-action-delete-btn,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .edit-action-delete-btn span,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .modal-box .edit-action-delete-btn,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .modal-box .edit-action-delete-btn span {
+  color: #FFFFFF !important;
+}
+
+/* Restore the RED gradient on the delete button — the universal
+ * .modal-box > * > * cream rule had been forcing it to cream, making
+ * the white text invisible. Specificity (0, 16, 1) beats the cream
+ * universal rule (0, 18, 3) ? — actually we need to beat (0, 18, 3),
+ * so we add #caseEdit/#clientEdit-style anchors as needed AND chain
+ * .ls deeper to reach (0, 18, 1) plus include .edit-action-delete-btn
+ * twice for an extra class boost: (0, 19, 1). */
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .modal-box .edit-action-delete-btn.edit-action-delete-btn,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .modal-box .edit-action-delete-btn.edit-action-delete-btn.edit-action-delete-btn,
+html body:not(.dark) .modal-box .edit-action-delete-btn.edit-action-delete-btn.edit-action-delete-btn,
+html body:not(.dark) .edit-action-delete-btn.edit-action-delete-btn.edit-action-delete-btn {
+  background: linear-gradient(180deg, #EF4444 0%, #DC2626 100%) !important;
+  background-color: #DC2626 !important;
+  color: #FFFFFF !important;
+  border: 1px solid #DC2626 !important;
+  border-radius: 999px !important;
+  padding: 10px 18px !important;
+}
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .modal-box .edit-action-delete-btn.edit-action-delete-btn > span,
+html body:not(.dark) .modal-box .edit-action-delete-btn.edit-action-delete-btn > span,
+html body:not(.dark) .edit-action-delete-btn.edit-action-delete-btn > span {
+  background: transparent !important;
+  background-color: transparent !important;
+  color: #FFFFFF !important;
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  text-indent: 0 !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: auto !important;
+  min-height: 0 !important;
+  line-height: 1.2 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  text-shadow: none !important;
+  overflow: visible !important;
+  white-space: nowrap !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  position: static !important;
+  clip: auto !important;
+  clip-path: none !important;
+}
+
+/* DELETE button itself — ensure it's the right size for the text. The
+ * universal cream rule + button-default styling were squashing it.
+ * Maximum-specificity declaration with explicit dimensions. */
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .modal-box .case-edit-actions > button.edit-action-delete-btn.edit-action-delete-btn.edit-action-delete-btn,
+html body:not(.dark) .modal-box .case-edit-actions > button.edit-action-delete-btn.edit-action-delete-btn.edit-action-delete-btn,
+html body:not(.dark) .case-edit-actions > button.edit-action-delete-btn.edit-action-delete-btn.edit-action-delete-btn,
+html body:not(.dark) form > .case-edit-actions > button.edit-action-delete-btn.edit-action-delete-btn.edit-action-delete-btn {
+  background: linear-gradient(180deg, #EF4444 0%, #DC2626 100%) !important;
+  background-color: #DC2626 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  border: 1px solid #DC2626 !important;
+  border-radius: 999px !important;
+  padding: 10px 18px !important;
+  min-width: 100px !important;
+  min-height: 38px !important;
+  width: auto !important;
+  height: auto !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+  letter-spacing: 0 !important;
+  text-indent: 0 !important;
+  text-transform: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0 !important;
+  overflow: visible !important;
+  cursor: pointer !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+  box-shadow: 0 6px 16px rgba(220,38,38,.28) !important;
+}
+
+/* =====================================================================
+ * "אירוע חדש" (new-event) button inside CaseDetail — BLACK text.
+ * The competing rule `.modal.ls × 12 .case-new-event-btn` (specificity
+ * (0, 13, 0)) sets color:#fff. Chain .ls × 14 to reach (0, 15, 0).
+ * ===================================================================== */
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-new-event-btn,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-new-event-btn *,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-new-event-btn span,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-new-event-btn i,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-new-event-btn .quick-plus,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-new-event-btn .quick-plus i,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-new-event-btn .quick-label,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-extra-actions-v140 .case-new-event-btn,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-extra-actions-v140 .case-new-event-btn *,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-extra-actions-v215 .case-new-event-btn,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-extra-actions-v215 .case-new-event-btn * {
+  color: #000000 !important;
+}
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-new-event-btn:hover,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-new-event-btn:hover * {
+  color: #000000 !important;
+}
+
+/* =====================================================================
+ * CaseDetail title-action buttons (פעיל / מסמכי התיק / אירוע חדש) —
+ * cream background like the rest of the cream UI. Each currently has a
+ * different bg (sky-blue / white / green-tinted); force them all to
+ * #FAF6EE. Specificity (0, 15, 0) beats the .modal.ls × 12 rules at
+ * (0, 13, 0) and (0, 14, 0).
+ * ===================================================================== */
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-new-event-btn,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-docs-btn,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-status-btn,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-status-btn.active,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-status-btn.inactive,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-detail-title-actions .case-new-event-btn,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-detail-title-actions .case-docs-btn,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-detail-title-actions .case-status-btn,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-extra-actions-v140 .case-new-event-btn,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-extra-actions-v140 .case-docs-btn,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-extra-actions-v140 .case-status-btn,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-extra-actions-v215 .case-new-event-btn,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-extra-actions-v215 .case-docs-btn,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-extra-actions-v215 .case-status-btn {
+  background: #FAF6EE !important;
+  background-color: #FAF6EE !important;
+  border: 1px solid #E5DECC !important;
+  color: #0F172A !important;
+}
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-new-event-btn:hover,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-docs-btn:hover,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-status-btn:hover {
+  background: #F2ECDD !important;
+  background-color: #F2ECDD !important;
+  border-color: #D9CFB8 !important;
+}
+/* keep the active status pill's GREEN text indicator (so user can still
+ * see "פעיל" status), just on cream bg. */
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-status-btn.active,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-status-btn.active * {
+  color: #059669 !important;
+}
+html body:not(.dark) .edit-action-delete-btn i,
+html body:not(.dark) .edit-action-delete-btn .fas,
+html body:not(.dark) .edit-action-delete-btn [class*="fa-"],
+html body:not(.dark) .modal .edit-action-delete-btn i,
+html body:not(.dark) .modal-box .edit-action-delete-btn i {
+  display: none !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 0 !important;
+  opacity: 0 !important;
+}
+
+/* ============================================================ *
+ * Professional light-mode color palette (final override)
+ *
+ * Surfaces:  warm-cream off-white (#FAF6EE) + pure white panels.
+ * Primary:   clean sky-blue (#0EA5E9 family) for accents/buttons.
+ * Text:      slate-navy (#1E293B) for body, slate-500 for muted.
+ * Borders:   soft cream-blue hairline (#E2D9C5 / #E0E6EE).
+ *
+ * Scoped to light mode only; body.dark continues to use the dark
+ * overrides defined earlier in the file.
+ * ============================================================ */
+:root,
+html,
+body:not(.dark){
+  --bg:#FAF6EE !important;
+  --bg-2:#F2ECDD !important;
+  --surface:#FFFFFF !important;
+  --surface-soft:#FCFAF4 !important;
+  --surface-2:#F5EFE0 !important;
+
+  --text:#1E293B !important;
+  --muted:#64748B !important;
+  --line:#E5DECC !important;
+
+  --primary:#0EA5E9 !important;        /* sky-500 */
+  --primary-2:#E0F2FE !important;      /* sky-100 */
+  --primary-3:#BAE6FD !important;      /* sky-200 */
+
+  --accent:#0284C7 !important;         /* sky-600 darker accent */
+  --accent-2:#E0F2FE !important;
+
+  --rose:#FEE2E2 !important;
+  --peach:#FEF3C7 !important;
+  --success:#0F766E !important;
+  --warning:#D97706 !important;
+  --danger:#DC2626 !important;
+
+  --shadow:0 18px 45px rgba(14,165,233,.10) !important;
+  --shadow-soft:0 8px 22px rgba(14,165,233,.06) !important;
+}
+
+/* The app body background uses the cream tone */
+body:not(.dark){
+  background:var(--bg) !important;
+}
+
+/* Buttons / pills / accents that previously used the navy-heavy palette
+   pick up the new sky-blue automatically through var(--primary). For the
+   couple of places that hard-coded the old navy (#1E293B as background),
+   nudge them onto the new primary so the look stays consistent. */
+body:not(.dark) .btn-primary,
+body:not(.dark) .case-new-event-btn,
+body:not(.dark) button.btn-primary{
+  background:var(--primary) !important;
+  color:#fff !important;
+  border-color:var(--primary) !important;
+}
+body:not(.dark) .btn-primary:hover,
+body:not(.dark) .case-new-event-btn:hover,
+body:not(.dark) button.btn-primary:hover{
+  background:var(--accent) !important;
+  border-color:var(--accent) !important;
+}
+
+/* Cream background reaches every screen, not just home — overrides the
+   earlier `body { background:#fff !important }` and `.main { background:
+   #fff !important }` rules that previously forced white on inner screens. */
+html body:not(.dark),
+html body:not(.dark) .main,
+html body:not(.dark) #content,
+html body:not(.dark) .content,
+html body:not(.dark) .content.home-content,
+html body:not(.dark) .content.cases-content,
+html body:not(.dark) .content.clients-content,
+html body:not(.dark) .content.calendar-content,
+html body:not(.dark) .content.tasks-content,
+html body:not(.dark) .content.documents-content,
+html body:not(.dark) .content.finance-content,
+html body:not(.dark) .content.portal-content,
+html body:not(.dark) .content.search-content{
+  background:var(--bg) !important;
+  background-color:var(--bg) !important;
+}
+
+/* Per-screen wrapper panels also pick up the cream bg so every screen
+   visually matches the home dashboard background. */
+html body:not(.dark) .cases-screen-panel,
+html body:not(.dark) .clients-screen-panel,
+html body:not(.dark) .tasks-screen-panel,
+html body:not(.dark) .documents-screen-panel,
+html body:not(.dark) .calendar-screen-panel,
+html body:not(.dark) .portal-screen-panel,
+html body:not(.dark) .finance-screen-panel,
+html body:not(.dark) .global-search-panel,
+html body:not(.dark) .content > .panel{
+  background:var(--bg) !important;
+  background-color:var(--bg) !important;
+  border-color:transparent !important;
+  box-shadow:none !important;
+}
+
+/* ============================================================ *
+ * FINAL OVERRIDE — force the cream bg on every layer that other
+ * theme blocks (LAW FIRM PROFESSIONAL THEME, mobile @media rules,
+ * .panel/.panel-body literal #fff rules) may have painted white
+ * or light-gray. Uses html body:not(.dark):not(.no-cream) for maximum
+ * specificity so nothing earlier in the file can overrule it.
+ * ============================================================ */
+html body:not(.dark):not(.no-cream),
+html body:not(.dark):not(.no-cream) .main,
+html body:not(.dark):not(.no-cream) #content,
+html body:not(.dark):not(.no-cream) .content,
+html body:not(.dark):not(.no-cream) .content > *,
+html body:not(.dark):not(.no-cream) .panel,
+html body:not(.dark):not(.no-cream) .panel-body,
+html body:not(.dark):not(.no-cream) .panel-head,
+html body:not(.dark):not(.no-cream) .cases-screen-panel,
+html body:not(.dark):not(.no-cream) .cases-panel-body,
+html body:not(.dark):not(.no-cream) .clients-screen-panel,
+html body:not(.dark):not(.no-cream) .clients-panel-body,
+html body:not(.dark):not(.no-cream) .tasks-screen-panel,
+html body:not(.dark):not(.no-cream) .tasks-panel-body,
+html body:not(.dark):not(.no-cream) .documents-screen-panel,
+html body:not(.dark):not(.no-cream) .documents-panel-body,
+html body:not(.dark):not(.no-cream) .calendar-screen-panel,
+html body:not(.dark):not(.no-cream) .portal-screen-panel,
+html body:not(.dark):not(.no-cream) .portal-screen-panel.clients-screen-panel,
+html body:not(.dark):not(.no-cream) .finance-screen-panel,
+html body:not(.dark):not(.no-cream) .finance-screen-body,
+html body:not(.dark):not(.no-cream) .global-search-panel,
+html body:not(.dark):not(.no-cream) .global-search-body{
+  background:#FAF6EE !important;
+  background-color:#FAF6EE !important;
+  background-image:none !important;
+  border-color:transparent !important;
+  box-shadow:none !important;
+}
+
+/* The mobile @media rules at line ~1815 force background:#fff on all
+   .content:has(.X-screen-panel) wrappers + their direct panel children.
+   Re-override those specifically so mobile screens also use the cream. */
+@media (max-width: 700px){
+  html body:not(.dark):not(.no-cream) .content:has(.global-search-panel),
+  html body:not(.dark):not(.no-cream) .content:has(.clients-screen-panel),
+  html body:not(.dark):not(.no-cream) .content:has(.cases-screen-panel),
+  html body:not(.dark):not(.no-cream) .content:has(.documents-screen-panel),
+  html body:not(.dark):not(.no-cream) .content:has(.calendar-list-panel),
+  html body:not(.dark):not(.no-cream) .content:has(.calendar-day-panel),
+  html body:not(.dark):not(.no-cream) .content:has(.calendar-week-grid),
+  html body:not(.dark):not(.no-cream) .content:has(.calendar-grid),
+  html body:not(.dark):not(.no-cream) .content:has(.tasks-screen-panel),
+  html body:not(.dark):not(.no-cream) .content:has(.finance-screen-panel),
+  html body:not(.dark):not(.no-cream) .content:has(.global-search-panel) > .panel,
+  html body:not(.dark):not(.no-cream) .content:has(.clients-screen-panel) > .clients-screen-panel,
+  html body:not(.dark):not(.no-cream) .content:has(.cases-screen-panel) > .cases-screen-panel,
+  html body:not(.dark):not(.no-cream) .content:has(.documents-screen-panel) > .documents-screen-panel,
+  html body:not(.dark):not(.no-cream) .content:has(.calendar-list-panel) > .panel,
+  html body:not(.dark):not(.no-cream) .content:has(.calendar-day-panel) > .panel,
+  html body:not(.dark):not(.no-cream) .content:has(.calendar-week-grid) > .panel,
+  html body:not(.dark):not(.no-cream) .content:has(.calendar-grid) > .panel,
+  html body:not(.dark):not(.no-cream) .content:has(.tasks-screen-panel) > .tasks-screen-panel,
+  html body:not(.dark):not(.no-cream) .content:has(.finance-screen-panel) > .finance-screen-panel,
+  html body:not(.dark):not(.no-cream) .content:has(.global-search-panel) .global-search-body,
+  html body:not(.dark):not(.no-cream) .content:has(.clients-screen-panel) .clients-panel-body,
+  html body:not(.dark):not(.no-cream) .content:has(.cases-screen-panel) .cases-panel-body,
+  html body:not(.dark):not(.no-cream) .content:has(.documents-screen-panel) .documents-panel-body,
+  html body:not(.dark):not(.no-cream) .content:has(.tasks-screen-panel) .tasks-panel-body,
+  html body:not(.dark):not(.no-cream) .content:has(.finance-screen-panel) .finance-screen-body{
+    background:#FAF6EE !important;
+    background-color:#FAF6EE !important;
+  }
+}
+
+/* ============================================================ *
+ * Unify the modal header buttons across the entire app — make the
+ * X (close) and back-arrow look + sit exactly like they do in the
+ * case-detail modal: a 38×38 square in the top-right (X) and the
+ * top-left (back arrow), white background, navy text, no rounding.
+ * Applies to every modal so the chrome is consistent.
+ * ============================================================ */
+
+/* ── Desktop & default ──────────────────────────────────────── */
+.modal .modal-close-x,
+.modal.ls .modal-close-x,
+.modal.ls.ls.ls.ls.ls.ls .modal-close-x {
+  position: absolute !important;
+  top: 14px !important;
+  right: 0 !important;
+  left: auto !important;
+  margin: 0 !important;
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  min-height: 38px !important;
+  display: grid !important;
+  place-items: center !important;
+  z-index: 70 !important;
+  border-radius: 0 !important;
+  border: 1px solid #e2ebf6 !important;
+  border-right: 0 !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
+  box-shadow: none !important;
+  float: none !important;
+}
+.modal .modal-mobile-back-btn,
+.modal.ls .modal-mobile-back-btn,
+.modal.ls.ls.ls.ls.ls.ls .modal-mobile-back-btn {
+  display: grid !important;
+  position: absolute !important;
+  top: 14px !important;
+  left: 0 !important;
+  right: auto !important;
+  margin: 0 !important;
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  min-height: 38px !important;
+  place-items: center !important;
+  z-index: 70 !important;
+  border-radius: 0 !important;
+  border: 1px solid #e2ebf6 !important;
+  border-left: 0 !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
+  box-shadow: none !important;
+  float: none !important;
+}
+.modal .modal-mobile-back-btn i,
+.modal.ls .modal-mobile-back-btn i {
+  color: #0f172a !important;
+  font-size: 14px !important;
+}
+
+/* ── Mobile (≤700px) — same layout, override the sticky/float
+   rules earlier in the file that pushed them around. ─────── */
+@media (max-width: 700px) {
+  .modal .modal-close-x,
+  .modal.ls .modal-close-x,
+  .modal.ls.ls.ls.ls.ls.ls .modal-close-x {
+    position: absolute !important;
+    top: 14px !important;
+    right: 0 !important;
+    left: auto !important;
+    float: none !important;
+  }
+  .modal .modal-mobile-back-btn,
+  .modal.ls .modal-mobile-back-btn,
+  .modal.ls.ls.ls.ls.ls.ls .modal-mobile-back-btn {
+    position: absolute !important;
+    top: 14px !important;
+    left: 0 !important;
+    right: auto !important;
+    float: none !important;
+  }
+}
+
+/* ============================================================ *
+ * Replace pure white (#FFFFFF) surfaces with the home-screen
+ * cream tone so the whole app feels like one continuous canvas.
+ * Form inputs keep a slightly different (lighter) cream so the
+ * field boundary is still visible — no "invisible input" UX.
+ * ============================================================ */
+html body:not(.dark) .modal-box,
+html body:not(.dark) .case-detail-modal-box,
+html body:not(.dark) .new-event-popup-box,
+html body:not(.dark) .panel,
+html body:not(.dark) .panel-head,
+html body:not(.dark) .panel-body,
+html body:not(.dark) .case-tasks-panel,
+html body:not(.dark) .case-documents-panel,
+html body:not(.dark) .case-recent-documents-panel,
+html body:not(.dark) .case-task-row,
+html body:not(.dark) .case-document-row,
+html body:not(.dark) .case-docs-modal-row,
+html body:not(.dark) .calendar-agenda-row,
+html body:not(.dark) .detail-row,
+html body:not(.dark) .list-item,
+html body:not(.dark) .home-card,
+html body:not(.dark) .calendar-week-day,
+html body:not(.dark) .cal-cell {
+  background: #FAF6EE !important;
+  background-color: #FAF6EE !important;
+}
+
+/* Modal-close-x and back-btn — keep them lighter so they pop on
+   the cream modal background (case-detail style). */
+html body:not(.dark) .modal-close-x,
+html body:not(.dark) .modal-mobile-back-btn,
+html body:not(.dark) .panel-close-x {
+  background: #FFFBF2 !important;
+  background-color: #FFFBF2 !important;
+}
+
+/* Form fields — slightly lighter cream tone (close to white) so
+   the input boundary is still visible inside cream panels. */
+html body:not(.dark) input:not([type='checkbox']):not([type='radio']):not([type='submit']):not([type='button']),
+html body:not(.dark) select,
+html body:not(.dark) textarea,
+html body:not(.dark) .form-field input,
+html body:not(.dark) .form-field select,
+html body:not(.dark) .form-field textarea {
+  background: #FFFBF2 !important;
+  background-color: #FFFBF2 !important;
+}
+
+/* Secondary / outline buttons that previously had a hard-white
+   surface — use the same lighter cream so they sit naturally on
+   the new cream panels but still read as buttons. */
+html body:not(.dark) .btn:not(.btn-primary):not(.btn-warning):not(.edit-action-delete-btn),
+html body:not(.dark) .btn-secondary,
+html body:not(.dark) .case-document-btn:not(.delete):not(.open),
+html body:not(.dark) .task-mini-action:not(.delete):not(.done):not(.edit) {
+  background: #FFFBF2 !important;
+  background-color: #FFFBF2 !important;
+}
+
+/* ============================================================ *
+ * Push modal content (h1/h2/h3 titles + the first content block)
+ * below the absolute-positioned X (top-right) and back-arrow
+ * (top-left). Both buttons are 38×38 starting at top:14px, so
+ * their bottom edge sits at 52px. Reserve ~60px of top padding
+ * on every modal-box so headings are never obscured.
+ * ============================================================ */
+.modal .modal-box,
+.modal.ls .modal-box,
+.new-event-popup-box,
+.new-appointment-popup-box {
+  padding-top: 60px !important;
+}
+.modal .modal-box > h1:first-child,
+.modal .modal-box > h2:first-child,
+.modal .modal-box > h3:first-child,
+.modal.ls .modal-box > h1:first-child,
+.modal.ls .modal-box > h2:first-child,
+.modal.ls .modal-box > h3:first-child,
+.new-event-popup-box > h1:first-child,
+.new-event-popup-box > h2:first-child,
+.new-appointment-popup-box > h1:first-child,
+.new-appointment-popup-box > h2:first-child {
+  margin-top: 0 !important;
+  padding-inline: 48px !important;
+}
+
+/* Settings drawer — move the X to the LEFT (matches the other "new X"
+   popups). Offset 0.25cm from the left edge so it doesn't hug the wall. */
+.modal .modal-box.settings-modal-box .modal-close-x,
+.modal.ls .modal-box.settings-modal-box .modal-close-x,
+.modal.ls.ls.ls.ls.ls.ls .modal-box.settings-modal-box .modal-close-x {
+  left: 0.25cm !important;
+  right: auto !important;
+  border-left: 1px solid #e2ebf6 !important;
+  border-right: 1px solid #e2ebf6 !important;
+}
+
+/* ============================================================ *
+ * Replace any "turns-black-on-hover/active" button state with
+ * the light cream tone, in light mode.
+ * Covers: modal-close-x, panel-close-x, modal-mobile-back-btn,
+ * any generic button that hovers to a dark fill.
+ * ============================================================ */
+html body:not(.dark) .modal-close-x,
+html body:not(.dark) .panel-close-x,
+html body:not(.dark) .modal-mobile-back-btn {
+  background: #FFFBF2 !important;
+  background-color: #FFFBF2 !important;
+  color: #0F172A !important;
+  border-color: #E5DECC !important;
+}
+html body:not(.dark) .modal-close-x:hover,
+html body:not(.dark) .panel-close-x:hover,
+html body:not(.dark) .modal-mobile-back-btn:hover,
+html body:not(.dark) .modal-close-x:active,
+html body:not(.dark) .panel-close-x:active,
+html body:not(.dark) .modal-mobile-back-btn:active,
+html body:not(.dark) .modal-close-x:focus,
+html body:not(.dark) .panel-close-x:focus,
+html body:not(.dark) .modal-mobile-back-btn:focus {
+  background: #F5EFE0 !important;
+  background-color: #F5EFE0 !important;
+  color: #0F172A !important;
+  border-color: #D9CFB8 !important;
+}
+html body:not(.dark) .modal-close-x:hover *,
+html body:not(.dark) .panel-close-x:hover *,
+html body:not(.dark) .modal-mobile-back-btn:hover * {
+  color: #0F172A !important;
+}
+
+/* Generic: any button whose hover background was set to a near-black
+   color in earlier rules — pull back to a light cream-tinted gray. */
+html body:not(.dark) .btn:not(.btn-primary):not(.btn-warning):not(.edit-action-delete-btn):hover,
+html body:not(.dark) .btn-secondary:hover,
+html body:not(.dark) .case-document-btn:not(.delete):hover,
+html body:not(.dark) .task-mini-action:not(.delete):not(.done):not(.edit):hover {
+  background: #F5EFE0 !important;
+  background-color: #F5EFE0 !important;
+  color: #0F172A !important;
+  border-color: #D9CFB8 !important;
+}
+
+/* ============================================================ *
+ * SWEEPING WHITE → CREAM OVERRIDE
+ *
+ * Catches any element that's still painted #FFF / white via
+ * inline style or via attribute selectors that referenced white.
+ * Buttons that should remain white-ish (form inputs, secondary
+ * buttons) already use #FFFBF2 from the earlier overrides — those
+ * are excluded here.
+ * ============================================================ */
+html body:not(.dark) [style*="background:#fff"]:not(input):not(textarea):not(select):not(button),
+html body:not(.dark) [style*="background: #fff"]:not(input):not(textarea):not(select):not(button),
+html body:not(.dark) [style*="background:#FFF"]:not(input):not(textarea):not(select):not(button),
+html body:not(.dark) [style*="background: #FFF"]:not(input):not(textarea):not(select):not(button),
+html body:not(.dark) [style*="background:#ffffff"]:not(input):not(textarea):not(select):not(button),
+html body:not(.dark) [style*="background: #ffffff"]:not(input):not(textarea):not(select):not(button),
+html body:not(.dark) [style*="background:#FFFFFF"]:not(input):not(textarea):not(select):not(button),
+html body:not(.dark) [style*="background: #FFFFFF"]:not(input):not(textarea):not(select):not(button),
+html body:not(.dark) [style*="background-color:#fff"]:not(input):not(textarea):not(select):not(button),
+html body:not(.dark) [style*="background-color:#ffffff"]:not(input):not(textarea):not(select):not(button),
+html body:not(.dark) [style*="background: white"]:not(input):not(textarea):not(select):not(button),
+html body:not(.dark) [style*="background:white"]:not(input):not(textarea):not(select):not(button) {
+  background: #FAF6EE !important;
+  background-color: #FAF6EE !important;
+}
+
+/* Common class-based white surfaces — force to cream. */
+html body:not(.dark) .home-card,
+html body:not(.dark) .modal-box,
+html body:not(.dark) .case-detail-modal-box,
+html body:not(.dark) .panel,
+html body:not(.dark) .panel-body,
+html body:not(.dark) .panel-head,
+html body:not(.dark) .panel-foot,
+html body:not(.dark) .card,
+html body:not(.dark) .calendar-week-day,
+html body:not(.dark) .cal-cell,
+html body:not(.dark) .cal-head,
+html body:not(.dark) .case-document-row,
+html body:not(.dark) .case-docs-modal-row,
+html body:not(.dark) .case-task-row,
+html body:not(.dark) .case-tasks-empty,
+html body:not(.dark) .case-documents-empty,
+html body:not(.dark) .case-timeline-empty,
+html body:not(.dark) .list-item,
+html body:not(.dark) .detail-row,
+html body:not(.dark) .timeline-row,
+html body:not(.dark) .calendar-agenda-row,
+html body:not(.dark) .finance-payment-row,
+html body:not(.dark) .finance-detail-card,
+html body:not(.dark) .home-grid-wrap,
+html body:not(.dark) .home-only-grid {
+  background: #FAF6EE !important;
+  background-color: #FAF6EE !important;
+}
+
+/* Override CSS custom property so any element referencing
+   var(--surface) inherits the cream tone. */
+html body:not(.dark) {
+  --surface: #FAF6EE !important;
+}
+
+/* ============================================================ *
+ * Hunt down literal `background:#fff` in legacy class rules and
+ * pull them onto the cream palette.
+ * ============================================================ */
+html body:not(.dark) .list-item,
+html body:not(.dark) .list-item:hover,
+html body:not(.dark) .client-count-badge,
+html body:not(.dark) .calendar-nav-btn,
+html body:not(.dark) .calendar-date-input,
+html body:not(.dark) .calendar-view-btn,
+html body:not(.dark) .calendar-week-day,
+html body:not(.dark) .calendar-list-panel,
+html body:not(.dark) .calendar-day-panel,
+html body:not(.dark) .calendar-week-grid,
+html body:not(.dark) .cal-head,
+html body:not(.dark) .cal-cell,
+html body:not(.dark) .calendar-empty,
+html body:not(.dark) .modal-box,
+html body:not(.dark) .clients-table,
+html body:not(.dark) .clients-table tbody,
+html body:not(.dark) .clients-table tbody tr,
+html body:not(.dark) .clients-table tbody td,
+html body:not(.dark) .cases-table,
+html body:not(.dark) .cases-table tbody,
+html body:not(.dark) .cases-table tbody tr,
+html body:not(.dark) .cases-table tbody td,
+html body:not(.dark) .table,
+html body:not(.dark) .table tbody,
+html body:not(.dark) .table tbody tr,
+html body:not(.dark) .table tbody td,
+html body:not(.dark) .table thead th,
+html body:not(.dark) .documents-screen-panel .table,
+html body:not(.dark) .documents-screen-panel .table tr,
+html body:not(.dark) .tasks-screen-panel .table,
+html body:not(.dark) .tasks-screen-panel .table tr,
+html body:not(.dark) .finance-screen-panel,
+html body:not(.dark) .finance-screen-panel .table,
+html body:not(.dark) .finance-screen-panel .table tr,
+html body:not(.dark) .panel,
+html body:not(.dark) .panel-head,
+html body:not(.dark) .panel-body,
+html body:not(.dark) .modal-box.case-detail-modal-box,
+html body:not(.dark) .panel-close-x,
+html body:not(.dark) .modal-close-x,
+html body:not(.dark) .modal-mobile-back-btn {
+  background: #FAF6EE !important;
+  background-color: #FAF6EE !important;
+}
+
+/* Light controls (calendar nav, date input, count pill) keep a slightly
+   lighter cream so they still read as interactive on the cream backdrop. */
+html body:not(.dark) .calendar-nav-btn,
+html body:not(.dark) .calendar-date-input,
+html body:not(.dark) .calendar-view-btn,
+html body:not(.dark) .client-count-badge {
+  background: #FFFBF2 !important;
+  background-color: #FFFBF2 !important;
+}
+
+/* Documents screen action buttons — force to cream tones so the
+   Dropbox/case/delete row isn't dominated by a dark "open" button. */
+html body:not(.dark) .document-mini-action,
+html body:not(.dark) .document-mini-action.open,
+html body:not(.dark) .documents-top-btn {
+  background: #FFFBF2 !important;
+  background-color: #FFFBF2 !important;
+  color: #0F172A !important;
+  border-color: #E5DECC !important;
+}
+html body:not(.dark) .document-mini-action.open {
+  color: #0EA5E9 !important;
+  border-color: #BAE6FD !important;
+}
+html body:not(.dark) .document-mini-action.case {
+  color: #0F766E !important;
+  border-color: #99F6E4 !important;
+  background: #F0FDFA !important;
+  background-color: #F0FDFA !important;
+}
+html body:not(.dark) .document-mini-action.delete {
+  color: #DC2626 !important;
+  border-color: #FECACA !important;
+  background: #FFF1F2 !important;
+  background-color: #FFF1F2 !important;
+}
+html body:not(.dark) .document-mini-action:hover {
+  background: #F5EFE0 !important;
+  background-color: #F5EFE0 !important;
+}
+
+/* ============================================================ *
+ * Table rows in scroll-lists — replace the legacy `tr:hover td`
+ * literal #fff with the cream tone so the row stays in palette
+ * when the user hovers over it.
+ * ============================================================ */
+html body:not(.dark) .table tr:hover td,
+html body:not(.dark) .clients-scroll-list .table tr:hover td,
+html body:not(.dark) .cases-scroll-list .table tr:hover td,
+html body:not(.dark) .documents-scroll-list .table tr:hover td,
+html body:not(.dark) .tasks-scroll-list .table tr:hover td,
+html body:not(.dark) .finance-screen-panel .table tr:hover td,
+html body:not(.dark) .clients-table tr:hover td,
+html body:not(.dark) .cases-table tr:hover td {
+  background: #F5EFE0 !important;
+  background-color: #F5EFE0 !important;
+  border-color: #D9CFB8 !important;
+}
+/* Default (non-hover) row background — explicit cream too, in case
+   var(--surface-soft) is overridden elsewhere. */
+html body:not(.dark) .table tbody td,
+html body:not(.dark) .clients-scroll-list .table tbody td,
+html body:not(.dark) .cases-scroll-list .table tbody td,
+html body:not(.dark) .clients-table tbody td,
+html body:not(.dark) .cases-table tbody td {
+  background: #FAF6EE !important;
+  background-color: #FAF6EE !important;
+}
+
+/* ============================================================ *
+ * Sidebar — push every nav button (including "ראשי") significantly
+ * lower so the home icon never touches the line just below the
+ * brand block. Pure spacing — no visible divider line.
+ * ============================================================ */
+@media (min-width: 1051px) {
+  .sidebar .side-nav {
+    border-top: 0 !important;
+    /* Match the height of the topbar so the FIRST nav button's top
+       edge aligns exactly with the top edge of .content.home-content
+       (which begins right below the topbar). */
+    padding-top: 80px !important;
+    margin-top: 0 !important;
+  }
+  .sidebar .nav-btn,
+  .sidebar .nav-btn.active,
+  .sidebar .nav-btn[aria-current="page"] {
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+  }
+  .sidebar .nav-btn::after {
+    display: none !important;
+    content: none !important;
+  }
+}
+
+/* ============================================================ *
+ * Tasks screen — edit/done/delete mini-action buttons. Force the
+ * "edit" button onto the cream palette so it stops rendering with
+ * the navy/black tone from var(--primary) overrides. Done/delete
+ * keep their semantic green/red.
+ * ============================================================ */
+html body:not(.dark) .task-mini-action.edit,
+html body:not(.dark) .tasks-screen-panel .task-mini-action.edit,
+html body:not(.dark) .case-task-row .task-mini-action.edit {
+  background: #FFFBF2 !important;
+  background-color: #FFFBF2 !important;
+  color: #0F172A !important;
+  border-color: #E5DECC !important;
+}
+html body:not(.dark) .task-mini-action.edit:hover,
+html body:not(.dark) .tasks-screen-panel .task-mini-action.edit:hover,
+html body:not(.dark) .case-task-row .task-mini-action.edit:hover {
+  background: #F5EFE0 !important;
+  background-color: #F5EFE0 !important;
+  color: #0F172A !important;
+  border-color: #D9CFB8 !important;
+}
+html body:not(.dark) .task-mini-action.edit i,
+html body:not(.dark) .task-mini-action.edit *,
+html body:not(.dark) .case-task-row .task-mini-action.edit i,
+html body:not(.dark) .case-task-row .task-mini-action.edit * {
+  color: #0F172A !important;
+}
+
+/* Topbar — deep navy banner on EVERY screen (home, cases, clients,
+   tasks, documents, finance, calendar, portal, search). The
+   quick-action button inside it is cream — bold dark banner with
+   soft warm button. */
+html body:not(.dark) .topbar,
+html body:not(.dark) #topbar.topbar,
+html body:not(.dark) .topbar.home-topbar,
+html body:not(.dark) #topbar.topbar.home-topbar {
+  background: #0A2540 !important;
+  background-color: #0A2540 !important;
+  border-bottom-color: #061629 !important;
+  box-shadow: none !important;
+}
+/* Topbar text (brand, titles, subtitles) — white for contrast. */
+html body:not(.dark) .topbar .home-brand-name,
+html body:not(.dark) .topbar .home-brand-address,
+html body:not(.dark) .topbar .home-brand,
+html body:not(.dark) .topbar h1,
+html body:not(.dark) .topbar p,
+html body:not(.dark) .topbar .page-title h1,
+html body:not(.dark) .topbar .page-title p,
+html body:not(.dark) .topbar .mobile-office-name,
+html body:not(.dark) .topbar .mobile-office-address {
+  color: #FFFFFF !important;
+}
+
+/* Topbar quick-action button (the "+ new X" / settings buttons) —
+   cream tile with navy text, on every screen. */
+html body:not(.dark) .topbar .actions .btn-primary,
+html body:not(.dark) .topbar .actions .btn,
+html body:not(.dark) .topbar #quickAction,
+html body:not(.dark) .topbar .home-settings-only-btn,
+html body:not(.dark) .topbar .mini-btn {
+  background: #FAF6EE !important;
+  background-color: #FAF6EE !important;
+  color: #0F172A !important;
+  border-color: #E5DECC !important;
+}
+html body:not(.dark) .topbar .actions .btn-primary *,
+html body:not(.dark) .topbar .actions .btn *,
+html body:not(.dark) .topbar #quickAction *,
+html body:not(.dark) .topbar .home-settings-only-btn *,
+html body:not(.dark) .topbar .mini-btn * {
+  color: #0F172A !important;
+}
+html body:not(.dark) .topbar .actions .btn-primary:hover,
+html body:not(.dark) .topbar .actions .btn:hover,
+html body:not(.dark) .topbar #quickAction:hover,
+html body:not(.dark) .topbar .home-settings-only-btn:hover,
+html body:not(.dark) .topbar .mini-btn:hover {
+  background: #F5EFE0 !important;
+  background-color: #F5EFE0 !important;
+  border-color: #D9CFB8 !important;
+}
+
+/* ============================================================ *
+ * Global search panel — force the panel-body / search-body onto
+ * the cream palette so it matches every other screen.
+ * ============================================================ */
+html body:not(.dark) .global-search-panel,
+html body:not(.dark) .global-search-panel .panel-body,
+html body:not(.dark) .global-search-body,
+html body:not(.dark) .content:has(.global-search-panel) .global-search-body,
+html body:not(.dark) .content:has(.global-search-panel) > .panel,
+html body:not(.dark) .content:has(.global-search-panel) > .panel > .panel-body,
+html body:not(.dark) .global-search-panel .panel,
+html body:not(.dark) .global-search-panel .panel > .panel-body {
+  background: #FAF6EE !important;
+  background-color: #FAF6EE !important;
+}
+@media (max-width: 700px) {
+  html body:not(.dark) .content:has(.global-search-panel) .global-search-body {
+    background: #FAF6EE !important;
+    background-color: #FAF6EE !important;
+  }
+}
+
+/* ============================================================ *
+ * Calendar list view — stack the appointment rows tight against
+ * each other with no gap. Only the outer corners of the first
+ * and last row remain rounded; inner borders merge for a
+ * continuous list look.
+ * ============================================================ */
+html body:not(.dark) .calendar-agenda-list,
+html body:not(.dark) .content:has(.calendar-list-panel) .calendar-agenda-list {
+  gap: 0 !important;
+  margin: 0 !important;
+}
+html body:not(.dark) .calendar-agenda-list .calendar-agenda-row,
+html body:not(.dark) .content:has(.calendar-list-panel) .calendar-agenda-row {
+  margin: 0 !important;
+  border-radius: 0 !important;
+  border-bottom-width: 0 !important;
+}
+html body:not(.dark) .calendar-agenda-list .calendar-agenda-row:last-child,
+html body:not(.dark) .content:has(.calendar-list-panel) .calendar-agenda-row:last-child {
+  border-bottom-width: 1px !important;
+}
+/* Round only the very top and bottom of the stack so it still looks
+   like a single card visually. */
+html body:not(.dark) .calendar-agenda-list .calendar-agenda-row:first-child {
+  border-top-left-radius: 18px !important;
+  border-top-right-radius: 18px !important;
+}
+html body:not(.dark) .calendar-agenda-list .calendar-agenda-row:last-child {
+  border-bottom-left-radius: 18px !important;
+  border-bottom-right-radius: 18px !important;
+}
+
+/* ============================================================ *
+ * On every non-home screen, every "box" (panel, card, list row,
+ * agenda row, calendar cell, etc.) matches the page cream so the
+ * whole screen reads as ONE continuous canvas — no card outlines.
+ * The home screen keeps its own card-driven layout.
+ * ============================================================ */
+html body:not(.dark) .content:not(.home-content) .panel,
+html body:not(.dark) .content:not(.home-content) .panel-body,
+html body:not(.dark) .content:not(.home-content) .panel-head,
+html body:not(.dark) .content:not(.home-content) .card,
+html body:not(.dark) .content:not(.home-content) .list-item,
+html body:not(.dark) .content:not(.home-content) .detail-row,
+html body:not(.dark) .content:not(.home-content) .timeline-row,
+html body:not(.dark) .content:not(.home-content) .calendar-agenda-row,
+html body:not(.dark) .content:not(.home-content) .calendar-week-day,
+html body:not(.dark) .content:not(.home-content) .cal-cell,
+html body:not(.dark) .content:not(.home-content) .cal-head,
+html body:not(.dark) .content:not(.home-content) .case-task-row,
+html body:not(.dark) .content:not(.home-content) .case-document-row,
+html body:not(.dark) .content:not(.home-content) .case-docs-modal-row,
+html body:not(.dark) .content:not(.home-content) .case-tasks-empty,
+html body:not(.dark) .content:not(.home-content) .case-documents-empty,
+html body:not(.dark) .content:not(.home-content) .case-timeline-empty,
+html body:not(.dark) .content:not(.home-content) .finance-payment-row,
+html body:not(.dark) .content:not(.home-content) .finance-detail-card,
+html body:not(.dark) .content:not(.home-content) .table tbody td,
+html body:not(.dark) .content:not(.home-content) .clients-scroll-list .table tbody td,
+html body:not(.dark) .content:not(.home-content) .cases-scroll-list .table tbody td,
+html body:not(.dark) .content:not(.home-content) .documents-scroll-list .table tbody td,
+html body:not(.dark) .content:not(.home-content) .tasks-scroll-list .table tbody td,
+html body:not(.dark) .content:not(.home-content) .global-result-row,
+html body:not(.dark) .content:not(.home-content) .global-search-section {
+  background: #FAF6EE !important;
+  background-color: #FAF6EE !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+/* Calendar cells / week-day cells keep a hairline divider so the
+   grid is still readable even though the fill matches the canvas. */
+html body:not(.dark) .content:not(.home-content) .calendar-week-day,
+html body:not(.dark) .content:not(.home-content) .cal-cell,
+html body:not(.dark) .content:not(.home-content) .cal-head {
+  border-color: #E5DECC !important;
+}
+
+/* ============================================================ *
+ * NUCLEAR cream override — for every container/wrapper/row on
+ * every non-home screen. Targets all common screen-panel layers
+ * + every descendant element (excluding interactive controls
+ * that need contrast: inputs, buttons, status badges).
+ * ============================================================ */
+html body:not(.dark) .content:not(.home-content),
+html body:not(.dark) .content:not(.home-content) > *,
+html body:not(.dark) .content:not(.home-content) .panel,
+html body:not(.dark) .content:not(.home-content) .panel > *,
+html body:not(.dark) .content:not(.home-content) .panel-head,
+html body:not(.dark) .content:not(.home-content) .panel-body,
+html body:not(.dark) .content:not(.home-content) .panel-foot,
+html body:not(.dark) .content:not(.home-content) .cases-screen-panel,
+html body:not(.dark) .content:not(.home-content) .cases-panel-body,
+html body:not(.dark) .content:not(.home-content) .cases-scroll-list,
+html body:not(.dark) .content:not(.home-content) .clients-screen-panel,
+html body:not(.dark) .content:not(.home-content) .clients-panel-body,
+html body:not(.dark) .content:not(.home-content) .clients-scroll-list,
+html body:not(.dark) .content:not(.home-content) .tasks-screen-panel,
+html body:not(.dark) .content:not(.home-content) .tasks-panel-body,
+html body:not(.dark) .content:not(.home-content) .tasks-scroll-list,
+html body:not(.dark) .content:not(.home-content) .documents-screen-panel,
+html body:not(.dark) .content:not(.home-content) .documents-panel-body,
+html body:not(.dark) .content:not(.home-content) .documents-scroll-list,
+html body:not(.dark) .content:not(.home-content) .finance-screen-panel,
+html body:not(.dark) .content:not(.home-content) .finance-screen-body,
+html body:not(.dark) .content:not(.home-content) .finance-detail-panel,
+html body:not(.dark) .content:not(.home-content) .finance-detail-body,
+html body:not(.dark) .content:not(.home-content) .calendar-list-panel,
+html body:not(.dark) .content:not(.home-content) .calendar-day-panel,
+html body:not(.dark) .content:not(.home-content) .calendar-week-grid,
+html body:not(.dark) .content:not(.home-content) .calendar-grid,
+html body:not(.dark) .content:not(.home-content) .global-search-panel,
+html body:not(.dark) .content:not(.home-content) .global-search-body,
+html body:not(.dark) .content:not(.home-content) .table,
+html body:not(.dark) .content:not(.home-content) .table thead,
+html body:not(.dark) .content:not(.home-content) .table thead th,
+html body:not(.dark) .content:not(.home-content) .table tbody,
+html body:not(.dark) .content:not(.home-content) .table tbody tr,
+html body:not(.dark) .content:not(.home-content) .table tbody td,
+html body:not(.dark) .content:not(.home-content) .clients-table,
+html body:not(.dark) .content:not(.home-content) .clients-table tr,
+html body:not(.dark) .content:not(.home-content) .clients-table td,
+html body:not(.dark) .content:not(.home-content) .cases-table,
+html body:not(.dark) .content:not(.home-content) .cases-table tr,
+html body:not(.dark) .content:not(.home-content) .cases-table td {
+  background: #FAF6EE !important;
+  background-color: #FAF6EE !important;
+}
+
+/* Hover state on table rows — slightly darker cream instead of white. */
+html body:not(.dark) .content:not(.home-content) .table tr:hover td,
+html body:not(.dark) .content:not(.home-content) .clients-table tr:hover td,
+html body:not(.dark) .content:not(.home-content) .cases-table tr:hover td {
+  background: #F2ECDD !important;
+  background-color: #F2ECDD !important;
+}
+
+/* ============================================================
+ * FINAL nuclear cream override — kills every remaining white in
+ * non-home screens. The variables --surface and --surface-soft are
+ * now cream, but a handful of rules still hard-code #fff / #ffffff.
+ * Match their structure with very high specificity so they lose.
+ * ============================================================ */
+html body:not(.dark) .content:not(.home-content) .documents-screen-panel,
+html body:not(.dark) .content:not(.home-content) .documents-panel-body,
+html body:not(.dark) .content:not(.home-content) .documents-scroll-list,
+html body:not(.dark) .content:not(.home-content) .documents-scroll-list .table,
+html body:not(.dark) .content:not(.home-content) .documents-scroll-list .table thead,
+html body:not(.dark) .content:not(.home-content) .documents-scroll-list .table thead th,
+html body:not(.dark) .content:not(.home-content) .documents-scroll-list .table tbody,
+html body:not(.dark) .content:not(.home-content) .documents-scroll-list .table tbody tr,
+html body:not(.dark) .content:not(.home-content) .documents-scroll-list .table tbody tr td,
+html body:not(.dark) .content:not(.home-content) .documents-scroll-list .table tr.document-screen-row,
+html body:not(.dark) .content:not(.home-content) .documents-scroll-list .table tr.document-screen-row td,
+html body:not(.dark) .content:not(.home-content) .tasks-screen-panel,
+html body:not(.dark) .content:not(.home-content) .tasks-panel-body,
+html body:not(.dark) .content:not(.home-content) .tasks-scroll-list,
+html body:not(.dark) .content:not(.home-content) .clients-panel-body,
+html body:not(.dark) .content:not(.home-content) .cases-panel-body,
+html body:not(.dark) .content:not(.home-content) .finance-screen-body,
+html body:not(.dark) .content:not(.home-content) .finance-panel-body,
+html body:not(.dark) .content:not(.home-content) .calendar-panel-body,
+html body:not(.dark) .content:not(.home-content) .global-search-body,
+html body:not(.dark) .content:not(.home-content) .panel,
+html body:not(.dark) .content:not(.home-content) .panel-body,
+html body:not(.dark) .content:not(.home-content) .panel-head {
+  background: #FAF6EE !important;
+  background-color: #FAF6EE !important;
+}
+
+/* Document row cards inside the documents screen — kill the inner
+ * white that comes from .document-row, .document-card and the mobile
+ * card variants. */
+html body:not(.dark) .content:not(.home-content) .document-row,
+html body:not(.dark) .content:not(.home-content) .document-card,
+html body:not(.dark) .content:not(.home-content) .mobile-document-card,
+html body:not(.dark) .content:not(.home-content) .case-document-row,
+html body:not(.dark) .content:not(.home-content) .case-task-row,
+html body:not(.dark) .content:not(.home-content) .case-docs-modal-row,
+html body:not(.dark) .content:not(.home-content) .finance-detail-card,
+html body:not(.dark) .content:not(.home-content) .finance-payment-row,
+html body:not(.dark) .content:not(.home-content) .settings-section-card,
+html body:not(.dark) .content:not(.home-content) .agenda-modal-row,
+html body:not(.dark) .content:not(.home-content) .settings-row {
+  background: #FAF6EE !important;
+  background-color: #FAF6EE !important;
+}
+
+/* Sticky thead background inside any scroll list — line 189 sets it
+ * to var(--surface) (now cream) but some older rules force white. */
+html body:not(.dark) .content:not(.home-content) .table thead th,
+html body:not(.dark) .content:not(.home-content) thead,
+html body:not(.dark) .content:not(.home-content) thead tr,
+html body:not(.dark) .content:not(.home-content) thead th {
+  background: #FAF6EE !important;
+  background-color: #FAF6EE !important;
+}
+
+/* Hover row on documents screen — match the cases/clients hover tone. */
+html body:not(.dark) .content:not(.home-content) .documents-scroll-list .table tr:hover td,
+html body:not(.dark) .content:not(.home-content) .documents-scroll-list .table tr.document-screen-row:hover,
+html body:not(.dark) .content:not(.home-content) .documents-scroll-list .table tr.document-screen-row:hover td {
+  background: #F2ECDD !important;
+  background-color: #F2ECDD !important;
+}
+
+/* =====================================================================
+ * MODAL CREAM — case detail, client detail, finance detail, etc.
+ * The modal contents render through a portal so they sit OUTSIDE the
+ * .content tree. Target them via .modal-box (the wrapper class) and
+ * also via the specific finance/case/client classes. Plus the empty
+ * states, info cards, timeline rows, and document/task lists inside.
+ * ===================================================================== */
+html body:not(.dark) .modal-box,
+html body:not(.dark) .case-detail-modal-box,
+html body:not(.dark) .modal-box .panel,
+html body:not(.dark) .modal-box .panel-body,
+html body:not(.dark) .modal-box .panel-head,
+html body:not(.dark) .modal-box .panel-foot,
+html body:not(.dark) .modal-box .modal-body,
+html body:not(.dark) .modal-box .modal-head,
+html body:not(.dark) .modal-box .detail-grid,
+html body:not(.dark) .modal-box .detail-row,
+html body:not(.dark) .modal-box .info-card,
+html body:not(.dark) .modal-box .info-cell,
+html body:not(.dark) .modal-box .client-info-card,
+html body:not(.dark) .modal-box .case-info-card,
+html body:not(.dark) .modal-box .case-detail-panel,
+html body:not(.dark) .modal-box .case-details-panel,
+html body:not(.dark) .modal-box .case-detail-screen,
+html body:not(.dark) .modal-box .case-documents-panel,
+html body:not(.dark) .modal-box .case-recent-documents-panel,
+html body:not(.dark) .modal-box .case-documents-head,
+html body:not(.dark) .modal-box .case-documents-list,
+html body:not(.dark) .modal-box .case-document-item,
+html body:not(.dark) .modal-box .case-document-row,
+html body:not(.dark) .modal-box .case-tasks-panel,
+html body:not(.dark) .modal-box .case-tasks-head,
+html body:not(.dark) .modal-box .case-tasks-list,
+html body:not(.dark) .modal-box .case-task-row,
+html body:not(.dark) .modal-box .case-tasks-empty,
+html body:not(.dark) .modal-box .case-documents-empty,
+html body:not(.dark) .modal-box .case-timeline-empty,
+html body:not(.dark) .modal-box .case-timeline-search-row,
+html body:not(.dark) .modal-box .case-timeline-filter-bar,
+html body:not(.dark) .modal-box .timeline-row,
+html body:not(.dark) .modal-box .timeline-item,
+html body:not(.dark) .modal-box .case-empty,
+html body:not(.dark) .modal-box .case-docs-modal-row,
+html body:not(.dark) .modal-box .case-docs-modal-empty,
+html body:not(.dark) .modal-box .list-item,
+html body:not(.dark) .modal-box table.table,
+html body:not(.dark) .modal-box .table,
+html body:not(.dark) .modal-box .table thead,
+html body:not(.dark) .modal-box .table thead th,
+html body:not(.dark) .modal-box .table tbody,
+html body:not(.dark) .modal-box .table tbody tr,
+html body:not(.dark) .modal-box .table tbody td,
+html body:not(.dark) .finance-detail-panel,
+html body:not(.dark) .finance-detail-body,
+html body:not(.dark) .finance-detail-card,
+html body:not(.dark) .finance-detail-grid,
+html body:not(.dark) .finance-payments-list,
+html body:not(.dark) .finance-payment-row,
+html body:not(.dark) .finance-payments-section,
+html body:not(.dark) .content:not(.home-content) .case-empty,
+html body:not(.dark) .content:not(.home-content) .finance-detail-card,
+html body:not(.dark) .content:not(.home-content) .finance-detail-grid,
+html body:not(.dark) .content:not(.home-content) .finance-payments-list,
+html body:not(.dark) .content:not(.home-content) .finance-payment-row,
+html body:not(.dark) .content:not(.home-content) .case-task-row,
+html body:not(.dark) .content:not(.home-content) .case-document-row,
+html body:not(.dark) .content:not(.home-content) .timeline-row,
+html body:not(.dark) .content:not(.home-content) .list-item {
+  background: #FAF6EE !important;
+  background-color: #FAF6EE !important;
+}
+
+/* Inner panel-heads inside the modals (the "מסמכים אחרונים בתיק" etc
+ * mini-panel headers) — match cream too. */
+html body:not(.dark) .modal-box .case-documents-head,
+html body:not(.dark) .modal-box .case-tasks-head,
+html body:not(.dark) .modal-box .case-detail-title-actions {
+  background: #FAF6EE !important;
+}
+
+/* Buttons inside .modal-box that are content cards (not action buttons)
+ * — pure white panels show as light blue/gray on cream; force cream. */
+html body:not(.dark) .modal-box [class*="-card"]:not([class*="card-icon"]),
+html body:not(.dark) .modal-box [class*="-cell"],
+html body:not(.dark) .modal-box [class*="-info"]:not([class*="info-circle"]):not([class*="info-i"]) {
+  background: #FAF6EE !important;
+}
+
+/* =====================================================================
+ * ABSOLUTE FINAL — every panel, row, card, head, bar, and banner inside
+ * a modal-box forced to cream. Targets the actual class names used in
+ * CaseDetail / ClientDetail / FinanceDetail (`.detail-row`, panel headers,
+ * the next-hearing notification bar, the timeline filter bar, etc.).
+ * Uses both descendant AND child selectors to match nested portals.
+ * ===================================================================== */
+html body:not(.dark) .modal-box .detail-row,
+html body:not(.dark) .modal-box .detail-grid,
+html body:not(.dark) .modal-box .case-next-hearing-banner,
+html body:not(.dark) .modal-box .case-next-hearing,
+html body:not(.dark) .modal-box .case-hearing-banner,
+html body:not(.dark) .modal-box .case-edit-toolbar,
+html body:not(.dark) .modal-box .case-edit-toolbar *,
+html body:not(.dark) .modal-box .case-timeline-search-row,
+html body:not(.dark) .modal-box .case-timeline-filter-bar,
+html body:not(.dark) .modal-box .case-timeline-empty,
+html body:not(.dark) .modal-box .case-tasks-empty,
+html body:not(.dark) .modal-box .case-documents-empty,
+html body:not(.dark) .modal-box .case-empty,
+html body:not(.dark) .modal-box .client-case-link,
+html body:not(.dark) .modal-box .case-document-item,
+html body:not(.dark) .modal-box .case-recent-documents-panel,
+html body:not(.dark) .modal-box .case-documents-panel,
+html body:not(.dark) .modal-box .case-tasks-panel,
+html body:not(.dark) .modal-box .case-timeline-panel,
+html body:not(.dark) .modal-box .case-documents-head,
+html body:not(.dark) .modal-box .case-tasks-head,
+html body:not(.dark) .modal-box .case-detail-title-actions,
+html body:not(.dark) .modal-box .lh-left,
+html body:not(.dark) .modal-box .lh-right,
+html body:not(.dark) .modal-box .case-field-v141,
+html body:not(.dark) .modal-box .form-field input,
+html body:not(.dark) .modal-box .form-field select,
+html body:not(.dark) .modal-box .form-field textarea,
+html body:not(.dark) .modal-box .case-search-wrap,
+html body:not(.dark) .modal-box .case-search-input {
+  background: #FAF6EE !important;
+  background-color: #FAF6EE !important;
+}
+
+/* Specifically the blue-tinted next-hearing notification banner in case
+ * detail — it usually has a sky-blue bg. Keep the icon/text color but
+ * make the surface cream. */
+html body:not(.dark) .modal-box [class*="hearing"]:not(i):not(span):not(button) {
+  background: #FAF6EE !important;
+  background-color: #FAF6EE !important;
+}
+
+/* =====================================================================
+ * CaseDetail + ClientDetail — move the X button to the LEFT (0.25cm
+ * from the modal-box left edge), center the title, and ensure the back
+ * arrow stays hidden.
+ *
+ * The competing rule is `.modal.ls.ls.ls.ls.ls.ls .modal-close-x` at
+ * specificity (0, 8, 0) which pins X to right:0. To beat it we chain
+ * .ls eight times PLUS the case/client marker class — bringing the
+ * specificity to (0, 11, 2)+ for case-detail / client-detail variants.
+ * ===================================================================== */
+html body .modal.ls.ls.ls.ls.ls.ls.ls.ls.case-detail-desktop-v215 .modal-box > .modal-close-x,
+html body .modal.ls.ls.ls.ls.ls.ls.ls.ls.case-detail-mobile-v140 .modal-box > .modal-close-x,
+html body .modal.ls.ls.ls.ls.ls.ls.ls.ls.case-detail-open-v210 .modal-box > .modal-close-x,
+html body .modal.ls.ls.ls.ls.ls.ls.ls.ls.case-detail-desktop-v215 .case-detail-modal-box > .modal-close-x,
+html body .modal.ls.ls.ls.ls.ls.ls.ls.ls.case-detail-mobile-v140 .case-detail-modal-box > .modal-close-x,
+html body .modal.ls.ls.ls.ls.ls.ls.ls.ls.client-detail-stable-v229 .modal-box > .modal-close-x,
+html body .modal.ls.ls.ls.ls.ls.ls.ls.ls.client-detail-v224 .modal-box > .modal-close-x,
+html body .modal.ls.ls.ls.ls.ls.ls.ls.ls.client-mobile-fullscreen .modal-box > .modal-close-x,
+html body .modal.ls.ls.ls.ls.ls.ls.ls.ls.client-mobile-fullscreen .client-mobile-fullscreen-box > .modal-close-x {
+  position: absolute !important;
+  top: 14px !important;
+  left: 0.25cm !important;
+  right: auto !important;
+  width: 38px !important;
+  min-width: 38px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  border: 1px solid #e2ebf6 !important;
+  border-right: 1px solid #e2ebf6 !important;
+  border-radius: 0 !important;
+  background: #FFFBF2 !important;
+  color: #0f172a !important;
+  font-weight: 900 !important;
+  font-size: 18px !important;
+  box-shadow: none !important;
+  z-index: 70 !important;
+  margin: 0 !important;
+}
+
+/* Belt-and-suspenders: hide the back arrow on these specific modals.
+ * Same specificity-bump as the X rule — chain .ls eight times so we
+ * beat the .modal.ls.ls.ls.ls.ls.ls .modal-mobile-back-btn rule that
+ * forces display:grid. */
+html body .modal.ls.ls.ls.ls.ls.ls.ls.ls.case-detail-desktop-v215 .modal-mobile-back-btn,
+html body .modal.ls.ls.ls.ls.ls.ls.ls.ls.case-detail-mobile-v140 .modal-mobile-back-btn,
+html body .modal.ls.ls.ls.ls.ls.ls.ls.ls.case-detail-open-v210 .modal-mobile-back-btn,
+html body .modal.ls.ls.ls.ls.ls.ls.ls.ls.client-detail-stable-v229 .modal-mobile-back-btn,
+html body .modal.ls.ls.ls.ls.ls.ls.ls.ls.client-detail-v224 .modal-mobile-back-btn,
+html body .modal.ls.ls.ls.ls.ls.ls.ls.ls.client-mobile-fullscreen .modal-mobile-back-btn {
+  display: none !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Center the ClientDetail title across the modal width. */
+.modal.client-detail-stable-v229 .modal-box > h2.client-detail-title-centered,
+.modal.client-mobile-fullscreen .modal-box > h2.client-detail-title-centered,
+.modal-box > h2.client-detail-title-centered {
+  text-align: center !important;
+  width: 100% !important;
+  margin: 0 0 14px 0 !important;
+  padding: 0 60px !important;
+  box-sizing: border-box !important;
+}
+
+/* =====================================================================
+ * CaseDetail + ClientDetail — match the NewEventModal palette/look.
+ * NewEventModal uses cream box, 22px rounded corners, soft shadow.
+ * Force the same on case-detail-modal-box and client-detail boxes.
+ * ===================================================================== */
+html body:not(.dark) .modal.case-detail-desktop-v215 .modal-box,
+html body:not(.dark) .modal.case-detail-mobile-v140 .modal-box,
+html body:not(.dark) .modal.case-detail-open-v210 .modal-box,
+html body:not(.dark) .modal.client-detail-stable-v229 .modal-box,
+html body:not(.dark) .modal.client-detail-v224 .modal-box,
+html body:not(.dark) .modal.client-mobile-fullscreen .modal-box,
+html body:not(.dark) .modal-box.case-detail-modal-box,
+html body:not(.dark) .modal-box.client-mobile-fullscreen-box,
+html body:not(.dark) .modal-box.client-detail-box-v225,
+html body:not(.dark) .modal-box.client-detail-box-stable-v228 {
+  background: #FAF6EE !important;
+  background-color: #FAF6EE !important;
+  border-color: #e2ebf6 !important;
+  box-shadow: 0 28px 70px rgba(15,23,42,.55), 0 0 0 1px rgba(15,23,42,.08) !important;
+}
+
+/* Every descendant of those modal boxes — cards, panels, rows, heads,
+ * banners, empty states — forced to the same cream. */
+html body:not(.dark) .modal.case-detail-desktop-v215 .modal-box *:not(button):not(.btn):not(.btn-primary):not(.btn-danger):not(.case-new-event-btn):not(.case-docs-btn):not(.case-status-btn):not(.case-delete-btn):not(.case-edit-btn):not(.delete-action-btn):not(.case-document-btn):not(.case-task-btn):not(.case-status-active):not(.case-status-pending):not(.case-status-inactive):not(.status):not(.status.active):not(.status.pending):not(.status.inactive):not(.finance-debt-pill):not(.client-count-badge):not(.case-timeline-filter-btn):not(input):not(select):not(textarea):not(i):not(svg):not(img):not(.fa):not([class*="fas"]):not([class*="far"]):not([class*="fa-"]):not(a),
+html body:not(.dark) .modal.case-detail-mobile-v140 .modal-box *:not(button):not(.btn):not(.btn-primary):not(.btn-danger):not(.case-new-event-btn):not(.case-docs-btn):not(.case-status-btn):not(.case-delete-btn):not(.case-edit-btn):not(.delete-action-btn):not(.case-document-btn):not(.case-task-btn):not(.status):not(.finance-debt-pill):not(.client-count-badge):not(.case-timeline-filter-btn):not(input):not(select):not(textarea):not(i):not(svg):not(img):not([class*="fa-"]):not(a),
+html body:not(.dark) .modal.client-mobile-fullscreen .modal-box *:not(button):not(.btn):not(.btn-primary):not(.btn-danger):not(.client-edit-btn):not(.delete-action-btn):not(.case-edit-btn):not(.client-count-badge):not(.status):not(input):not(select):not(textarea):not(i):not(svg):not(img):not([class*="fa-"]):not(a) {
+  background: #FAF6EE !important;
+  background-color: #FAF6EE !important;
+}
+
+/* =====================================================================
+ * Calendar month view — force every cell (.cal-cell, .cal-head, padding
+ * cells, today/selected variants) to cream. The user reports them
+ * rendering as dark/black; high-specificity chain ensures we beat any
+ * theme rule that sets a dark fill (the source CSS has --surface on the
+ * base rule and several body.dark overrides; this rule is light-mode
+ * only and beats both).
+ * ===================================================================== */
+html body:not(.dark) .calendar-grid,
+html body:not(.dark) .calendar-grid .cal-cell,
+html body:not(.dark) .calendar-grid .cal-head,
+html body:not(.dark) .calendar-grid > .cal-cell,
+html body:not(.dark) .calendar-grid > .cal-head,
+html body:not(.dark) .content .calendar-grid .cal-cell,
+html body:not(.dark) .content .calendar-grid .cal-head,
+html body:not(.dark) .content:not(.home-content) .calendar-grid .cal-cell,
+html body:not(.dark) .content:not(.home-content) .calendar-grid .cal-head,
+html body:not(.dark) .content:not(.home-content) .calendar-grid .cal-cell.today,
+html body:not(.dark) .content:not(.home-content) .calendar-grid .cal-cell.selected,
+html body:not(.dark) .content:not(.home-content) .calendar-grid .cal-cell.empty,
+html body:not(.dark) .content:not(.home-content) .calendar-grid .cal-cell.other-month,
+html body:not(.dark) .content:not(.home-content) .calendar-grid .cal-cell.padding {
+  background: #FAF6EE !important;
+  background-color: #FAF6EE !important;
+  border-color: #EDE5D2 !important;
+  color: #0F172A !important;
+}
+
+/* Calendar cell content (day-number `<b>`, .cal-event chips inside, etc.)
+ * — keep readable on cream. */
+html body:not(.dark) .calendar-grid .cal-cell > b,
+html body:not(.dark) .calendar-grid .cal-cell > b *,
+html body:not(.dark) .calendar-grid .cal-head,
+html body:not(.dark) .calendar-grid .cal-head * {
+  color: #0F172A !important;
+}
+
+/* Event chips inside month cells — the non-home content scope sets
+ * --primary-2 to dark navy (#0F172A) which makes .cal-event render as
+ * a dark navy box. Override with an explicit cream-darker fill so the
+ * chips read as soft cards on the cream grid. */
+html body:not(.dark) .content:not(.home-content) .calendar-grid .cal-event,
+html body:not(.dark) .calendar-grid .cal-event {
+  background: #F2ECDD !important;
+  background-color: #F2ECDD !important;
+  color: #0F172A !important;
+  border: 1px solid #EDE5D2 !important;
+}
+html body:not(.dark) .content:not(.home-content) .calendar-grid .cal-event .cal-event-title,
+html body:not(.dark) .content:not(.home-content) .calendar-grid .cal-event .cal-event-details,
+html body:not(.dark) .calendar-grid .cal-event .cal-event-title,
+html body:not(.dark) .calendar-grid .cal-event .cal-event-details {
+  color: #0F172A !important;
+}
+
+/* =====================================================================
+ * Calendar list-view title — sits above the search box, anchored to the
+ * start side (RTL = right). Renders only when view === 'list'.
+ * ===================================================================== */
+.calendar-list-title,
+.content.content.content.content:not(.home-content) .calendar-list-title {
+  margin: 0 0 10px 0 !important;
+  padding: 0 !important;
+  text-align: start !important;
+  font-size: 18px !important;
+  font-weight: 950 !important;
+  color: #0F172A !important;
+  letter-spacing: -0.01em !important;
+  line-height: 1.25 !important;
+}
+
+/* =====================================================================
+ * Calendar list-view search box — light-green tinted input placed
+ * ABOVE the day/week/month/list view tabs. Specificity bumped via
+ * .content.content.content.content prefix so it beats the modern-theme
+ * input[type="search"] rule that paints all inputs white/blue.
+ * ===================================================================== */
+.calendar-list-search-wrap,
+.content.content.content.content:not(.home-content) .calendar-list-search-wrap {
+  margin: 0 0 14px 0;
+  width: 100%;
+}
+.calendar-list-search-input,
+.content.content.content.content:not(.home-content) input.calendar-list-search-input,
+.content.content.content.content:not(.home-content) input[type="search"].calendar-list-search-input {
+  width: 100% !important;
+  height: 44px !important;
+  padding: 0 16px !important;
+  font-size: 14px !important;
+  font-family: inherit !important;
+  background: #DCFCE7 !important;
+  background-color: #DCFCE7 !important;
+  border: 1px solid #86EFAC !important;
+  border-radius: 12px !important;
+  color: #0F172A !important;
+  box-shadow: none !important;
+  outline: none !important;
+  transition: border-color 140ms, box-shadow 140ms !important;
+  box-sizing: border-box !important;
+}
+.calendar-list-search-input::placeholder,
+.content.content.content.content:not(.home-content) input.calendar-list-search-input::placeholder {
+  color: #4D7C66 !important;
+  opacity: 1 !important;
+}
+.calendar-list-search-input:focus,
+.content.content.content.content:not(.home-content) input.calendar-list-search-input:focus {
+  border-color: #22C55E !important;
+  background: #DCFCE7 !important;
+  background-color: #DCFCE7 !important;
+  box-shadow: 0 0 0 3px rgba(34,197,94,.18) !important;
+}
+
+/* =====================================================================
+ * Home settings button — match the "אירוע חדש" (new-event) quickAction
+ * button in dimensions, shape, and palette. The quickAction inherits
+ * .btn (padding:11px 16px, border-radius:8px, font-weight:700) plus the
+ * topbar cream override (#FAF6EE bg, #E5DECC border, #0F172A text). The
+ * settings button was a smaller `.mini-btn`; force the same look.
+ * ===================================================================== */
+html body:not(.dark) .topbar.home-topbar .home-only-settings-wrap #homeSettingsOnlyBtn.home-settings-only-btn,
+html body:not(.dark) .topbar .home-only-settings-wrap #homeSettingsOnlyBtn.home-settings-only-btn,
+html body:not(.dark) #topbar.home-topbar #homeSettingsOnlyBtn.home-settings-only-btn {
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 11px 16px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  font-family: inherit !important;
+  letter-spacing: 0 !important;
+  background: #FAF6EE !important;
+  color: #0F172A !important;
+  border: 1px solid #E5DECC !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  white-space: nowrap !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  cursor: pointer !important;
+  line-height: 1.15 !important;
+}
+html body:not(.dark) .topbar.home-topbar .home-only-settings-wrap #homeSettingsOnlyBtn.home-settings-only-btn span,
+html body:not(.dark) #topbar.home-topbar #homeSettingsOnlyBtn.home-settings-only-btn span {
+  display: inline !important;
+  font-size: 14px !important;
+  color: #0F172A !important;
+}
+html body:not(.dark) .topbar.home-topbar .home-only-settings-wrap #homeSettingsOnlyBtn.home-settings-only-btn i,
+html body:not(.dark) #topbar.home-topbar #homeSettingsOnlyBtn.home-settings-only-btn i {
+  font-size: 14px !important;
+  color: #0F172A !important;
+}
+html body:not(.dark) .topbar.home-topbar .home-only-settings-wrap #homeSettingsOnlyBtn.home-settings-only-btn:hover,
+html body:not(.dark) #topbar.home-topbar #homeSettingsOnlyBtn.home-settings-only-btn:hover {
+  background: #F2ECDD !important;
+  border-color: #D9CFB8 !important;
+}
+
+/* Also pin the new-event button on home to identical dims (in case some
+ * rule pushes it to a different shape) — both buttons should match. */
+html body:not(.dark) .topbar.home-topbar #quickAction.btn.btn-primary {
+  border-radius: 8px !important;
+  padding: 11px 16px !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  height: auto !important;
+  min-height: 0 !important;
+  line-height: 1.15 !important;
+}
+
+/* =====================================================================
+ * Topbar action buttons on every NON-home screen (Cases / Clients /
+ * Documents / Tasks / Calendar / etc.) — same rectangle look as the
+ * home "אירוע חדש" button: cream bg, 8px rounded corners, 14px label,
+ * `padding:11px 16px`. The mobile @media (max-width:1050px) rule that
+ * forces 46×46 circles is beaten via #topbar.topbar.topbar prefix +
+ * !important. Specificity (0, 6, 2) > the @media rule's (0, 4, 0).
+ * ===================================================================== */
+html body:not(.dark) #topbar.topbar.topbar #quickAction,
+html body:not(.dark) #topbar.topbar.topbar .documents-top-btn,
+html body:not(.dark) #topbar.topbar.topbar .actions .btn,
+html body:not(.dark) #topbar.topbar.topbar .actions .btn-primary,
+html body:not(.dark) #topbar.topbar.topbar .case-docs-btn {
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  flex: 0 0 auto !important;
+  padding: 11px 16px !important;
+  border-radius: 8px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  line-height: 1.15 !important;
+  letter-spacing: 0 !important;
+  background: #FAF6EE !important;
+  color: #0F172A !important;
+  border: 1px solid #E5DECC !important;
+  box-shadow: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  cursor: pointer !important;
+  margin: 0 !important;
+}
+
+/* Quick-plus circle inside topbar buttons — return to natural inline
+ * sizing so the icon + label sit side-by-side instead of being forced
+ * to 46x46 by the mobile rule. */
+html body:not(.dark) #topbar.topbar.topbar #quickAction .quick-plus,
+html body:not(.dark) #topbar.topbar.topbar .documents-top-btn .quick-plus,
+html body:not(.dark) #topbar.topbar.topbar .actions .btn .quick-plus {
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  flex: 0 0 auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+}
+
+/* Icon (i) inside topbar buttons — natural inline size, 14px to match
+ * the home button. */
+html body:not(.dark) #topbar.topbar.topbar #quickAction i,
+html body:not(.dark) #topbar.topbar.topbar .documents-top-btn i,
+html body:not(.dark) #topbar.topbar.topbar .actions .btn > i,
+html body:not(.dark) #topbar.topbar.topbar .actions .btn .quick-plus i,
+html body:not(.dark) #topbar.topbar.topbar .case-docs-btn i {
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: inline-block !important;
+  color: #0F172A !important;
+}
+
+/* Labels (text spans) inside topbar buttons — keep visible at 14px, not
+ * `font-size:0` that the mobile rule applied. */
+html body:not(.dark) #topbar.topbar.topbar .quick-label,
+html body:not(.dark) #topbar.topbar.topbar .actions .btn span:not(.quick-plus),
+html body:not(.dark) #topbar.topbar.topbar #quickAction span,
+html body:not(.dark) #topbar.topbar.topbar .documents-top-btn .quick-label {
+  display: inline !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  line-height: 1.15 !important;
+  color: #0F172A !important;
+  white-space: nowrap !important;
+}
+
+/* Hover state */
+html body:not(.dark) #topbar.topbar.topbar #quickAction:hover,
+html body:not(.dark) #topbar.topbar.topbar .documents-top-btn:hover,
+html body:not(.dark) #topbar.topbar.topbar .actions .btn:hover,
+html body:not(.dark) #topbar.topbar.topbar .case-docs-btn:hover {
+  background: #F2ECDD !important;
+  border-color: #D9CFB8 !important;
+}
+
+/* =====================================================================
+ * SUPER-NUCLEAR cream — beat the .modal.ls × 12 rules (specificity
+ * (0, 14, 0)) that pin inner panels (case-recent-documents-panel,
+ * case-tasks-panel, case-timeline-panel, [class*="case-"][class*="-panel"])
+ * to #fff. We chain .ls × 14 to reach (0, 16, 0).
+ *
+ * Also targets the case-detail outer modal-box rule
+ * `.modal.case-detail-mobile-v140.case-detail-mobile-v140 .modal-box`
+ * (specificity (0, 4, 0) with background #f8fafc) — already beaten by
+ * earlier (0, 4, 2) rule but covered here for safety.
+ * ===================================================================== */
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .modal-box,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-detail-modal-box,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-detail-dark-wrapper,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .panel,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .panel-body,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .panel-head,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-recent-documents-panel,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-documents-panel,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-tasks-panel,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-timeline-panel,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-task-row,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-document-row,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-task-item,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-document-item,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .detail-row,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .detail-grid,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-detail-mobile-fields-v141,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-detail-mobile-fields-v215,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-field-v141,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-field-v215,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-last-hearing-card,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-detail-title,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-edit-toolbar,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-detail-title-actions,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-tasks-empty,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-documents-empty,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-timeline-empty,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-timeline-filter-bar,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-timeline-search-row,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-detail-main-row,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .timeline-row,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .timeline-item,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .list-item,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .lh-left,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .lh-right,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .client-info-card,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .client-detail-header-avatar,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .client-edit-toolbar,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls [class*="case-"][class*="-panel"]:not([class*="title"]),
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls [class*="-card"]:not([class*="card-icon"]),
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls [class*="-row"]:not([class*="title"]),
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls [class*="-cell"],
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls [class*="-empty"],
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls [class*="-banner"],
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls [class*="hearing"]:not(i):not(span):not(button):not([class*="badge"]) {
+  background: #FAF6EE !important;
+  background-color: #FAF6EE !important;
+}
+
+/* The .modal.ls × 12 rules also paint immediate-child div elements of
+ * .detail-grid and .case-detail-mobile-fields-v220 to #f8fafc — and the
+ * .case-task-row to #f8fafc. Cover those exact child selectors. */
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .detail-grid > div,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-detail-mobile-fields-v220 > div,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-detail-mobile-fields-v141 > div,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-detail-mobile-fields-v215 > div,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-detail-main-row > div,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-task-row,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-document-row,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .detail-row,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .timeline-row,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-timeline-filter-bar,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-timeline-search-row,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-empty,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-timeline-empty,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-tasks-empty,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .case-documents-empty,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .client-case-link,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls [class*="bot-msg"],
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls [class*="-bubble"] {
+  background: #FAF6EE !important;
+  background-color: #FAF6EE !important;
+  border-color: #EDE5D2 !important;
+}
+
+/* ALSO cover the .content × 4 rules that paint .case-timeline-filter-bar
+ * and .bot-message to #f8fafc — these apply when the case-detail screen
+ * happens to be rendered inside .content (older code paths). */
+html body:not(.dark) .content.content.content.content:not(.home-content) .case-timeline-filter-bar,
+html body:not(.dark) .content.content.content.content:not(.home-content) .case-task-row,
+html body:not(.dark) .content.content.content.content:not(.home-content) .case-document-row,
+html body:not(.dark) .content.content.content.content:not(.home-content) .case-detail-mobile-fields-v220 > div,
+html body:not(.dark) .content.content.content.content:not(.home-content) .case-detail-mobile-fields-v141 > div,
+html body:not(.dark) .content.content.content.content:not(.home-content) .case-detail-mobile-fields-v215 > div,
+html body:not(.dark) .content.content.content.content:not(.home-content) .detail-grid > div,
+html body:not(.dark) .content.content.content.content:not(.home-content) .case-detail-main-row > div,
+html body:not(.dark) .content.content.content.content:not(.home-content) [class*="bot-msg"],
+html body:not(.dark) .content.content.content.content:not(.home-content) [class*="-bubble"] {
+  background: #FAF6EE !important;
+  background-color: #FAF6EE !important;
+  border-color: #EDE5D2 !important;
+}
+
+/* Empty-state boxes (.case-empty / .case-tasks-empty / .case-timeline-empty /
+ * .calendar-empty / [class*="-empty"]) inside non-home content are painted
+ * #f8fafc by the .content × 4 rule (line 21599). Specificity (0, 0, 6, 0).
+ * Override with .content × 4 + doubled .case-empty class to reach (0, 0, 7, 0). */
+html body:not(.dark) .content.content.content.content:not(.home-content) .case-empty.case-empty,
+html body:not(.dark) .content.content.content.content:not(.home-content) .case-tasks-empty.case-tasks-empty,
+html body:not(.dark) .content.content.content.content:not(.home-content) .case-timeline-empty.case-timeline-empty,
+html body:not(.dark) .content.content.content.content:not(.home-content) .case-documents-empty.case-documents-empty,
+html body:not(.dark) .content.content.content.content:not(.home-content) .calendar-empty.calendar-empty,
+html body:not(.dark) .content.content.content.content:not(.home-content) .agenda-modal-empty.agenda-modal-empty,
+html body:not(.dark) .content.content.content.content:not(.home-content) [class*="-empty"][class*="-empty"] {
+  background: #FAF6EE !important;
+  background-color: #FAF6EE !important;
+  border-color: #EDE5D2 !important;
+  color: #64748B !important;
+}
+
+/* ============================================================
+ * ABSOLUTE LAST RESORT — every direct + nested div/section inside
+ * .case-detail-modal-box and .client-mobile-fullscreen-box that is
+ * NOT a button/input/icon gets cream. Uses `> *` for direct children
+ * with .ls × 14 chain so we win the cascade.
+ * ============================================================ */
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .modal-box.case-detail-modal-box > *,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .modal-box.case-detail-modal-box > * > *,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .modal-box.case-detail-modal-box > * > * > *,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .modal-box.client-mobile-fullscreen-box > *,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .modal-box.client-mobile-fullscreen-box > * > *,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .modal-box.client-mobile-fullscreen-box > * > * > * {
+  background-color: #FAF6EE !important;
+}
+/* Re-allow ONLY the few elements that legitimately need a non-cream
+ * fill: status pills, debt pills, delete-action-btn, active filter
+ * button. NOTE: `.case-new-event-btn`, `.case-status-btn.active`,
+ * `.case-status-btn.inactive`, `.btn-primary` were removed from this
+ * list — the user wants them all cream like the rest of the UI. */
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .modal-box .status,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .modal-box .finance-debt-pill.debt,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .modal-box .finance-debt-pill.clear,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .modal-box .delete-action-btn,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls .modal-box .case-timeline-filter-btn.active {
+  background-color: revert !important;
+}
+
+/* =====================================================================
+ * ID-LEVEL OVERRIDES — the existing rule
+ * `.modal.case-detail-desktop-v215 #caseTimelineList .detail-row`
+ * has specificity (0, 1, 3, 0). IDs beat ANY number of classes. To win,
+ * we must also include an ID in our selector. Use `#caseTimelineList`
+ * (the timeline list container) and `#caseTimelineFilters` and chain
+ * .ls × 6 to overpower the class portion too.
+ * Specificity: (0, 1, 9, 2) > (0, 1, 3, 0). ✓
+ * ===================================================================== */
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls #caseTimelineList,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls #caseTimelineList .detail-row,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls #caseTimelineList > *,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls #caseTimelineList > * > *,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls #caseTimelineList .timeline-row,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls #caseTimelineList .timeline-item,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls #caseTimelineFilters,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls #caseTimelineFilters > *,
+html body:not(.dark) .modal.ls.ls.ls.ls.ls.ls #caseTimelineFilters .case-timeline-filter-bar {
+  background: #FAF6EE !important;
+  background-color: #FAF6EE !important;
+  border-color: #EDE5D2 !important;
+}
+
+/* Same again without .ls chain — covers any DOM where ModalStack
+ * rendered without the .ls marker (unlikely, but safe). */
+html body:not(.dark) .case-detail-modal-box #caseTimelineList,
+html body:not(.dark) .case-detail-modal-box #caseTimelineList .detail-row,
+html body:not(.dark) .case-detail-modal-box #caseTimelineList > *,
+html body:not(.dark) .case-detail-modal-box #caseTimelineList > * > *,
+html body:not(.dark) .case-detail-modal-box #caseTimelineList .timeline-row,
+html body:not(.dark) .case-detail-modal-box #caseTimelineList .timeline-item,
+html body:not(.dark) .case-detail-modal-box #caseTimelineFilters,
+html body:not(.dark) .case-detail-modal-box #caseTimelineFilters > *,
+html body:not(.dark) .case-detail-modal-box #caseTimelineFilters .case-timeline-filter-bar {
+  background: #FAF6EE !important;
+  background-color: #FAF6EE !important;
+  border-color: #EDE5D2 !important;
+}
+
+/* =====================================================================
+ * Search-box title labels — unify font size across every screen so they
+ * all match the calendar-list-view title (18px, weight 950, dark text,
+ * start-aligned). The base CSS rendered these as a tiny 12px muted
+ * label; here we promote them to a heading-style title.
+ *
+ * Applies to:
+ *   - .case-search-wrap > label  (Cases / Clients / Documents / Tasks /
+ *     GlobalSearch / CaseDetail timeline / etc.)
+ *   - .calendar-list-title (already styled, kept for parity)
+ *
+ * Specificity bumped via .content × 4 prefix so it beats both the base
+ * label rule (line 17469) and the modern-theme labels rule (line 14747).
+ * ===================================================================== */
+html body:not(.dark) .case-search-wrap > label,
+html body:not(.dark) .content.content.content.content:not(.home-content) .case-search-wrap > label,
+html body:not(.dark) .content.content.content.content:not(.home-content) .case-search-wrap label,
+html body:not(.dark) .case-search-wrap label {
+  font-size: 18px !important;
+  font-weight: 950 !important;
+  color: #0F172A !important;
+  letter-spacing: -0.01em !important;
+  line-height: 1.25 !important;
+  text-align: start !important;
+  text-transform: none !important;
+  margin: 0 0 6px 0 !important;
+  padding: 0 !important;
 }
 

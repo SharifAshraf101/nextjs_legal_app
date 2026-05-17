@@ -6,7 +6,8 @@ import { useModalStack } from '@/hooks/useModalStack';
 import { useT } from '@/hooks/useT';
 import { caseName, clientName } from '@/lib/cases';
 import { clientDisplayName } from '@/lib/clients';
-import { calendarLocale } from '@/lib/calendar';
+import { calendarLocale, findConflictingEvent } from '@/lib/calendar';
+import { useConflictConfirm } from '@/hooks/useConflictConfirm';
 import {
   composeDateTime,
   hourOptions,
@@ -20,7 +21,6 @@ import {
   uploadFileToDropbox,
 } from '@/lib/dropbox';
 import { DropboxConnectModal } from './DropboxConnectModal';
-import { Modal } from './Modal';
 import type { CalendarEvent, DocumentRecord, Task, TimelineItem } from '@/types';
 
 /**
@@ -92,12 +92,21 @@ function nextEventId(events: CalendarEvent[]): string {
 
 export interface NewEventModalProps {
   preselectedCaseId?: string;
+  /** Override the modal title (e.g. "מסמך חדש" when opened from the
+   *  Documents screen) and pre-select the matching event type. */
+  preselectedType?: 'hearingMeeting' | 'document' | 'call' | 'task' | 'note';
+  titleOverride?: string;
 }
 
-export function NewEventModal({ preselectedCaseId = '' }: NewEventModalProps) {
+export function NewEventModal({
+  preselectedCaseId = '',
+  preselectedType,
+  titleOverride,
+}: NewEventModalProps) {
   const { state, dispatch } = useAppState();
   const { t, lang } = useT();
   const modalStack = useModalStack();
+  const confirmConflict = useConflictConfirm();
 
   const nowParts = localDateParts();
   const deadline = new Date();
@@ -107,7 +116,7 @@ export function NewEventModal({ preselectedCaseId = '' }: NewEventModalProps) {
   )}`;
 
   const [type, setType] = useState<'hearingMeeting' | 'document' | 'call' | 'task' | 'note'>(
-    'hearingMeeting',
+    preselectedType || 'hearingMeeting',
   );
   const [title, setTitle] = useState('');
   const [caseQuery, setCaseQuery] = useState(() => {
@@ -275,6 +284,12 @@ export function NewEventModal({ preselectedCaseId = '' }: NewEventModalProps) {
         : clientOnlyId;
 
     if (type === 'hearingMeeting') {
+      const newIso = new Date(dateTimeStr).toISOString();
+      const conflict = findConflictingEvent(newIso, state.eventsList);
+      if (conflict) {
+        const proceed = await confirmConflict(conflict);
+        if (!proceed) return;
+      }
       const ev: CalendarEvent = {
         id: nextEventId(state.eventsList),
         caseId,
@@ -283,7 +298,7 @@ export function NewEventModal({ preselectedCaseId = '' }: NewEventModalProps) {
         case_source_id: caseId,
         title: trimmedTitle,
         titleAr: trimmedTitle,
-        dateTime: new Date(dateTimeStr).toISOString(),
+        dateTime: newIso,
         description: desc,
         descriptionAr: desc,
         type: 'hearingMeeting',
@@ -414,8 +429,67 @@ export function NewEventModal({ preselectedCaseId = '' }: NewEventModalProps) {
       : 'עותק של הקובץ יישמר בתיקיית documents החיצונית, ולא בתוך קובץ ה-HTML.';
 
   return (
-    <Modal onClose={close} className="new-event-over-detail">
-      <h2>{t('newEvent')}</h2>
+    <div
+      className="new-event-popup-overlay"
+      onClick={(e) => {
+        // Click on the overlay (not inside the box) closes the popup —
+        // matches the standard Modal backdrop behavior.
+        if (e.target === e.currentTarget) close();
+      }}
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 700,
+        display: 'grid',
+        placeItems: 'center',
+        padding: 18,
+        pointerEvents: 'auto',
+        background: 'transparent',
+        backdropFilter: 'none',
+      }}
+    >
+      <div
+        className="new-event-popup-box modal-box"
+        style={{
+          position: 'relative',
+          width: 'min(520px, 92vw)',
+          maxHeight: 'min(88vh, 820px)',
+          overflowY: 'auto',
+          background: '#ffffff',
+          borderRadius: 22,
+          padding: 22,
+          boxShadow:
+            '0 28px 70px rgba(15,23,42,.55), 0 0 0 1px rgba(15,23,42,.08)',
+        }}
+      >
+        <button
+          type="button"
+          aria-label={lang === 'ar' ? 'إغلاق' : 'סגור'}
+          onClick={close}
+          className="modal-close-x"
+          style={{
+            position: 'absolute',
+            top: 14,
+            left: '0.25cm',
+            width: 38,
+            height: 38,
+            display: 'inline-grid',
+            placeItems: 'center',
+            border: '1px solid #e2ebf6',
+            borderRadius: 0,
+            background: '#FFFBF2',
+            color: '#0f172a',
+            cursor: 'pointer',
+            fontWeight: 900,
+            fontSize: 18,
+            zIndex: 70,
+          }}
+        >
+          ×
+        </button>
+        <h2 style={{ margin: 0, textAlign: 'center', padding: '0 48px' }}>
+          {titleOverride || t('newEvent')}
+        </h2>
       <form id="eventForm" className="form-grid" onSubmit={onSubmit}>
         <div className="form-field">
           <label>{t('eventType')}</label>
@@ -604,6 +678,7 @@ export function NewEventModal({ preselectedCaseId = '' }: NewEventModalProps) {
           </button>
         </div>
       </form>
-    </Modal>
+      </div>
+    </div>
   );
 }

@@ -12,6 +12,7 @@ import {
   formatDocumentDate,
   formatDocumentSize,
 } from '@/lib/documents';
+import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 import { CaseDetail } from './CaseDetail';
 import { openDocumentFromLegalOfficeFolder } from '@/lib/disk';
 import type { DocumentRecord } from '@/types';
@@ -31,6 +32,7 @@ export function DocumentsScreen() {
   const { state, dispatch } = useAppState();
   const { lang } = useT();
   const modalStack = useModalStack();
+  const confirmDelete = useDeleteConfirm();
   const [query, setQuery] = useState('');
 
   const documents = state.documentsArr || [];
@@ -95,8 +97,8 @@ export function DocumentsScreen() {
   const openDocCase = (caseId: string) => {
     modalStack.open(<CaseDetail caseId={caseId} />);
   };
-  const deleteDoc = (docId: string) => {
-    const ok = window.confirm(
+  const deleteDoc = async (docId: string) => {
+    const ok = await confirmDelete(
       lang === 'ar'
         ? 'حذف المستند من قائمة القضية؟ سيتم حذف التسجيل من النظام فقط، ولن يتم حذف الملف المادي من القرص في هذه المرحلة.'
         : 'למחוק את המסמך מרשימת התיק? בשלב זה יימחק הרישום מהמערכת בלבד, ולא יימחק הקובץ הפיזי מהדיסק.',

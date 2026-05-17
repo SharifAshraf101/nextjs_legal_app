@@ -21,8 +21,9 @@ import { UpcomingAgendaModal } from './UpcomingAgendaModal';
  */
 
 const HOME_CARDS: { id: string; icon: string; titleKey: string; titleAr?: string }[] = [
-  { id: 'cases', icon: 'fa-folder-open', titleKey: 'cases' },
+  // Order swapped per user request: clients first, then cases.
   { id: 'contacts', icon: 'fa-users', titleKey: 'contacts' },
+  { id: 'cases', icon: 'fa-folder-open', titleKey: 'cases' },
   { id: 'calendar', icon: 'fa-calendar-days', titleKey: 'calendar' },
   // The 4th card in the source is "portal" with fa-link.
   { id: 'portal', icon: 'fa-link', titleKey: 'portal' },

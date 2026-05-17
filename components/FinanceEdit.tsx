@@ -4,6 +4,7 @@ import { useState, type FormEvent } from 'react';
 import { useAppState } from '@/hooks/useAppState';
 import { useModalStack } from '@/hooks/useModalStack';
 import { useT } from '@/hooks/useT';
+import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 import { clientDisplayName } from '@/lib/clients';
 import { financePaymentsForCase, isFeePaymentType } from '@/lib/finance';
 import { Modal } from './Modal';
@@ -33,9 +34,24 @@ export function FinanceEdit({ caseId }: FinanceEditProps) {
   const { state, dispatch } = useAppState();
   const { t, lang } = useT();
   const modalStack = useModalStack();
+  const confirmDelete = useDeleteConfirm();
 
   const c = state.casesArr.find((x) => x.id === caseId);
   if (!c) return null;
+
+  const onDeleteAllPayments = async () => {
+    const ok = await confirmDelete(
+      lang === 'ar'
+        ? 'هل تريد حذف جميع المدفوعات المرتبطة بهذه القضية؟'
+        : 'האם למחוק את כל התשלומים הקשורים לתיק זה?',
+    );
+    if (!ok) return;
+    dispatch({
+      type: 'SET_FINANCES',
+      finances: state.finances.filter((f) => f.caseId !== caseId),
+    });
+    modalStack.closeAll();
+  };
 
   const initialTitle =
     lang === 'ar' ? c.titleAr || c.title || '' : c.title || c.titleAr || '';
@@ -228,6 +244,13 @@ export function FinanceEdit({ caseId }: FinanceEditProps) {
         <div className="case-edit-actions">
           <button type="button" className="cancel" onClick={close}>
             {t('cancel')}
+          </button>
+          <button
+            type="button"
+            className="edit-action-delete-btn"
+            onClick={onDeleteAllPayments}
+          >
+            {lang === 'ar' ? 'حذف' : 'מחיקה'}
           </button>
           <button type="submit" className="save">
             {t('save')}

@@ -6,6 +6,7 @@ import { useModalStack } from '@/hooks/useModalStack';
 import { useT } from '@/hooks/useT';
 import { caseName, caseStatusView, clientName, money } from '@/lib/cases';
 import { openDocumentFromLegalOfficeFolder } from '@/lib/disk';
+import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 import { Modal } from './Modal';
 import { CaseLastHearingCard } from './CaseLastHearingCard';
 import { CaseEdit } from './CaseEdit';
@@ -59,6 +60,7 @@ export function CaseDetail({ caseId }: CaseDetailProps) {
   const { state, dispatch } = useAppState();
   const { t, lang } = useT();
   const modalStack = useModalStack();
+  const confirmDelete = useDeleteConfirm();
 
   const c = state.casesArr.find((x) => x.id === caseId);
   if (!c) return null;
@@ -110,8 +112,8 @@ export function CaseDetail({ caseId }: CaseDetailProps) {
       );
     }
   };
-  const onDeleteDoc = (docId: string) => {
-    const ok = window.confirm(
+  const onDeleteDoc = async (docId: string) => {
+    const ok = await confirmDelete(
       lang === 'ar'
         ? 'حذف المستند من قائمة القضية؟'
         : 'למחוק את המסמך מרשימת התיק?',
@@ -138,13 +140,11 @@ export function CaseDetail({ caseId }: CaseDetailProps) {
       ),
     });
   };
-  const removeTask = (taskId: string) => {
-    if (
-      !window.confirm(
-        taskText('למחוק את המשימה מהרשימה?', 'حذف المهمة من القائمة؟', lang),
-      )
-    )
-      return;
+  const removeTask = async (taskId: string) => {
+    const ok = await confirmDelete(
+      taskText('למחוק את המשימה מהרשימה?', 'حذف المهمة من القائمة؟', lang),
+    );
+    if (!ok) return;
     dispatch({
       type: 'SET_TASKS',
       tasks: state.tasksArr.filter((x) => String(x.id) !== String(taskId)),
@@ -154,8 +154,8 @@ export function CaseDetail({ caseId }: CaseDetailProps) {
     close();
     dispatch({ type: 'SET_TAB', tab: 'tasks' });
   };
-  const onDeleteCase = () => {
-    const ok = window.confirm(
+  const onDeleteCase = async () => {
+    const ok = await confirmDelete(
       lang === 'ar'
         ? 'هل تريد حذف هذه القضية نهائياً؟'
         : 'האם למחוק את התיק לחלוטין?',
@@ -203,7 +203,12 @@ export function CaseDetail({ caseId }: CaseDetailProps) {
   const balance = computeBalance(c, state);
 
   return (
-    <Modal onClose={close} className={modalClass} boxClassName={boxClass}>
+    <Modal
+      onClose={close}
+      className={modalClass}
+      boxClassName={boxClass}
+      hideBackBtn={true}
+    >
       <div className="case-detail-dark-wrapper">
         {/* Title block + contextual action buttons (source showCase) */}
         <div className="case-detail-title">
@@ -460,55 +465,25 @@ function CaseTasksPanel({
           <i className="fas fa-list-check" />
           {taskText('משימות פתוחות בתיק', 'مهام مفتوحة في القضية', lang)}
         </h3>
-        <div
-          className="case-documents-head-actions"
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            flexWrap: 'nowrap',
-            justifyContent: 'flex-start',
-            gap: 4,
-            width: '100%',
-            minWidth: 0,
-            alignItems: 'center',
-            overflow: 'hidden',
-          }}
-        >
-          <span
-            className="case-tasks-count"
-            style={{ whiteSpace: 'nowrap', minWidth: 0, flex: '0 0 auto' }}
-          >
+        <div className="tasks-head-row-tight">
+          <span className="tasks-head-cell tasks-head-cell-count">
             {items.length} {tasksLabel(lang)}
           </span>
           <button
             type="button"
-            className="case-document-btn"
+            className="tasks-head-cell tasks-head-cell-btn"
             onClick={onShowAll}
-            style={{
-              minWidth: 0,
-              flex: '1 1 0',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            }}
           >
             <i className="fas fa-list" />
-            {taskText('כל המשימות', 'كل المهام', lang)}
+            <span>{taskText('כל המשימות', 'كل المهام', lang)}</span>
           </button>
           <button
             type="button"
-            className="case-document-btn"
+            className="tasks-head-cell tasks-head-cell-btn"
             onClick={onNewTask}
-            style={{
-              minWidth: 0,
-              flex: '1 1 0',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            }}
           >
             <i className="fas fa-plus" />
-            {taskText('משימה חדשה', 'مهمة جديدة', lang)}
+            <span>{taskText('משימה חדשה', 'مهمة جديدة', lang)}</span>
           </button>
         </div>
       </div>

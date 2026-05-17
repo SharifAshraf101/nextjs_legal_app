@@ -50,3 +50,25 @@ export function firstNonEmpty<T = string>(
   }
   return fallback;
 }
+
+/**
+ * Double-confirm for destructive (delete) actions. Shows the supplied warning
+ * first, and only if the user accepts it shows a second "are you really sure"
+ * confirmation. Returns true ONLY when both prompts are accepted.
+ *
+ * The second prompt's text is localized:
+ *   - he (default): "האם את/ה בטוח/ה לחלוטין? פעולה זו אינה ניתנת לביטול."
+ *   - ar:           "هل أنت متأكد تماماً؟ لا يمكن التراجع عن هذا الإجراء."
+ */
+export function confirmDeleteTwice(
+  firstMessage: string,
+  lang: 'he' | 'ar' = 'he',
+): boolean {
+  if (typeof window === 'undefined') return false;
+  if (!window.confirm(firstMessage)) return false;
+  const second =
+    lang === 'ar'
+      ? 'هل أنت متأكد تماماً؟ لا يمكن التراجع عن هذا الإجراء.'
+      : 'האם את/ה בטוח/ה לחלוטין? פעולה זו אינה ניתנת לביטול.';
+  return window.confirm(second);
+}

@@ -63,8 +63,10 @@ export function SettingsDrawer() {
   };
 
   return (
-    <Modal onClose={close} boxClassName="settings-modal-box">
-      <h2>{t('settings')}</h2>
+    <Modal onClose={close} boxClassName="settings-modal-box" hideBackBtn>
+      <h2 style={{ margin: 0, textAlign: 'center', padding: '0 48px' }}>
+        {t('settings')}
+      </h2>
 
       {/* Office name + address */}
       <Section

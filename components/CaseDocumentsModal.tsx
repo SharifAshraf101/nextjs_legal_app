@@ -4,13 +4,9 @@ import { useAppState } from '@/hooks/useAppState';
 import { useModalStack } from '@/hooks/useModalStack';
 import { useT } from '@/hooks/useT';
 import { caseName, clientName } from '@/lib/cases';
-import {
-  caseDocumentsForCase,
-  documentTypeLabel,
-  formatDocumentDate,
-  formatDocumentSize,
-} from '@/lib/documents';
+import { caseDocumentsForCase } from '@/lib/documents';
 import { openDocumentFromLegalOfficeFolder } from '@/lib/disk';
+import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 import { Modal } from './Modal';
 
 /**
@@ -29,6 +25,7 @@ export function CaseDocumentsModal({ caseId }: CaseDocumentsModalProps) {
   const { state, dispatch } = useAppState();
   const { lang } = useT();
   const modalStack = useModalStack();
+  const confirmDelete = useDeleteConfirm();
 
   const c = state.casesArr.find((x) => String(x.id) === String(caseId));
   if (!c) return null;
@@ -41,8 +38,8 @@ export function CaseDocumentsModal({ caseId }: CaseDocumentsModalProps) {
     .filter(Boolean)
     .join(' · ');
 
-  const onDelete = (docId: string) => {
-    const ok = window.confirm(
+  const onDelete = async (docId: string) => {
+    const ok = await confirmDelete(
       lang === 'ar'
         ? 'حذف المستند من قائمة القضية؟'
         : 'למחוק את המסמך מרשימת התיק?',
@@ -118,7 +115,7 @@ export function CaseDocumentsModal({ caseId }: CaseDocumentsModalProps) {
               doc.title ||
               '';
             const titleStr = doc.title || doc.fileName || '';
-            const path = doc.relativePath || '';
+            const openTitle = lang === 'ar' ? 'افتح المستند' : 'פתח מסמך';
             return (
               <div
                 key={doc.id}
@@ -128,33 +125,21 @@ export function CaseDocumentsModal({ caseId }: CaseDocumentsModalProps) {
                 <div>
                   <div className="case-docs-modal-title">
                     <i className="fas fa-file-lines" />
-                    <span title={fileName}>{titleStr}</span>
-                  </div>
-                  <div className="case-docs-modal-meta">
-                    <span>{documentTypeLabel(doc, lang)}</span>
-                    <span>·</span>
-                    <span>
-                      {formatDocumentDate(
-                        (doc as { uploadedAt?: string }).uploadedAt,
-                        lang,
-                      )}
-                    </span>
-                    <span>·</span>
-                    <span>
-                      {formatDocumentSize((doc as { size?: number }).size, lang)}
+                    <span
+                      title={openTitle}
+                      onDoubleClick={() => onOpen(doc.relativePath)}
+                      style={{
+                        cursor: 'pointer',
+                        color: 'var(--primary)',
+                        fontWeight: 700,
+                      }}
+                      aria-label={openTitle + ' — ' + fileName}
+                    >
+                      {titleStr}
                     </span>
                   </div>
-                  {path && <div className="case-docs-modal-path">{path}</div>}
                 </div>
                 <div className="case-docs-modal-row-actions">
-                  <button
-                    type="button"
-                    className="case-docs-modal-btn open"
-                    onClick={() => onOpen(doc.relativePath)}
-                  >
-                    <i className="fas fa-folder-open" />
-                    {lang === 'ar' ? 'فتح' : 'פתח'}
-                  </button>
                   {!doc.isTask && (
                     <button
                       type="button"

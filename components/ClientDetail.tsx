@@ -9,6 +9,7 @@ import {
   whatsappAppUrl,
   whatsappUrl,
 } from '@/lib/clients';
+import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 import { Modal } from './Modal';
 import { ClientAvatar } from './ClientAvatar';
 import { ClientEdit } from './ClientEdit';
@@ -31,6 +32,7 @@ export function ClientDetail({ clientId }: ClientDetailProps) {
   const { state, dispatch } = useAppState();
   const { t, lang } = useT();
   const modalStack = useModalStack();
+  const confirmDelete = useDeleteConfirm();
 
   const c = state.clients.find((x) => x.id === clientId);
   if (!c) return null;
@@ -90,8 +92,8 @@ export function ClientDetail({ clientId }: ClientDetailProps) {
     close();
     modalStack.open(<CaseDetail caseId={caseId} />);
   };
-  const onDeleteClient = () => {
-    const ok = window.confirm(
+  const onDeleteClient = async () => {
+    const ok = await confirmDelete(
       lang === 'ar'
         ? 'هل تريد حذف هذا الموكل وكل قضاياه نهائياً؟'
         : 'האם למחוק את הלקוח ואת כל התיקים שלו לחלוטין?',
@@ -138,8 +140,13 @@ export function ClientDetail({ clientId }: ClientDetailProps) {
   };
 
   return (
-    <Modal onClose={close} className={modalClassName} boxClassName={boxClassName}>
-      <h2>{t('clientDetails')}</h2>
+    <Modal
+      onClose={close}
+      className={modalClassName}
+      boxClassName={boxClassName}
+      hideBackBtn={true}
+    >
+      <h2 className="client-detail-title-centered">{t('clientDetails')}</h2>
 
       {/* Edit + delete toolbar — the client avatar sits on this same row
        *  next to the edit / delete buttons (per user request). The avatar

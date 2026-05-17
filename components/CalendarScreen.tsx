@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useAppState } from '@/hooks/useAppState';
 import { useModalStack } from '@/hooks/useModalStack';
 import { useT } from '@/hooks/useT';
@@ -19,6 +19,7 @@ import {
   weekdayNames,
   type CalendarView,
 } from '@/lib/calendar';
+import { caseSearchText } from '@/lib/cases';
 import { CalendarAgendaRow } from './CalendarAgendaRow';
 
 /**
@@ -31,6 +32,7 @@ import { CalendarAgendaRow } from './CalendarAgendaRow';
 export function CalendarScreen() {
   const { state, dispatch } = useAppState();
   const { t, lang } = useT();
+  const [listQuery, setListQuery] = useState('');
 
   const view = state.calendarView;
   const focus = useMemo(() => {
@@ -42,6 +44,11 @@ export function CalendarScreen() {
     () => calendarAllItems(state.eventsList, state.timelineItems),
     [state.eventsList, state.timelineItems],
   );
+
+  const listSearchPlaceholder =
+    lang === 'ar'
+      ? 'بحث حسب اسم الموكل، رقم الهوية، الهاتف، نوع الدعوى، المحكمة أو رقم الملف في المحكمة'
+      : 'חיפוש לפי שם לקוח, תעודת זהות, טלפון, סוג תביעה, בית משפט או מספר תיק בבית המשפט';
 
   const setView = (v: CalendarView) => dispatch({ type: 'SET_CALENDAR_VIEW', view: v });
   const setDateStr = (value: string) => {
@@ -56,15 +63,29 @@ export function CalendarScreen() {
   const prevLabel = lang === 'ar' ? 'السابق' : 'הקודם';
   const nextLabel = lang === 'ar' ? 'التالي' : 'הבא';
   const todayLabel = lang === 'ar' ? 'اليوم' : 'היום';
+  const listTitle =
+    lang === 'ar'
+      ? 'مواعيد، جلسات، اجتماعات، تذكيرات ومهام'
+      : 'מועדים דיונים, פגישות, תזכורת ומשימות';
 
   return (
     <section className="panel">
-      <div className="panel-head">
-        <div className="calendar-title-line">
-          <h2>{t('calendar')}</h2>
-        </div>
-      </div>
       <div className="panel-body">
+        {view === 'list' && (
+          <>
+            <h2 className="calendar-list-title">{listTitle}</h2>
+            <div className="calendar-list-search-wrap">
+              <input
+                type="search"
+                className="calendar-list-search-input"
+                autoComplete="off"
+                placeholder={listSearchPlaceholder}
+                value={listQuery}
+                onChange={(e) => setListQuery(e.target.value)}
+              />
+            </div>
+          </>
+        )}
         <div className="calendar-toolbar">
           <div className="calendar-view-tabs">
             {(['day', 'week', 'month', 'list'] as CalendarView[]).map((v) => (
@@ -123,7 +144,7 @@ export function CalendarScreen() {
         {view === 'day' && <DayView focus={focus} items={items} />}
         {view === 'week' && <WeekView focus={focus} items={items} />}
         {view === 'month' && <MonthView focus={focus} items={items} />}
-        {view === 'list' && <ListView items={items} />}
+        {view === 'list' && <ListView items={items} query={listQuery} />}
       </div>
     </section>
   );
@@ -295,15 +316,33 @@ function MonthView({ focus, items }: { focus: Date; items: ReturnType<typeof cal
   );
 }
 
-function ListView({ items }: { items: ReturnType<typeof calendarAllItems> }) {
+function ListView({
+  items,
+  query,
+}: {
+  items: ReturnType<typeof calendarAllItems>;
+  query: string;
+}) {
   const { lang } = useT();
+  const { state } = useAppState();
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return items;
+    return items.filter((entry) => {
+      const c = state.casesArr.find((x) => x.id === entry.item.caseId);
+      if (!c) return false;
+      return caseSearchText(c, state.clients).toLowerCase().includes(q);
+    });
+  }, [items, query, state.casesArr, state.clients]);
+
   return (
     <div className="calendar-list-panel">
-      {items.length === 0 ? (
+      {filtered.length === 0 ? (
         <div className="calendar-empty">{calendarText('noItems', lang)}</div>
       ) : (
         <div className="calendar-agenda-list">
-          {items.map((entry, i) => (
+          {filtered.map((entry, i) => (
             <CalendarAgendaRow key={i} entry={entry} />
           ))}
         </div>

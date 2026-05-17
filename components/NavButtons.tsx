@@ -14,15 +14,16 @@ import { useT } from '@/hooks/useT';
  * size up by ~20 KB and are visual polish, not behavior).
  */
 
+// Minimalist FA6 icons — clean line/duotone style for a modern sidebar.
 const ICONS: Record<string, string> = {
-  home: 'fa-table-columns',
-  cases: 'fa-folder-open',
-  contacts: 'fa-users',
-  finance: 'fa-shekel-sign',
+  home: 'fa-house',
+  cases: 'fa-folder',
+  contacts: 'fa-user-group',
+  finance: 'fa-coins',
   documents: 'fa-file-lines',
-  tasks: 'fa-list-check',
-  calendar: 'fa-calendar-days',
-  portal: 'fa-comments',
+  tasks: 'fa-circle-check',
+  calendar: 'fa-calendar',
+  portal: 'fa-comment-dots',
   search: 'fa-magnifying-glass',
 };
 
@@ -100,7 +101,7 @@ export function NavButtons({ mobile = false }: { mobile?: boolean } = {}) {
                 />
               </span>
             ) : (
-              <i className={'fas ' + (ICONS[id] ?? 'fa-circle')} />
+              <i className={'fas ' + (ICONS[id] ?? 'fa-circle') + ' nav-icon-' + id} />
             )}
             <span>{tabLabel(id, lang, t)}</span>
           </button>

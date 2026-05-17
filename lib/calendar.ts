@@ -307,3 +307,62 @@ export function shiftCalendar(
 }
 
 export { calendarDateValue, sameCalendarDay };
+
+/**
+ * Find an existing event whose dateTime is within ±windowMinutes of the
+ * candidate dateTime. Used by the "new event" flow to warn the user about a
+ * scheduling conflict before saving. Excludes `excludeId` so editing an event
+ * doesn't flag the event-being-edited as colliding with itself.
+ */
+export function findConflictingEvent(
+  candidateIso: string,
+  events: CalendarEvent[],
+  windowMinutes = 30,
+  excludeId?: string,
+): CalendarEvent | null {
+  const candidate = new Date(candidateIso).getTime();
+  if (!Number.isFinite(candidate)) return null;
+  const windowMs = windowMinutes * 60 * 1000;
+  for (const ev of events) {
+    if (excludeId && String(ev.id) === String(excludeId)) continue;
+    if (!ev.dateTime) continue;
+    const evTime = new Date(ev.dateTime).getTime();
+    if (!Number.isFinite(evTime)) continue;
+    if (Math.abs(evTime - candidate) <= windowMs) return ev;
+  }
+  return null;
+}
+
+/** Format a conflict warning string with the existing event's title + date/time. */
+export function conflictWarningMessage(
+  existing: CalendarEvent,
+  lang: Lang,
+): string {
+  const dt = new Date(existing.dateTime || '');
+  const dateStr = Number.isFinite(dt.getTime())
+    ? dt.toLocaleString(lang === 'ar' ? 'ar-IL' : 'he-IL', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    : (existing.dateTime || '');
+  const title =
+    (lang === 'ar' ? existing.titleAr || existing.title : existing.title || existing.titleAr) ||
+    (lang === 'ar' ? '(بدون عنوان)' : '(ללא כותרת)');
+  if (lang === 'ar') {
+    return (
+      'يوجد موعد سابق في اليومية يتعارض مع الموعد الجديد:\n\n' +
+      `• العنوان: ${title}\n` +
+      `• التاريخ والوقت: ${dateStr}\n\n` +
+      'هل تريد المتابعة على أي حال؟'
+    );
+  }
+  return (
+    'יש מועד קודם ביומן שמתנגש עם המועד החדש:\n\n' +
+    `• כותרת: ${title}\n` +
+    `• תאריך ושעה: ${dateStr}\n\n` +
+    'האם להמשיך בכל זאת?'
+  );
+}

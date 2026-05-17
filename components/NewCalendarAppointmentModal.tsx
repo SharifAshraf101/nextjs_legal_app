@@ -5,10 +5,11 @@ import { useAppState } from '@/hooks/useAppState';
 import { useModalStack } from '@/hooks/useModalStack';
 import { useT } from '@/hooks/useT';
 import { caseName } from '@/lib/cases';
+import { findConflictingEvent } from '@/lib/calendar';
+import { useConflictConfirm } from '@/hooks/useConflictConfirm';
 import { clientDisplayName } from '@/lib/clients';
 import { composeDateTime, localDateParts, limitedHourOptions, minuteOptions } from '@/lib/dates';
 import { pad } from '@/lib/utils';
-import { Modal } from './Modal';
 import type { CalendarEvent } from '@/types';
 
 /**
@@ -39,6 +40,7 @@ export function NewCalendarAppointmentModal() {
   const { state, dispatch } = useAppState();
   const { t, lang } = useT();
   const modalStack = useModalStack();
+  const confirmConflict = useConflictConfirm();
 
   const nowParts = localDateParts();
   const currentHour = Number(nowParts.hour);
@@ -86,7 +88,7 @@ export function NewCalendarAppointmentModal() {
     setSelectedCaseId(first?.id ?? '');
   };
 
-  const onSubmit = (e: FormEvent) => {
+  const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!selectedClientId) {
       window.alert(
@@ -110,6 +112,12 @@ export function NewCalendarAppointmentModal() {
       return;
     }
     const composed = new Date(dtStr);
+    const newIso = composed.toISOString();
+    const conflict = findConflictingEvent(newIso, state.eventsList);
+    if (conflict) {
+      const proceed = await confirmConflict(conflict);
+      if (!proceed) return;
+    }
     const natureAr = NATURE_AR_MAP[nature] || nature;
     const type = nature === 'פגישה עם הלקוח' ? 'meeting' : 'hearingMeeting';
     const ev: CalendarEvent = {
@@ -120,7 +128,7 @@ export function NewCalendarAppointmentModal() {
       case_source_id: selectedCaseId,
       title: nature,
       titleAr: natureAr,
-      dateTime: composed.toISOString(),
+      dateTime: newIso,
       description: nature,
       descriptionAr: natureAr,
       type,
@@ -154,8 +162,65 @@ export function NewCalendarAppointmentModal() {
   const minuteOptionsHtml = minuteOptions(nowParts.minute);
 
   return (
-    <Modal onClose={close}>
-      <h2>{formTitle}</h2>
+    <div
+      className="new-appointment-popup-overlay"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) close();
+      }}
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 700,
+        display: 'grid',
+        placeItems: 'center',
+        padding: 18,
+        pointerEvents: 'auto',
+        background: 'transparent',
+        backdropFilter: 'none',
+      }}
+    >
+      <div
+        className="new-appointment-popup-box modal-box"
+        style={{
+          position: 'relative',
+          width: 'min(520px, 92vw)',
+          maxHeight: 'min(88vh, 820px)',
+          overflowY: 'auto',
+          background: '#FAF6EE',
+          borderRadius: 22,
+          padding: 22,
+          boxShadow:
+            '0 28px 70px rgba(15,23,42,.55), 0 0 0 1px rgba(15,23,42,.08)',
+        }}
+      >
+        <button
+          type="button"
+          aria-label={lang === 'ar' ? 'إغلاق' : 'סגור'}
+          onClick={close}
+          className="modal-close-x"
+          style={{
+            position: 'absolute',
+            top: 14,
+            left: '0.25cm',
+            width: 38,
+            height: 38,
+            display: 'inline-grid',
+            placeItems: 'center',
+            border: '1px solid #e2ebf6',
+            borderRadius: 0,
+            background: '#FFFBF2',
+            color: '#0f172a',
+            cursor: 'pointer',
+            fontWeight: 900,
+            fontSize: 18,
+            zIndex: 70,
+          }}
+        >
+          ×
+        </button>
+        <h2 style={{ margin: 0, textAlign: 'center', padding: '0 48px' }}>
+          {formTitle}
+        </h2>
       <form id="newCalendarAppointmentForm" className="form-grid" onSubmit={onSubmit}>
         <div className="form-field">
           <label>{dateLabel}</label>
@@ -294,6 +359,7 @@ export function NewCalendarAppointmentModal() {
           </button>
         </div>
       </form>
-    </Modal>
+      </div>
+    </div>
   );
 }

@@ -4,6 +4,7 @@ import { useState, type FormEvent } from 'react';
 import { useAppState } from '@/hooks/useAppState';
 import { useModalStack } from '@/hooks/useModalStack';
 import { useT } from '@/hooks/useT';
+import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 import { caseStatusView, clientName, money } from '@/lib/cases';
 import { clientDisplayName } from '@/lib/clients';
 import { Modal } from './Modal';
@@ -28,9 +29,45 @@ export function CaseEdit({ caseId }: CaseEditProps) {
   const { state, dispatch } = useAppState();
   const { t, lang } = useT();
   const modalStack = useModalStack();
+  const confirmDelete = useDeleteConfirm();
 
   const c = state.casesArr.find((x) => x.id === caseId);
   if (!c) return null;
+
+  const onDeleteCase = async () => {
+    const ok = await confirmDelete(
+      lang === 'ar'
+        ? 'هل تريد حذف هذه القضية نهائياً؟'
+        : 'האם למחוק את התיק לחלוטין?',
+    );
+    if (!ok) return;
+    dispatch({
+      type: 'SET_CASES',
+      cases: state.casesArr.filter((x) => x.id !== caseId),
+    });
+    dispatch({
+      type: 'SET_EVENTS',
+      events: state.eventsList.filter((e) => e.caseId !== caseId),
+    });
+    dispatch({
+      type: 'SET_TASKS',
+      tasks: state.tasksArr.filter((tk) => tk.caseId !== caseId),
+    });
+    dispatch({
+      type: 'SET_FINANCES',
+      finances: state.finances.filter((f) => f.caseId !== caseId),
+    });
+    dispatch({
+      type: 'SET_DOCUMENTS',
+      documents: state.documentsArr.filter((d) => d.caseId !== caseId),
+    });
+    dispatch({
+      type: 'SET_TIMELINE',
+      timeline: state.timelineItems.filter((ti) => ti.caseId !== caseId),
+    });
+    // Close the edit modal AND any underlying detail modal.
+    modalStack.closeAll();
+  };
 
   const initialTitle =
     lang === 'ar' ? c.titleAr || c.title || '' : c.title || c.titleAr || '';
@@ -207,6 +244,13 @@ export function CaseEdit({ caseId }: CaseEditProps) {
         <div className="case-edit-actions">
           <button type="button" className="cancel" onClick={backToDetail}>
             {t('cancel')}
+          </button>
+          <button
+            type="button"
+            className="edit-action-delete-btn"
+            onClick={onDeleteCase}
+          >
+            {lang === 'ar' ? 'حذف' : 'מחיקה'}
           </button>
           <button type="submit" className="save">
             {t('save')}

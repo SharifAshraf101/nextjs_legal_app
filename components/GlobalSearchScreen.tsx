@@ -119,9 +119,6 @@ export function GlobalSearchScreen() {
 
   return (
     <section className="panel global-search-panel">
-      <div className="panel-head">
-        <h2>{lang === 'ar' ? 'بحث شامل' : 'חיפוש כולל'}</h2>
-      </div>
       <div className="panel-body">
         <div className="case-search-wrap">
           <label>{lang === 'ar' ? 'بحث' : 'חיפוש'}</label>

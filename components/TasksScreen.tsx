@@ -23,6 +23,7 @@ import {
   tasksLabel,
   type TaskQuickFilter,
 } from '@/lib/tasks';
+import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 import { TaskModal } from './TaskModal';
 import { CaseDetail } from './CaseDetail';
 import type { Task } from '@/types';
@@ -38,6 +39,7 @@ export function TasksScreen() {
   const { state, dispatch } = useAppState();
   const { t, lang } = useT();
   const modalStack = useModalStack();
+  const confirmDelete = useDeleteConfirm();
   const [query, setQuery] = useState('');
   const [quickFilter, setQuickFilter] = useState<TaskQuickFilter>('all');
 
@@ -80,13 +82,11 @@ export function TasksScreen() {
     dispatch({ type: 'SET_TASKS', tasks: next });
   };
 
-  const remove = (id: string) => {
-    if (
-      !window.confirm(
-        taskText('למחוק את המשימה מהרשימה?', 'حذف المهمة من القائمة؟', lang),
-      )
-    )
-      return;
+  const remove = async (id: string) => {
+    const ok = await confirmDelete(
+      taskText('למחוק את המשימה מהרשימה?', 'حذف المهمة من القائمة؟', lang),
+    );
+    if (!ok) return;
     dispatch({
       type: 'SET_TASKS',
       tasks: state.tasksArr.filter((x) => String(x.id) !== String(id)),

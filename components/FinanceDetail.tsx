@@ -18,9 +18,10 @@ import { FinanceEdit } from './FinanceEdit';
  * `financeDetail`. Lists payments for the selected case + summary cards.
  */
 export function FinanceDetail() {
-  const { state } = useAppState();
+  const { state, dispatch } = useAppState();
   const { t, lang } = useT();
   const modalStack = useModalStack();
+  const goBack = () => dispatch({ type: 'SET_TAB', tab: 'finance' });
 
   const c =
     state.casesArr.find((x) => x.id === state.selectedFinanceCaseId) || state.casesArr[0];
@@ -54,7 +55,10 @@ export function FinanceDetail() {
         <h2 className="finance-detail-title">
           {lang === 'ar' ? 'الأتعاب' : 'שכר טרחה'}
         </h2>
-        <div className="case-edit-toolbar finance-edit-toolbar">
+        <div
+          className="case-edit-toolbar finance-edit-toolbar"
+          style={{ position: 'relative' }}
+        >
           <button
             type="button"
             className="case-edit-btn"
@@ -62,6 +66,31 @@ export function FinanceDetail() {
           >
             <i className="fas fa-pen" />
             <span>{t('edit')}</span>
+          </button>
+          <button
+            type="button"
+            className="finance-detail-back-btn"
+            aria-label={lang === 'ar' ? 'رجوع' : 'חזרה'}
+            title={lang === 'ar' ? 'رجوع' : 'חזרה'}
+            onClick={goBack}
+            style={{
+              position: 'absolute',
+              left: '0.25cm',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              width: 38,
+              height: 38,
+              display: 'inline-grid',
+              placeItems: 'center',
+              border: '1px solid #e2ebf6',
+              borderRadius: 999,
+              background: '#FFFBF2',
+              color: '#0f172a',
+              cursor: 'pointer',
+              boxShadow: '0 2px 6px rgba(15,23,42,.06)',
+            }}
+          >
+            <i className="fas fa-arrow-left" />
           </button>
         </div>
         <div className="finance-detail-grid">

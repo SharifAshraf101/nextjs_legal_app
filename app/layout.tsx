@@ -80,10 +80,11 @@ export default function RootLayout({
           id="legal-office-v155-early-mobile-resize-guard"
           dangerouslySetInnerHTML={{ __html: V155_EARLY_MOBILE_RESIZE_GUARD }}
         />
-        {/* Font Awesome — kept on the same CDN/version as the source for icon parity */}
+        {/* Font Awesome 6.5 — stable release, supports modern icon names
+           like fa-house, fa-user-group, fa-coins, fa-circle-check, etc. */}
         <link
           rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
         />
       </head>
       <body>{children}</body>

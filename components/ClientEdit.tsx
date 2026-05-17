@@ -4,6 +4,7 @@ import { useState, type FormEvent } from 'react';
 import { useAppState } from '@/hooks/useAppState';
 import { useModalStack } from '@/hooks/useModalStack';
 import { useT } from '@/hooks/useT';
+import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 import { clientDisplayName } from '@/lib/clients';
 import { Modal } from './Modal';
 import { ClientDetail } from './ClientDetail';
@@ -24,9 +25,58 @@ export function ClientEdit({ clientId }: ClientEditProps) {
   const { state, dispatch } = useAppState();
   const { t, lang } = useT();
   const modalStack = useModalStack();
+  const confirmDelete = useDeleteConfirm();
 
   const c = state.clients.find((x) => x.id === clientId);
   if (!c) return null;
+
+  const onDeleteClient = async () => {
+    const ok = await confirmDelete(
+      lang === 'ar'
+        ? 'هل تريد حذف هذا الموكل وكل قضاياه نهائياً؟'
+        : 'האם למחוק את הלקוח ואת כל התיקים שלו לחלוטין?',
+    );
+    if (!ok) return;
+    const clientCases = state.casesArr.filter((x) => x.clientId === clientId);
+    const clientCaseIds = new Set(clientCases.map((x) => x.id));
+    dispatch({
+      type: 'SET_CLIENTS',
+      clients: state.clients.filter((x) => x.id !== clientId),
+    });
+    dispatch({
+      type: 'SET_CASES',
+      cases: state.casesArr.filter((x) => x.clientId !== clientId),
+    });
+    dispatch({
+      type: 'SET_EVENTS',
+      events: state.eventsList.filter(
+        (e) => e.clientId !== clientId && !clientCaseIds.has(e.caseId || ''),
+      ),
+    });
+    dispatch({
+      type: 'SET_TASKS',
+      tasks: state.tasksArr.filter(
+        (tk) => tk.clientId !== clientId && !clientCaseIds.has(tk.caseId || ''),
+      ),
+    });
+    dispatch({
+      type: 'SET_FINANCES',
+      finances: state.finances.filter((f) => !clientCaseIds.has(f.caseId || '')),
+    });
+    dispatch({
+      type: 'SET_DOCUMENTS',
+      documents: state.documentsArr.filter(
+        (d) => d.clientId !== clientId && !clientCaseIds.has(d.caseId || ''),
+      ),
+    });
+    dispatch({
+      type: 'SET_TIMELINE',
+      timeline: state.timelineItems.filter(
+        (ti) => !clientCaseIds.has(ti.caseId || ''),
+      ),
+    });
+    modalStack.closeAll();
+  };
 
   const initialName = clientDisplayName(c, lang);
   const initialPhone = String(c.phone || '');
@@ -152,6 +202,13 @@ export function ClientEdit({ clientId }: ClientEditProps) {
         <div className="case-edit-actions">
           <button type="button" className="cancel" onClick={backToDetail}>
             {t('cancel')}
+          </button>
+          <button
+            type="button"
+            className="edit-action-delete-btn"
+            onClick={onDeleteClient}
+          >
+            {lang === 'ar' ? 'حذف' : 'מחיקה'}
           </button>
           <button type="submit" className="save">
             {t('save')}

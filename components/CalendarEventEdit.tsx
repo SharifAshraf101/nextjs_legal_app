@@ -4,7 +4,9 @@ import { useState, type FormEvent } from 'react';
 import { useAppState } from '@/hooks/useAppState';
 import { useModalStack } from '@/hooks/useModalStack';
 import { useT } from '@/hooks/useT';
-import { calendarItemTitle } from '@/lib/calendar';
+import { calendarItemTitle, findConflictingEvent } from '@/lib/calendar';
+import { useConflictConfirm } from '@/hooks/useConflictConfirm';
+import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 import { caseName, clientName } from '@/lib/cases';
 import { calendarDateValue } from '@/lib/dates';
 import { pad } from '@/lib/utils';
@@ -43,6 +45,35 @@ export function CalendarEventEdit({ source, id }: CalendarEventEditProps) {
   const { state, dispatch } = useAppState();
   const { t, lang } = useT();
   const modalStack = useModalStack();
+  const confirmConflict = useConflictConfirm();
+  const confirmDelete = useDeleteConfirm();
+
+  const onDeleteItem = async () => {
+    const ok = await confirmDelete(
+      source === 'event'
+        ? lang === 'ar'
+          ? 'هل تريد حذف هذا الموعد؟'
+          : 'האם למחוק את המועד?'
+        : lang === 'ar'
+          ? 'هل تريد حذف هذا البند؟'
+          : 'האם למחוק את הפריט?',
+    );
+    if (!ok) return;
+    if (source === 'event') {
+      dispatch({
+        type: 'SET_EVENTS',
+        events: state.eventsList.filter((e) => String(e.id) !== String(id)),
+      });
+    } else {
+      dispatch({
+        type: 'SET_TIMELINE',
+        timeline: state.timelineItems.filter(
+          (ti) => String(ti.id) !== String(id),
+        ),
+      });
+    }
+    modalStack.closeAll();
+  };
 
   const item: CalendarEvent | TimelineItem | undefined =
     source === 'task'
@@ -75,7 +106,7 @@ export function CalendarEventEdit({ source, id }: CalendarEventEditProps) {
     modalStack.open(<CalendarEventDetail source={source} id={id} />);
   };
 
-  const onSubmit = (e: FormEvent) => {
+  const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const composed = new Date(`${dateStr}T${hour}:${minute}:00`);
     if (!dateStr || isNaN(composed.getTime())) {
@@ -106,6 +137,13 @@ export function CalendarEventEdit({ source, id }: CalendarEventEditProps) {
       });
       dispatch({ type: 'SET_TIMELINE', timeline: next });
     } else {
+      // Conflict check — exclude the event being edited so it isn't flagged
+      // against itself when the time hasn't moved.
+      const conflict = findConflictingEvent(iso, state.eventsList, 30, String(id));
+      if (conflict) {
+        const proceed = await confirmConflict(conflict);
+        if (!proceed) return;
+      }
       const next = state.eventsList.map((x) => {
         if (String(x.id) !== String(id)) return x;
         const updated: CalendarEvent = {
@@ -230,6 +268,13 @@ export function CalendarEventEdit({ source, id }: CalendarEventEditProps) {
         <div className="calendar-detail-actions">
           <button type="button" className="cancel" onClick={backToDetail}>
             {t('cancel')}
+          </button>
+          <button
+            type="button"
+            className="edit-action-delete-btn"
+            onClick={onDeleteItem}
+          >
+            {lang === 'ar' ? 'حذف' : 'מחיקה'}
           </button>
           <button type="submit" className="save">
             {t('save')}

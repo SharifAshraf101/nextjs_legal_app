@@ -43,11 +43,11 @@ function quickActionForTab(tab: string): { label: string; iconClass: string } | 
       // Communication-with-client screen has no quick-create action.
       return null;
     case 'cases':
-      return { label: 'newCase', iconClass: 'fa-plus' };
+      return { label: 'newCase', iconClass: 'fa-folder-plus' };
     case 'contacts':
       return { label: 'newClient', iconClass: 'fa-user-plus' };
     case 'calendar':
-      return { label: 'newEvent', iconClass: 'fa-calendar-plus' };
+      return { label: 'newAppointment', iconClass: 'fa-calendar-plus' };
     case 'documents':
       return { label: 'newDocument', iconClass: 'fa-file-circle-plus' };
     case 'tasks':
@@ -90,13 +90,15 @@ export function Topbar() {
         ? t('newClient')
         : qa.label === 'newEvent'
           ? t('newEvent')
-          : qa.label === 'newDocument'
-            ? settingsText('+ מסמך חדש', '+ مستند جديد')
-            : qa.label === 'newTask'
-              ? settingsText('+ משימה חדשה', '+ مهمة جديدة')
-              : qa.label === 'newPayment'
-                ? settingsText('+ תשלום חדש', '+ دفعة جديدة')
-                : t('newEvent')
+          : qa.label === 'newAppointment'
+            ? settingsText('הוספת מועד חדש', 'إضافة موعد جديد')
+            : qa.label === 'newDocument'
+              ? settingsText('מסמך חדש', 'مستند جديد')
+              : qa.label === 'newTask'
+                ? settingsText('משימה חדשה', 'مهمة جديدة')
+                : qa.label === 'newPayment'
+                  ? settingsText('תשלום חדש', 'دفعة جديدة')
+                  : t('newEvent')
     : '';
 
   const onQuickAction = () => {
@@ -118,11 +120,16 @@ export function Topbar() {
         modalStack.open(<NewCalendarAppointmentModal />);
         return;
       case 'documents':
-        // Source line 5007: showNewDocumentModal opens NewEventModal then
-        // flips the event-type select to 'document'. We replicate by opening
-        // NewEventModal — the user picks 'document' from the type select.
-        // Stage 5 polish: pre-select 'document'.
-        modalStack.open(<NewEventModal />);
+        // Source line 5007: showNewDocumentModal opens NewEventModal with the
+        // event-type select pre-set to 'document'. We replicate by passing
+        // preselectedType — and use a "מסמך חדש" title that matches the
+        // documents screen context.
+        modalStack.open(
+          <NewEventModal
+            preselectedType="document"
+            titleOverride={settingsText('מסמך חדש', 'مستند جديد')}
+          />,
+        );
         return;
       // Fallback (e.g. home tab if it ever had a quick-action) → generic new event
       default:
@@ -194,7 +201,49 @@ export function Topbar() {
             className="btn btn-primary"
             onClick={onQuickAction}
           >
-            <i className={'fas ' + qa.iconClass} />
+            {qa.label === 'newPayment' || qa.label === 'newDocument' || qa.label === 'newTask' ? (
+              <span
+                style={{
+                  position: 'relative',
+                  display: 'inline-block',
+                  width: '1.1em',
+                  height: '1em',
+                  lineHeight: 1,
+                }}
+              >
+                <i
+                  className={
+                    'fas ' +
+                    (qa.label === 'newPayment'
+                      ? 'fa-shekel-sign'
+                      : qa.label === 'newDocument'
+                        ? 'fa-file-lines'
+                        : 'fa-list-check')
+                  }
+                />
+                <i
+                  className="fas fa-plus"
+                  style={{
+                    position: 'absolute',
+                    top: '-0.25em',
+                    right: '-0.45em',
+                    fontSize: '0.55em',
+                    background: '#0EA5E9',
+                    color: '#FFFFFF',
+                    borderRadius: '999px',
+                    padding: '2px',
+                    lineHeight: 1,
+                    width: '1.2em',
+                    height: '1.2em',
+                    display: 'inline-grid',
+                    placeItems: 'center',
+                    boxShadow: '0 1px 3px rgba(15,23,42,.3)',
+                  }}
+                />
+              </span>
+            ) : (
+              <i className={'fas ' + qa.iconClass} />
+            )}
             <span>{qaLabel}</span>
           </button>
         )}
