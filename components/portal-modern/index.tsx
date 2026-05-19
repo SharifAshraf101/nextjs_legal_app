@@ -64,6 +64,7 @@ type ClientRow = {
 };
 
 type Screen =
+  | 'chooser'
   | 'hub'
   | 'chat'
   | 'login'
@@ -71,6 +72,8 @@ type Screen =
   | 'success'
   | 'bot'
   | 'lawyer-search';
+
+type HubMode = 'whatsapp' | 'bot';
 
 const cn = (...parts: Array<string | false | null | undefined>): string =>
   parts.filter(Boolean).join(' ');
@@ -131,7 +134,8 @@ function PortalShell() {
     });
   }, [state.clients, state.casesArr, lang]);
 
-  const [screen, setScreen] = useState<Screen>('hub');
+  const [screen, setScreen] = useState<Screen>('chooser');
+  const [hubMode, setHubMode] = useState<HubMode>('whatsapp');
   const [selectedClient, setSelectedClient] = useState<ClientRow | null>(null);
   // True when the lawyer enters the bot screen directly (bypassing the
   // client-side ID + phone verification). The bot screen then renders in
@@ -145,8 +149,22 @@ function PortalShell() {
 
   return (
     <div className="tw-bg-[#FAF6EE] tw-text-slate-900 tw-min-h-full">
+      {screen === 'chooser' && (
+        <ChooserScreen
+          onPickWhatsApp={() => {
+            setHubMode('whatsapp');
+            setScreen('hub');
+          }}
+          onPickBot={() => {
+            setHubMode('bot');
+            setScreen('hub');
+          }}
+          lang={lang}
+        />
+      )}
       {screen === 'hub' && (
         <HubScreen
+          mode={hubMode}
           clients={clients}
           onOpenChat={openChat}
           onOpenBotLogin={() => {
@@ -158,6 +176,7 @@ function PortalShell() {
             setSelectedClient(null);
             setScreen('lawyer-search');
           }}
+          onBack={() => setScreen('chooser')}
           lang={lang}
         />
       )}
@@ -297,16 +316,20 @@ function TopBar({
  * ────────────────────────────────────────────────────────── */
 
 function HubScreen({
+  mode,
   clients,
   onOpenChat,
   onOpenBotLogin,
   onOpenBotAsLawyer,
+  onBack,
   lang,
 }: {
+  mode: HubMode;
   clients: ClientRow[];
   onOpenChat: (c: ClientRow) => void;
   onOpenBotLogin: () => void;
   onOpenBotAsLawyer: () => void;
+  onBack: () => void;
   lang: 'he' | 'ar';
 }) {
   const T = {
@@ -338,10 +361,27 @@ function HubScreen({
     online: lang === 'ar' ? 'متصل' : 'מחובר',
   };
 
+  const backLabel = lang === 'ar' ? 'رجوع' : 'חזרה';
   return (
     <>
       <TopBar title={T.title} subtitle={T.subtitle} lang={lang} />
-      <div className="tw-grid tw-flex-1 tw-gap-5 tw-p-5 lg:tw-grid-cols-2 lg:tw-p-10">
+      <div className="tw-flex tw-items-center tw-px-5 tw-pt-4 lg:tw-px-10">
+        <button
+          type="button"
+          onClick={onBack}
+          className="tw-flex tw-items-center tw-gap-2 tw-rounded-2xl tw-border tw-border-slate-200 tw-bg-white tw-px-3 tw-py-2 tw-text-sm tw-font-semibold tw-text-slate-700 hover:tw-bg-[#F3EDDF]"
+        >
+          <ChevronLeft className="tw-h-4 tw-w-4" />
+          {backLabel}
+        </button>
+      </div>
+      <div
+        className={
+          'tw-grid tw-flex-1 tw-gap-5 tw-p-5 lg:tw-p-10 ' +
+          (mode === 'whatsapp' ? 'tw-grid-cols-1' : 'tw-grid-cols-1')
+        }
+      >
+        {mode === 'whatsapp' && (
         <Panel className="tw-min-h-[520px]">
           <div className="tw-mb-7 tw-flex tw-items-start tw-justify-between">
             <div className="tw-grid tw-h-16 tw-w-16 tw-place-items-center tw-rounded-3xl tw-bg-emerald-500 tw-text-white tw-shadow-sm">
@@ -394,7 +434,9 @@ function HubScreen({
             </div>
           </div>
         </Panel>
+        )}
 
+        {mode === 'bot' && (
         <Panel className="tw-min-h-[520px]">
           <div className="tw-mb-10 tw-flex tw-items-start tw-justify-between">
             <div className="tw-grid tw-h-16 tw-w-16 tw-place-items-center tw-rounded-3xl tw-bg-indigo-500 tw-text-white tw-shadow-sm">
@@ -426,8 +468,85 @@ function HubScreen({
             {T.viewAsLawyer}
           </button>
         </Panel>
+        )}
       </div>
     </>
+  );
+}
+
+/* ────────────────────────────────────────────────────────── *
+ * Chooser — first screen in the communication tab. Two big icon
+ * cards: WhatsApp (clients chat list) and Bot (client bot login +
+ * lawyer view). Picking one routes into the corresponding flow;
+ * back from any of those flows returns here.
+ * ────────────────────────────────────────────────────────── */
+function ChooserScreen({
+  onPickWhatsApp,
+  onPickBot,
+  lang,
+}: {
+  onPickWhatsApp: () => void;
+  onPickBot: () => void;
+  lang: 'he' | 'ar';
+}) {
+  const T = {
+    title: lang === 'ar' ? 'مركز التواصل' : 'מרכז תקשורת',
+    subtitle:
+      lang === 'ar'
+        ? 'اختر نظام التواصل للمتابعة'
+        : 'בחר את מערכת התקשורת להמשך',
+    whatsapp: lang === 'ar' ? 'WhatsApp' : 'WhatsApp',
+    whatsappSub:
+      lang === 'ar'
+        ? 'محادثات مباشرة مع الموكلين'
+        : 'שיחות ישירות עם הלקוחות',
+    bot: lang === 'ar' ? 'بوت الموكلين' : 'בוט הלקוחות',
+    botSub:
+      lang === 'ar'
+        ? 'مساعد ذكي للموكلين وعرض المحادثات'
+        : 'עוזר חכם ללקוחות וצפייה בשיחות',
+  };
+  return (
+    <div className="tw-flex tw-min-h-full tw-flex-col tw-items-center tw-justify-center tw-px-5 tw-py-10">
+      <div className="tw-mb-8 tw-text-center">
+        <h1 className="tw-text-3xl tw-font-bold tw-text-indigo-900">{T.title}</h1>
+        <p className="tw-mt-2 tw-text-sm tw-text-slate-500">{T.subtitle}</p>
+      </div>
+      <div className="tw-grid tw-w-full tw-max-w-3xl tw-grid-cols-1 tw-gap-6 sm:tw-grid-cols-2">
+        <button
+          type="button"
+          onClick={onPickWhatsApp}
+          className="tw-group tw-flex tw-flex-col tw-items-center tw-gap-4 tw-rounded-[32px] tw-border tw-border-slate-200 tw-bg-[#FAF6EE] tw-p-10 tw-shadow-sm tw-transition hover:tw-border-emerald-400 hover:tw-shadow-md"
+        >
+          <div className="tw-grid tw-h-28 tw-w-28 tw-place-items-center tw-rounded-full tw-bg-emerald-500 tw-text-white tw-shadow-sm tw-transition group-hover:tw-scale-105">
+            <MessageCircle className="tw-h-14 tw-w-14" />
+          </div>
+          <div className="tw-text-center">
+            <div className="tw-text-2xl tw-font-bold tw-text-slate-900">
+              {T.whatsapp}
+            </div>
+            <div className="tw-mt-1 tw-text-sm tw-text-slate-500">
+              {T.whatsappSub}
+            </div>
+          </div>
+        </button>
+        <button
+          type="button"
+          onClick={onPickBot}
+          className="tw-group tw-flex tw-flex-col tw-items-center tw-gap-4 tw-rounded-[32px] tw-border tw-border-slate-200 tw-bg-[#FAF6EE] tw-p-10 tw-shadow-sm tw-transition hover:tw-border-indigo-400 hover:tw-shadow-md"
+        >
+          <div className="tw-grid tw-h-28 tw-w-28 tw-place-items-center tw-rounded-full tw-bg-indigo-500 tw-text-white tw-shadow-sm tw-transition group-hover:tw-scale-105">
+            <Bot className="tw-h-14 tw-w-14" />
+          </div>
+          <div className="tw-text-center">
+            <div className="tw-text-2xl tw-font-bold tw-text-slate-900">
+              {T.bot}
+            </div>
+            <div className="tw-mt-1 tw-text-sm tw-text-slate-500">{T.botSub}</div>
+          </div>
+        </button>
+      </div>
+    </div>
   );
 }
 
