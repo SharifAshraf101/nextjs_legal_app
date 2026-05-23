@@ -62,8 +62,10 @@ function eventTitlePlaceholder(
   if (lang === 'ar') {
     return (
       {
-        hearingMeeting: 'مثال: جلسة إثبات أو اجتماع تحضير',
+        hearingMeeting: 'مثال: جلسة إثبات',
         document: 'مثال: تقرير خبير أو لائحة دعوى',
+        meeting: 'مثال: اجتماع تحضير مع الموكل',
+        reminder: 'مثال: تذكير بمتابعة الموكل',
         call: 'مثال: مكالمة تحديث مع الموكل',
         task: 'مثال: تحضير طلب للمحكمة',
         note: 'مثال: ملاحظة داخلية للملف',
@@ -72,8 +74,10 @@ function eventTitlePlaceholder(
   }
   return (
     {
-      hearingMeeting: 'לדוגמה: דיון הוכחות או פגישת הכנה',
+      hearingMeeting: 'לדוגמה: דיון הוכחות',
       document: 'לדוגמה: חוות דעת או כתב טענות',
+      meeting: 'לדוגמה: פגישת הכנה עם הלקוח',
+      reminder: 'לדוגמה: תזכורת מעקב מול הלקוח',
       call: 'לדוגמה: שיחת עדכון עם הלקוח',
       task: 'לדוגמה: הכנת בקשה לבית המשפט',
       note: 'לדוגמה: הערה פנימית לתיק',
@@ -94,7 +98,7 @@ export interface NewEventModalProps {
   preselectedCaseId?: string;
   /** Override the modal title (e.g. "מסמך חדש" when opened from the
    *  Documents screen) and pre-select the matching event type. */
-  preselectedType?: 'hearingMeeting' | 'document' | 'call' | 'task' | 'note';
+  preselectedType?: 'hearingMeeting' | 'document' | 'meeting' | 'reminder' | 'call' | 'task' | 'note';
   titleOverride?: string;
   /** When a file is provided (e.g. from a drag-and-drop drop in the
    *  Case detail screen or Documents screen), the modal opens with
@@ -129,9 +133,9 @@ export function NewEventModal({
 
   // If a file was dropped, force type to "document" so the upload UI
   // is visible — the only way to attach a file in this modal.
-  const initialType: 'hearingMeeting' | 'document' | 'call' | 'task' | 'note' =
+  const initialType: 'hearingMeeting' | 'document' | 'meeting' | 'reminder' | 'call' | 'task' | 'note' =
     preselectedFile ? 'document' : preselectedType || 'hearingMeeting';
-  const [type, setType] = useState<'hearingMeeting' | 'document' | 'call' | 'task' | 'note'>(
+  const [type, setType] = useState<'hearingMeeting' | 'document' | 'meeting' | 'reminder' | 'call' | 'task' | 'note'>(
     initialType,
   );
   const [title, setTitle] = useState(() =>
@@ -254,10 +258,22 @@ export function NewEventModal({
     let dateTimeStr = '';
     let dueDateTimeStr = '';
 
-    if (type === 'hearingMeeting') {
+    if (type === 'hearingMeeting' || type === 'meeting' || type === 'reminder') {
       dateTimeStr = composeDateTime(eventDate, eventHour, eventMinute);
       if (!dateTimeStr) {
-        window.alert(lang === 'ar' ? 'أدخل تاريخ الجلسة/الاجتماع' : 'יש להזין תאריך דיון');
+        const msg =
+          type === 'meeting'
+            ? lang === 'ar'
+              ? 'أدخل تاريخ الاجتماع'
+              : 'יש להזין תאריך פגישה'
+            : type === 'reminder'
+              ? lang === 'ar'
+                ? 'أدخل تاريخ التذكير'
+                : 'יש להזין תאריך תזכורת'
+              : lang === 'ar'
+                ? 'أدخل تاريخ الجلسة/الاجتماع'
+                : 'יש להזין תאריך דיון';
+        window.alert(msg);
         return;
       }
     }
@@ -301,12 +317,16 @@ export function NewEventModal({
         ? state.casesArr.find((c) => c.id === caseId)?.clientId || clientOnlyId
         : clientOnlyId;
 
-    if (type === 'hearingMeeting') {
+    if (type === 'hearingMeeting' || type === 'meeting' || type === 'reminder') {
       const newIso = new Date(dateTimeStr).toISOString();
-      const conflict = findConflictingEvent(newIso, state.eventsList);
-      if (conflict) {
-        const proceed = await confirmConflict(conflict);
-        if (!proceed) return;
+      // Only hearings and meetings hold a courtroom/office slot; reminders
+      // are reference markers and shouldn't block other items.
+      if (type !== 'reminder') {
+        const conflict = findConflictingEvent(newIso, state.eventsList);
+        if (conflict) {
+          const proceed = await confirmConflict(conflict);
+          if (!proceed) return;
+        }
       }
       const ev: CalendarEvent = {
         id: nextEventId(state.eventsList),
@@ -319,7 +339,7 @@ export function NewEventModal({
         dateTime: newIso,
         description: desc,
         descriptionAr: desc,
-        type: 'hearingMeeting',
+        type,
       };
       dispatch({ type: 'SET_EVENTS', events: [...state.eventsList, ev] });
     } else if (type === 'document') {
@@ -514,11 +534,14 @@ export function NewEventModal({
             id="eventTypeInput"
             value={type}
             onChange={(e) =>
-              setType(e.target.value as 'hearingMeeting' | 'document' | 'call' | 'task' | 'note')
+              setType(e.target.value as 'hearingMeeting' | 'document' | 'meeting' | 'reminder' | 'call' | 'task' | 'note')
             }
           >
-            <option value="hearingMeeting">{t('hearingMeeting')}</option>
+            {/* Order: דיון, מסמך, פגישה, תזכורת, שיחה, משימה, הערה */}
+            <option value="hearingMeeting">{t('hearing')}</option>
             <option value="document">{t('document')}</option>
+            <option value="meeting">{t('meeting')}</option>
+            <option value="reminder">{t('reminder')}</option>
             <option value="call">{t('call')}</option>
             <option value="task">{t('task')}</option>
             <option value="note">{t('note')}</option>
@@ -596,9 +619,19 @@ export function NewEventModal({
           />
         </div>
 
-        {type === 'hearingMeeting' && (
+        {(type === 'hearingMeeting' || type === 'meeting' || type === 'reminder') && (
           <div className="form-field" id="singleDateWrap">
-            <label>{t('hearingMeetingDate')}</label>
+            <label>
+              {type === 'meeting'
+                ? lang === 'ar'
+                  ? 'تاريخ الاجتماع'
+                  : 'תאריך הפגישה'
+                : type === 'reminder'
+                  ? lang === 'ar'
+                    ? 'تاريخ التذكير'
+                    : 'תאריך התזכורת'
+                  : t('hearingMeetingDate')}
+            </label>
             <div className="time-row">
               <div>
                 <label>{dateLabel}</label>

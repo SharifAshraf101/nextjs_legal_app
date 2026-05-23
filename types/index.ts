@@ -43,7 +43,14 @@ export interface Case {
   supabaseId?: string;
 }
 
-export type EventType = 'hearingMeeting' | 'meeting' | 'task' | 'document' | 'note' | 'call';
+export type EventType =
+  | 'hearingMeeting'
+  | 'meeting'
+  | 'reminder'
+  | 'task'
+  | 'document'
+  | 'note'
+  | 'call';
 
 export interface CalendarEvent {
   id: string;

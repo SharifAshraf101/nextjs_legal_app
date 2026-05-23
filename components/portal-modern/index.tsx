@@ -1,23 +1,22 @@
 'use client';
 
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import {
   Bell,
   Bot,
   CalendarDays,
   Check,
+  ChevronDown,
   ChevronLeft,
   FileText,
   FolderOpen,
   Lock,
   MessageCircle,
   Mic,
-  MoreVertical,
   Paperclip,
   Search,
   Send,
   ShieldCheck,
-  Upload,
   User,
   Users,
   WalletCards,
@@ -45,11 +44,19 @@ import {
   type PortalBotHistoryItem,
 } from '@/lib/portal';
 import { caseName } from '@/lib/cases';
+import {
+  financeCaseBalance,
+  financePaidItemsForCase,
+  paymentTypeLabel,
+} from '@/lib/finance';
 import type { Case, Client } from '@/types';
+import { AddPaymentModal } from '../AddPaymentModal';
 import { CaseDetail } from '../CaseDetail';
 import { CaseDocumentsModal } from '../CaseDocumentsModal';
 import { ClientDetail } from '../ClientDetail';
 import { Modal } from '../Modal';
+import { NewEventModal } from '../NewEventModal';
+import { TaskModal } from '../TaskModal';
 
 /**
  * Modern client-communication ("portal") screen. Uses Tailwind utilities,
@@ -60,11 +67,22 @@ import { Modal } from '../Modal';
  * Mounted from ScreenRouter for the "portal" tab.
  */
 
+type ClientCaseSummary = {
+  id: string;
+  caseNumber: string;
+  title: string;
+};
+
 type ClientRow = {
   id: string;
   name: string;
   caseNo: string;
   caseType: string;
+  cases: ClientCaseSummary[];
+  /** When the chat is opened by clicking a case-chip on the hub list,
+   * this carries the picked case so the chat screen's "select case →
+   * new document" flow can pre-select it instead of starting empty. */
+  initialCaseId?: string;
   time: string;
   unread: number;
   avatar: string;
@@ -123,17 +141,23 @@ function PortalShell() {
 
   const clients = useMemo<ClientRow[]>(() => {
     return state.clients.slice(0, 30).map((c: Client, i) => {
-      const cases = state.casesArr.filter((cs) => cs.clientId === c.id);
-      const caseLabel =
-        cases.length > 0
-          ? cases[0].title || cases[0].caseNumber || ''
-          : '';
+      const allCases = state.casesArr.filter((cs) => cs.clientId === c.id);
+      // Active cases only — closed/inactive shouldn't appear as chat targets.
+      const activeCases = allCases.filter((cs) => cs.status !== 'inactive');
+      const displayCases = activeCases.length > 0 ? activeCases : allCases;
+      const caseSummaries: ClientCaseSummary[] = displayCases.map((cs) => ({
+        id: cs.id,
+        caseNumber: cs.caseNumber || cs.id,
+        title: cs.title || cs.caseNumber || cs.id,
+      }));
       const name = clientDisplayName(c, lang);
+      const first = caseSummaries[0];
       return {
         id: c.id,
         name: name || (lang === 'ar' ? 'موكل' : 'לקוח'),
-        caseNo: cases[0]?.caseNumber || cases[0]?.id || '',
-        caseType: caseLabel || (lang === 'ar' ? 'بدون قضية' : 'ללא תיק'),
+        caseNo: first?.caseNumber || '',
+        caseType: first?.title || (lang === 'ar' ? 'بدون قضية' : 'ללא תיק'),
+        cases: caseSummaries,
         time: ['11:32', '10:18', 'אתמול', '12/05', '09:40', 'אתמול'][i % 6],
         unread: i % 5 === 0 ? 2 : i % 3 === 0 ? 1 : 0,
         avatar: (name || '?').trim().charAt(0).toUpperCase(),
@@ -150,8 +174,21 @@ function PortalShell() {
   // read-only mode so the lawyer can browse the conversation but not send.
   const [lawyerView, setLawyerView] = useState(false);
 
-  const openChat = (client: ClientRow) => {
-    setSelectedClient(client);
+  const openChat = (client: ClientRow, caseId?: string) => {
+    // If a specific case chip was clicked, surface that case's number/title
+    // in the chat header AND pre-seed `initialCaseId` so the chat screen's
+    // "select case → new document" chain skips the redundant first picker.
+    const pickedCase =
+      caseId != null ? client.cases.find((cs) => cs.id === caseId) : undefined;
+    const focused: ClientRow = pickedCase
+      ? {
+          ...client,
+          caseNo: pickedCase.caseNumber,
+          caseType: pickedCase.title,
+          initialCaseId: pickedCase.id,
+        }
+      : client;
+    setSelectedClient(focused);
     setScreen('chat');
   };
 
@@ -337,7 +374,7 @@ function HubScreen({
 }: {
   mode: HubMode;
   clients: ClientRow[];
-  onOpenChat: (c: ClientRow) => void;
+  onOpenChat: (c: ClientRow, caseId?: string) => void;
   onOpenBotLogin: () => void;
   onOpenBotAsLawyer: () => void;
   onBack: () => void;
@@ -408,39 +445,21 @@ function HubScreen({
             <div className="tw-mb-3 tw-text-sm tw-font-semibold tw-text-slate-500">
               {T.recent}
             </div>
-            <div className="tw-divide-y tw-divide-slate-100 tw-rounded-3xl tw-border tw-border-slate-100 tw-bg-[#FDFBF5]">
+            <div className="tw-flex tw-flex-col tw-gap-2">
               {clients.length === 0 && (
-                <div className="tw-p-6 tw-text-center tw-text-sm tw-text-slate-400">
+                <div className="tw-rounded-3xl tw-border tw-border-slate-100 tw-bg-[#FDFBF5] tw-p-6 tw-text-center tw-text-sm tw-text-slate-400">
                   {lang === 'ar' ? 'لا يوجد موكلون بعد' : 'אין לקוחות עדיין'}
                 </div>
               )}
               {clients.slice(0, 8).map((client) => (
-                <button
+                <ClientChatCard
                   key={client.id}
-                  onClick={() => onOpenChat(client)}
-                  className="tw-flex tw-w-full tw-items-center tw-gap-3 tw-p-4 tw-text-right tw-transition hover:tw-bg-[#F8F2E4]"
-                >
-                  <Avatar label={client.avatar} />
-                  <div className="tw-min-w-0 tw-flex-1">
-                    <div className="tw-flex tw-items-center tw-gap-2">
-                      <div className="tw-truncate tw-font-semibold">{client.name}</div>
-                      {client.status === 'online' && (
-                        <span className="tw-h-2 tw-w-2 tw-rounded-full tw-bg-emerald-500" />
-                      )}
-                    </div>
-                    <div className="tw-truncate tw-text-xs tw-text-slate-500">
-                      {T.caseLabel} {client.caseNo} · {client.caseType}
-                    </div>
-                  </div>
-                  <div className="tw-flex tw-flex-col tw-items-end tw-gap-2 tw-text-xs tw-text-slate-500">
-                    <span>{client.time}</span>
-                    {client.unread > 0 && (
-                      <span className="tw-grid tw-h-6 tw-min-w-[1.5rem] tw-place-items-center tw-rounded-full tw-bg-emerald-500 tw-px-2 tw-text-xs tw-font-bold tw-text-white">
-                        {client.unread}
-                      </span>
-                    )}
-                  </div>
-                </button>
+                  client={client}
+                  caseSingular={T.caseLabel}
+                  casePlural={lang === 'ar' ? 'ملفات' : 'תיקים'}
+                  emptyLabel={lang === 'ar' ? 'بدون قضية' : 'ללא תיק'}
+                  onOpen={(caseId) => onOpenChat(client, caseId)}
+                />
               ))}
             </div>
           </div>
@@ -517,26 +536,35 @@ function ChooserScreen({
         ? 'مساعد ذكي للموكلين وعرض المحادثات'
         : 'עוזר חכם ללקוחות וצפייה בשיחות',
   };
+  // Stacked layout (one card under the other) on every viewport. Icon +
+  // padding sizes are clamped against the VIEWPORT HEIGHT so the two
+  // stacked cards always fit on a phone screen without scrolling, no
+  // matter how short the device is. Width-based clamps would leave the
+  // bot card below the fold on a narrow tall phone.
   return (
-    <div className="tw-flex tw-min-h-full tw-flex-col tw-items-center tw-justify-center tw-px-5 tw-py-10">
-      <div className="tw-mb-8 tw-text-center">
-        <h1 className="tw-text-3xl tw-font-bold tw-text-indigo-900">{T.title}</h1>
-        <p className="tw-mt-2 tw-text-sm tw-text-slate-500">{T.subtitle}</p>
+    <div className="tw-flex tw-min-h-full tw-flex-col tw-items-center tw-justify-center tw-px-4 tw-py-[clamp(0.5rem,1.5vh,2.5rem)]">
+      <div className="tw-mb-[clamp(0.5rem,1.5vh,2rem)] tw-text-center">
+        <h1 className="tw-font-bold tw-text-indigo-900 tw-text-[clamp(1.125rem,2.4vh,1.875rem)]">
+          {T.title}
+        </h1>
+        <p className="tw-mt-1 tw-text-slate-500 tw-text-[clamp(0.7rem,1.5vh,0.875rem)]">
+          {T.subtitle}
+        </p>
       </div>
-      <div className="tw-grid tw-w-full tw-max-w-3xl tw-grid-cols-1 tw-gap-6 sm:tw-grid-cols-2">
+      <div className="tw-grid tw-w-full tw-max-w-md tw-grid-cols-1 tw-gap-[clamp(0.5rem,1.5vh,1.5rem)]">
         <button
           type="button"
           onClick={onPickWhatsApp}
-          className="tw-group tw-flex tw-flex-col tw-items-center tw-gap-4 tw-rounded-[32px] tw-border tw-border-slate-200 tw-bg-[#FDFBF5] tw-p-10 tw-shadow-sm tw-transition hover:tw-border-emerald-400 hover:tw-shadow-md"
+          className="tw-group tw-flex tw-flex-col tw-items-center tw-gap-[clamp(0.35rem,1vh,1rem)] tw-rounded-[clamp(1rem,3vh,2rem)] tw-border tw-border-slate-200 tw-bg-[#FDFBF5] tw-shadow-sm tw-transition hover:tw-border-emerald-400 hover:tw-shadow-md tw-p-[clamp(0.5rem,2vh,2.5rem)]"
         >
-          <div className="tw-grid tw-h-28 tw-w-28 tw-place-items-center tw-rounded-full tw-bg-emerald-500 tw-text-white tw-shadow-sm tw-transition group-hover:tw-scale-105">
-            <MessageCircle className="tw-h-14 tw-w-14" />
+          <div className="tw-grid tw-place-items-center tw-rounded-full tw-bg-emerald-500 tw-text-white tw-shadow-sm tw-transition group-hover:tw-scale-105 tw-h-[clamp(2.5rem,9vh,7rem)] tw-w-[clamp(2.5rem,9vh,7rem)]">
+            <MessageCircle className="tw-h-[clamp(1.25rem,4.5vh,3.5rem)] tw-w-[clamp(1.25rem,4.5vh,3.5rem)]" />
           </div>
           <div className="tw-text-center">
-            <div className="tw-text-2xl tw-font-bold tw-text-slate-900">
+            <div className="tw-font-bold tw-text-slate-900 tw-text-[clamp(0.9rem,2.1vh,1.5rem)]">
               {T.whatsapp}
             </div>
-            <div className="tw-mt-1 tw-text-sm tw-text-slate-500">
+            <div className="tw-mt-0.5 tw-text-slate-500 tw-text-[clamp(0.65rem,1.4vh,0.875rem)]">
               {T.whatsappSub}
             </div>
           </div>
@@ -544,16 +572,18 @@ function ChooserScreen({
         <button
           type="button"
           onClick={onPickBot}
-          className="tw-group tw-flex tw-flex-col tw-items-center tw-gap-4 tw-rounded-[32px] tw-border tw-border-slate-200 tw-bg-[#FDFBF5] tw-p-10 tw-shadow-sm tw-transition hover:tw-border-indigo-400 hover:tw-shadow-md"
+          className="tw-group tw-flex tw-flex-col tw-items-center tw-gap-[clamp(0.35rem,1vh,1rem)] tw-rounded-[clamp(1rem,3vh,2rem)] tw-border tw-border-slate-200 tw-bg-[#FDFBF5] tw-shadow-sm tw-transition hover:tw-border-indigo-400 hover:tw-shadow-md tw-p-[clamp(0.5rem,2vh,2.5rem)]"
         >
-          <div className="tw-grid tw-h-28 tw-w-28 tw-place-items-center tw-rounded-full tw-bg-indigo-500 tw-text-white tw-shadow-sm tw-transition group-hover:tw-scale-105">
-            <Bot className="tw-h-14 tw-w-14" />
+          <div className="tw-grid tw-place-items-center tw-rounded-full tw-bg-indigo-500 tw-text-white tw-shadow-sm tw-transition group-hover:tw-scale-105 tw-h-[clamp(2.5rem,9vh,7rem)] tw-w-[clamp(2.5rem,9vh,7rem)]">
+            <Bot className="tw-h-[clamp(1.25rem,4.5vh,3.5rem)] tw-w-[clamp(1.25rem,4.5vh,3.5rem)]" />
           </div>
           <div className="tw-text-center">
-            <div className="tw-text-2xl tw-font-bold tw-text-slate-900">
+            <div className="tw-font-bold tw-text-slate-900 tw-text-[clamp(0.9rem,2.1vh,1.5rem)]">
               {T.bot}
             </div>
-            <div className="tw-mt-1 tw-text-sm tw-text-slate-500">{T.botSub}</div>
+            <div className="tw-mt-0.5 tw-text-slate-500 tw-text-[clamp(0.65rem,1.4vh,0.875rem)]">
+              {T.botSub}
+            </div>
           </div>
         </button>
       </div>
@@ -566,73 +596,280 @@ function ChooserScreen({
  * ────────────────────────────────────────────────────────── */
 
 /**
- * Small modal listing the client's cases as buttons. Used by the
- * "select case" quick action when a client has more than one case —
- * the lawyer picks one, the picker closes, and the case's documents
- * modal opens on top of the underlying chat.
+ * Modal listing every case linked to the current client. Each row
+ * shows the case title, its number, a live document-count badge (so
+ * the lawyer can preview what the "new document" step will surface),
+ * and an emerald check on the currently-selected case for orientation.
+ *
+ * Renders all client cases — no status filter — because the user's
+ * mental model is "every case I'm working on for this client should
+ * be one click away from the chat".
  */
 function CasePickerModal({
   cases,
+  documents,
+  currentCaseId,
   lang,
   onPick,
 }: {
   cases: Case[];
+  documents: import('@/types').DocumentRecord[];
+  currentCaseId: string | null;
   lang: 'he' | 'ar';
   onPick: (caseId: string) => void;
 }) {
   const modalStack = useModalStack();
   const close = () => modalStack.close(modalStack.topId() ?? 0);
-  const title = lang === 'ar' ? 'اختر القضية' : 'בחר תיק';
+  // Two-step pattern: tap a row to highlight ("pending"), then confirm
+  // with the bottom "בחר" button. Closing via "בטל" never calls onPick,
+  // so the underlying selection stays untouched.
+  const [pendingId, setPendingId] = useState<string | null>(
+    currentCaseId ?? cases[0]?.id ?? null,
+  );
+  const confirmLabel = lang === 'ar' ? 'اختيار' : 'בחר';
+  const cancelLabel = lang === 'ar' ? 'إلغاء' : 'בטל';
+  const confirm = () => {
+    if (!pendingId) return;
+    // Close first so the modal disappears immediately on click, then
+    // hand the picked id to the parent. `close()` is idempotent so a
+    // caller that also closes the modal will be a harmless no-op.
+    close();
+    onPick(pendingId);
+  };
+  const heading = lang === 'ar' ? 'اختر القضية' : 'בחר תיק';
   const subtitle =
     lang === 'ar'
-      ? 'اختر القضية لعرض مستنداتها'
-      : 'בחר תיק להצגת המסמכים שלו';
+      ? 'كل قضايا الموكل — اختر واحدة لربط مستندات المحادثة بها'
+      : 'כל תיקי הלקוח — בחר אחד כדי לשייך אליו את מסמכי השיחה';
+  const docsLabel = lang === 'ar' ? 'مستندات' : 'מסמכים';
+  const noDocsLabel = lang === 'ar' ? 'لا توجد مستندات' : 'אין מסמכים';
+  const noCasesLabel = lang === 'ar' ? 'لا توجد قضايا' : 'אין תיקים';
+  const pendingTag = lang === 'ar' ? 'مختار' : 'נבחר';
+  const countLabel =
+    lang === 'ar'
+      ? `${cases.length} ${cases.length === 1 ? 'قضية' : 'قضايا'}`
+      : `${cases.length} ${cases.length === 1 ? 'תיק' : 'תיקים'}`;
   return (
     <Modal onClose={close} hideBackBtn>
-      <div className="case-picker-modal">
-        <h2 style={{ textAlign: 'center', margin: '0 0 6px' }}>{title}</h2>
+      <div className="modern-portal-root case-picker-modal-v2" dir={lang === 'ar' ? 'rtl' : 'rtl'}>
         <div
           style={{
-            textAlign: 'center',
-            color: '#64748B',
-            fontSize: 13,
-            margin: '0 0 14px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 'clamp(0.75rem, 2vw, 1rem)',
+            width: 'min(92vw, 28rem)',
+            padding: 'clamp(0.5rem, 2vw, 0.75rem)',
           }}
         >
-          {subtitle}
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {cases.map((c) => {
-            const title =
-              (lang === 'ar' ? c.titleAr || c.title : c.title || c.titleAr) || '-';
-            return (
-              <button
-                key={c.id}
-                type="button"
-                onClick={() => onPick(c.id)}
+          <div style={{ textAlign: 'center' }}>
+            <h2 style={{ margin: 0, fontSize: 'clamp(1.1rem, 3.2vw, 1.35rem)', fontWeight: 800 }}>
+              {heading}
+            </h2>
+            <div
+              style={{
+                marginTop: '0.35rem',
+                color: '#64748B',
+                fontSize: 'clamp(0.78rem, 1.8vw, 0.85rem)',
+                lineHeight: 1.45,
+              }}
+            >
+              {subtitle}
+            </div>
+            <div
+              style={{
+                marginTop: '0.6rem',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                padding: '0.25rem 0.75rem',
+                borderRadius: '999px',
+                background: '#ECFDF5',
+                color: '#047857',
+                fontSize: 'clamp(0.72rem, 1.6vw, 0.78rem)',
+                fontWeight: 700,
+              }}
+            >
+              <span
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  gap: 12,
-                  padding: '12px 14px',
-                  borderRadius: 12,
-                  border: '1px solid #E5E7EB',
-                  background: '#FFFFFF',
-                  cursor: 'pointer',
-                  textAlign: 'start',
+                  width: '0.4rem',
+                  height: '0.4rem',
+                  borderRadius: '999px',
+                  background: '#10B981',
                 }}
-              >
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: 0 }}>
-                  <strong style={{ fontSize: 14 }}>{title}</strong>
-                  <span style={{ fontSize: 12, color: '#64748B' }}>
-                    {(lang === 'ar' ? 'رقم الملف' : 'מספר תיק') + ': ' + (c.caseNumber || '-')}
-                  </span>
-                </div>
-                <i className="fas fa-chevron-left" style={{ color: '#94A3B8' }} />
-              </button>
-            );
-          })}
+              />
+              {countLabel}
+            </div>
+          </div>
+
+          {cases.length === 0 ? (
+            <div
+              style={{
+                padding: '1.25rem',
+                textAlign: 'center',
+                color: '#94A3B8',
+                background: '#F8FAFC',
+                borderRadius: '1rem',
+                fontSize: '0.875rem',
+              }}
+            >
+              {noCasesLabel}
+            </div>
+          ) : (
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.5rem',
+                maxHeight: 'min(60vh, 24rem)',
+                overflowY: 'auto',
+                paddingInlineEnd: '0.25rem',
+              }}
+            >
+              {cases.map((c) => {
+                const title =
+                  (lang === 'ar' ? c.titleAr || c.title : c.title || c.titleAr) ||
+                  c.caseNumber ||
+                  '-';
+                const docCount = documents.filter(
+                  (d) => String(d.caseId || '') === String(c.id),
+                ).length;
+                const isCurrent = pendingId === c.id;
+                return (
+                  <button
+                    key={c.id}
+                    type="button"
+                    onClick={() => setPendingId(c.id)}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: '0.75rem',
+                      padding: '0.85rem 1rem',
+                      borderRadius: '1rem',
+                      border: isCurrent ? '1.5px solid #10B981' : '1px solid #E5E7EB',
+                      background: isCurrent ? '#F0FDF4' : '#FFFFFF',
+                      cursor: 'pointer',
+                      textAlign: 'start',
+                      transition: 'border-color .15s, background .15s',
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isCurrent) {
+                        (e.currentTarget as HTMLButtonElement).style.borderColor = '#A7F3D0';
+                        (e.currentTarget as HTMLButtonElement).style.background = '#F8FAF7';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isCurrent) {
+                        (e.currentTarget as HTMLButtonElement).style.borderColor = '#E5E7EB';
+                        (e.currentTarget as HTMLButtonElement).style.background = '#FFFFFF';
+                      }
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.75rem',
+                        minWidth: 0,
+                        flex: 1,
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: '2.25rem',
+                          height: '2.25rem',
+                          borderRadius: '0.75rem',
+                          background: isCurrent ? '#10B981' : '#F1F5F9',
+                          color: isCurrent ? '#FFFFFF' : '#475569',
+                          display: 'grid',
+                          placeItems: 'center',
+                          flexShrink: 0,
+                        }}
+                      >
+                        {isCurrent ? (
+                          <Check className="tw-h-4 tw-w-4" />
+                        ) : (
+                          <FolderOpen className="tw-h-4 tw-w-4" />
+                        )}
+                      </div>
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: '0.15rem',
+                          minWidth: 0,
+                        }}
+                      >
+                        <strong
+                          style={{
+                            fontSize: 'clamp(0.85rem, 2vw, 0.95rem)',
+                            color: '#0F172A',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                          }}
+                        >
+                          {title}
+                        </strong>
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem',
+                            fontSize: 'clamp(0.7rem, 1.6vw, 0.78rem)',
+                            color: '#64748B',
+                          }}
+                        >
+                          {c.caseNumber && <span>#{c.caseNumber}</span>}
+                          <span
+                            style={{
+                              padding: '0.1rem 0.5rem',
+                              borderRadius: '999px',
+                              background: docCount > 0 ? '#EFF6FF' : '#F1F5F9',
+                              color: docCount > 0 ? '#1D4ED8' : '#94A3B8',
+                              fontWeight: 600,
+                            }}
+                          >
+                            {docCount > 0 ? `${docCount} ${docsLabel}` : noDocsLabel}
+                          </span>
+                          {isCurrent && (
+                            <span style={{ color: '#047857', fontWeight: 700 }}>
+                              · {pendingTag}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <i
+                      className="fas fa-chevron-left"
+                      style={{ color: isCurrent ? '#10B981' : '#CBD5E1', fontSize: '0.75rem' }}
+                    />
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Footer — בטל / בחר. The two buttons inherit the
+           *  `.cpm-footer-btn` styling from globals.css, which has
+           *  light + dark mode variants. */}
+          <div className="cpm-footer">
+            <button
+              type="button"
+              className="cpm-footer-btn cpm-cancel"
+              onClick={close}
+            >
+              {cancelLabel}
+            </button>
+            <button
+              type="button"
+              className="cpm-footer-btn cpm-confirm"
+              onClick={confirm}
+              disabled={!pendingId}
+            >
+              {confirmLabel}
+            </button>
+          </div>
         </div>
       </div>
     </Modal>
@@ -645,6 +882,9 @@ const SAMPLE_MESSAGES = [
   { id: 3, side: 'office', type: 'file', text: 'אישור_קבלת_מסמכים.pdf', time: '11:33' },
   { id: 4, side: 'client', type: 'voice', text: '0:28', time: '11:35' },
   { id: 5, side: 'office', type: 'voice', text: '0:34', time: '11:38' },
+  // Client-uploaded sample file — double-click on it (per spec) to open
+  // the "add document" modal pre-filled with the case + this file.
+  { id: 6, side: 'client', type: 'file', text: 'תלוש_שכר_אחרון.pdf', time: '11:41' },
 ];
 
 type ChatMessage = {
@@ -653,6 +893,14 @@ type ChatMessage = {
   type: 'text' | 'file' | 'voice';
   text: string;
   time: string;
+  /** When the client uploads a real file to the chat (vs. a sample
+   *  message with only a name), we keep the File object on the
+   *  message so the "add document" flow can pre-attach the actual
+   *  bytes instead of a stub placeholder. */
+  file?: File;
+  /** Object URL for a recorded voice clip — the play button on the
+   *  bubble streams the audio from this URL. */
+  voiceUrl?: string;
 };
 
 function ClientChatScreen({
@@ -681,11 +929,21 @@ function ClientChatScreen({
   const firstCase = clientCases[0];
 
   // The currently-selected case for the "select case → new document"
-  // chain. Auto-selected when the client has exactly one case so the
-  // "new document" action works without forcing a no-op picker.
-  const [selectedCaseId, setSelectedCaseId] = useState<string | null>(
-    () => (clientCases.length === 1 ? clientCases[0].id : null),
-  );
+  // chain. Initial value priority:
+  //   1. Case picked via chip on the hub list (`client.initialCaseId`)
+  //   2. Auto-select when the client has exactly one case
+  //   3. null — picker forces a choice before "new document" works
+  const [selectedCaseId, setSelectedCaseId] = useState<string | null>(() => {
+    if (client.initialCaseId && clientCases.some((c) => c.id === client.initialCaseId)) {
+      return client.initialCaseId;
+    }
+    return clientCases.length === 1 ? clientCases[0].id : null;
+  });
+  // Mobile-only floating Quick-Actions panel. Opens/closes via the
+  // round button at the top of the chat. Closing also fires after the
+  // user picks any action so the panel doesn't linger over the chat.
+  const [quickActionsOpen, setQuickActionsOpen] = useState(false);
+  const closeQuickActions = () => setQuickActionsOpen(false);
   const selectedCase = selectedCaseId
     ? clientCases.find((c) => c.id === selectedCaseId) ?? null
     : null;
@@ -694,6 +952,14 @@ function ClientChatScreen({
         ? selectedCase.titleAr || selectedCase.title
         : selectedCase.title || selectedCase.titleAr) || selectedCase.caseNumber || ''
     : '';
+  // Header values: live from the user's current pick (selectedCase) when
+  // present, falling back to whatever the chat opened with (client.caseNo
+  // / client.caseType from the chip click). Without this fallback the
+  // header would empty out on the very first open before any pick.
+  const headerCaseNumber = selectedCase
+    ? selectedCase.caseNumber || ''
+    : client.caseNo;
+  const headerCaseTitle = selectedCase ? selectedCaseLabel : client.caseType;
 
   const openCase = () => {
     if (firstCase) {
@@ -705,14 +971,90 @@ function ClientChatScreen({
   const goToDocuments = () => dispatch({ type: 'SET_TAB', tab: 'documents' });
   const goToTasks = () => dispatch({ type: 'SET_TAB', tab: 'tasks' });
 
+  // "צור משימה" quick action: switch to the tasks tab and open a fresh
+  // TaskModal pre-seeded with the case the lawyer picked via "בחירת תיק".
+  // TaskModal pulls the clientId from the case itself, so passing the
+  // caseId is enough to bind the new task to both client and case.
+  const createTaskForSelectedCase = () => {
+    dispatch({ type: 'SET_TAB', tab: 'tasks' });
+    modalStack.open(
+      <TaskModal preselectedCaseId={selectedCaseId ?? ''} />,
+    );
+  };
+
+  // "צור פגישה" quick action: switch to the calendar tab and open a
+  // fresh NewEventModal pre-seeded with the case (the modal renders
+  // the case + client name as the initial value of its case-search
+  // field). Defaults type to "hearingMeeting" — already the modal's
+  // default when no preselectedType is passed.
+  const createMeetingForSelectedCase = () => {
+    dispatch({ type: 'SET_TAB', tab: 'calendar' });
+    modalStack.open(
+      <NewEventModal preselectedCaseId={selectedCaseId ?? ''} />,
+    );
+  };
+
+  // "צור תשלום" quick action: switch to the finance tab and open the
+  // AddPaymentModal. The modal reads the case from
+  // `state.selectedFinanceCaseId`, so we dispatch SET_FINANCE_CASE
+  // first to bind it to whichever case the lawyer picked via
+  // "בחירת תיק". Without a selected case the modal would auto-close
+  // with an alert, so we guard upfront and surface a friendlier
+  // message in that path.
+  const createPaymentForSelectedCase = () => {
+    if (!selectedCaseId) {
+      window.alert(lang === 'ar' ? 'اختر ملفاً أولاً' : 'יש לבחור תיק קודם');
+      return;
+    }
+    dispatch({ type: 'SET_TAB', tab: 'finance' });
+    dispatch({ type: 'SET_FINANCE_CASE', caseId: selectedCaseId });
+    modalStack.open(<AddPaymentModal />);
+  };
+
+  // Double-click on a client-uploaded file bubble: switch to the
+  // Documents tab and open NewEventModal pre-seeded with the file +
+  // the selected case (which auto-derives the client). The lawyer
+  // can review the case selection in the modal then press "שמור" —
+  // NewEventModal handles the Dropbox upload + document record
+  // creation, so the file ends up persisted to the case docs list.
+  const openAddDocumentFromClientFile = (msg: ChatMessage) => {
+    if (msg.side !== 'client' || msg.type !== 'file') return;
+    if (!selectedCaseId) {
+      window.alert(lang === 'ar' ? 'اختر ملفاً أولاً' : 'יש לבחור תיק קודם');
+      return;
+    }
+    // Real File (from a future client-upload flow) takes priority;
+    // sample messages get a tiny stub File so the modal still pre-fills
+    // the name + the upload box correctly.
+    const file =
+      msg.file ??
+      new File([new Blob([''], { type: 'application/pdf' })], msg.text, {
+        type: 'application/pdf',
+      });
+    dispatch({ type: 'SET_TAB', tab: 'documents' });
+    modalStack.open(
+      <NewEventModal
+        preselectedCaseId={selectedCaseId}
+        preselectedFile={file}
+      />,
+    );
+  };
+
+  // ──────────────────────────────────────────────────────────
+  // Composer helpers: a single nowHHMM() formatter + three send
+  // handlers (text / file / voice). All append office-side bubbles
+  // to the local `messages` state so the chat updates live.
+  // ──────────────────────────────────────────────────────────
+  const nowHHMM = () =>
+    new Date().toLocaleTimeString(lang === 'ar' ? 'ar-EG' : 'he-IL', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+
   // Append an attached document as an outgoing file bubble in the chat.
   // Used by the "new document → pick from list" double-click flow.
   const attachDocumentToChat = (doc: { fileName?: string; title?: string }) => {
     const fileName = doc.fileName || doc.title || (lang === 'ar' ? 'مستند' : 'מסמך');
-    const time = new Date().toLocaleTimeString(lang === 'ar' ? 'ar-EG' : 'he-IL', {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
     setMessages((prev) => [
       ...prev,
       {
@@ -720,26 +1062,78 @@ function ClientChatScreen({
         side: 'office',
         type: 'file',
         text: fileName,
-        time,
+        time: nowHHMM(),
       },
     ]);
   };
 
-  // Step 1: "Select case" — opens the case picker (or auto-picks a
-  // single case) and stores the result in `selectedCaseId`. No documents
-  // modal opens here; that's reserved for step 2.
+  // Send a typed text message (from the composer input or Enter key).
+  const sendChatText = (raw: string) => {
+    const text = raw.trim();
+    if (!text) return;
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: Date.now(),
+        side: 'office',
+        type: 'text',
+        text,
+        time: nowHHMM(),
+      },
+    ]);
+  };
+
+  // Attach a file the lawyer picked via the paperclip button. The
+  // File object is kept on the message so future flows (e.g. saving
+  // it to the case docs list) can use the real bytes.
+  const attachFileToChat = (file: File) => {
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: Date.now(),
+        side: 'office',
+        type: 'file',
+        text: file.name,
+        time: nowHHMM(),
+        file,
+      },
+    ]);
+  };
+
+  // Append a recorded voice clip as an office-side voice bubble. The
+  // Blob is turned into an object URL so the bubble's play button
+  // can stream it back. Duration label is "mm:ss".
+  const attachVoiceToChat = (blob: Blob, durationSeconds: number) => {
+    const url = URL.createObjectURL(blob);
+    const mm = Math.floor(durationSeconds / 60);
+    const ss = String(Math.floor(durationSeconds % 60)).padStart(2, '0');
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: Date.now(),
+        side: 'office',
+        type: 'voice',
+        text: `${mm}:${ss}`,
+        time: nowHHMM(),
+        voiceUrl: url,
+      },
+    ]);
+  };
+
+  // Step 1: "Select case" — opens the case picker showing every case
+  // linked to this client. Always opens (even for a single case) so the
+  // lawyer gets visible confirmation of what's available; without this,
+  // single-case clients made the button feel broken (no UI feedback).
   const onSelectCase = () => {
     if (clientCases.length === 0) {
       modalStack.open(<ClientDetail clientId={client.id} />);
       return;
     }
-    if (clientCases.length === 1) {
-      setSelectedCaseId(clientCases[0].id);
-      return;
-    }
     modalStack.open(
       <CasePickerModal
         cases={clientCases}
+        documents={state.documentsArr}
+        currentCaseId={selectedCaseId}
         lang={lang}
         onPick={(caseId) => {
           setSelectedCaseId(caseId);
@@ -786,6 +1180,8 @@ function ClientChatScreen({
     modalStack.open(
       <CasePickerModal
         cases={clientCases}
+        documents={state.documentsArr}
+        currentCaseId={selectedCaseId}
         lang={lang}
         onPick={(caseId) => {
           setSelectedCaseId(caseId);
@@ -799,9 +1195,6 @@ function ClientChatScreen({
   const T = {
     case: lang === 'ar' ? 'ملف' : 'תיק',
     online: lang === 'ar' ? 'متصل' : 'מחובר',
-    openCase: lang === 'ar' ? 'فتح الملف' : 'פתח תיק',
-    upload: lang === 'ar' ? 'رفع مستند' : 'העלאת מסמך',
-    aiAssist: lang === 'ar' ? 'مساعد AI' : 'AI סוקר',
     today: lang === 'ar' ? 'اليوم' : 'היום',
   };
   return (
@@ -820,30 +1213,10 @@ function ClientChatScreen({
             <div>
               <div className="tw-font-bold">{client.name}</div>
               <div className="tw-text-xs tw-text-slate-500">
-                {T.case} {client.caseNo} · {client.caseType} ·{' '}
+                {T.case} {headerCaseNumber} · {headerCaseTitle} ·{' '}
                 <span className="tw-text-emerald-600">{T.online}</span>
               </div>
             </div>
-          </div>
-          <div className="tw-flex tw-items-center tw-gap-2">
-            <TopAction
-              icon={<FolderOpen className="tw-h-4 tw-w-4" />}
-              label={T.openCase}
-              onClick={openCase}
-            />
-            <TopAction
-              icon={<Upload className="tw-h-4 tw-w-4" />}
-              label={T.upload}
-              onClick={goToDocuments}
-            />
-            <TopAction
-              icon={<Bot className="tw-h-4 tw-w-4" />}
-              label={T.aiAssist}
-              onClick={goToTasks}
-            />
-            <button className="tw-grid tw-h-10 tw-w-10 tw-place-items-center tw-rounded-full hover:tw-bg-slate-100">
-              <MoreVertical className="tw-h-5 tw-w-5" />
-            </button>
           </div>
         </div>
       </header>
@@ -856,30 +1229,90 @@ function ClientChatScreen({
             onSelectCase={onSelectCase}
             selectedCaseLabel={selectedCaseLabel}
             onNewDocument={onNewDocumentFromSelectedCase}
-            onUploadDocument={goToDocuments}
-            onCreateMessage={onBack}
-            onOpenChat={onBack}
+            onCreateMeeting={createMeetingForSelectedCase}
+            onCreateTask={createTaskForSelectedCase}
+            onCreatePayment={createPaymentForSelectedCase}
           />
         </aside>
-        <section className="tw-flex tw-min-h-[calc(100vh-180px)] tw-flex-col tw-bg-[#FDFBF5]">
+        <section className="tw-relative tw-flex tw-min-h-[calc(100vh-180px)] tw-flex-col tw-bg-[#FDFBF5]">
+          {/* MOBILE-ONLY floating "פעולות מהירות" toggle. Sits sticky
+           *  just below the chat header (`top` = approx header height)
+           *  so it stays visible while the message list scrolls. The
+           *  collapsible panel below it mounts only when open and
+           *  uses the same QuickActions component as the desktop
+           *  left sidebar — so behavior is identical. */}
+          <div className="lg:tw-hidden tw-sticky tw-top-[68px] tw-z-30 tw-flex tw-flex-col tw-items-center tw-px-3 tw-pt-2">
+            <button
+              type="button"
+              onClick={() => setQuickActionsOpen((v) => !v)}
+              aria-expanded={quickActionsOpen}
+              className={
+                'tw-flex tw-items-center tw-gap-2 tw-rounded-full tw-px-4 tw-py-2 tw-text-sm tw-font-semibold tw-shadow-lg tw-transition ' +
+                (quickActionsOpen
+                  ? 'tw-bg-emerald-600 tw-text-white'
+                  : 'tw-bg-emerald-500 tw-text-white hover:tw-bg-emerald-600')
+              }
+            >
+              <span>{lang === 'ar' ? 'إجراءات سريعة' : 'פעולות מהירות'}</span>
+              <ChevronDown
+                className={
+                  'tw-h-4 tw-w-4 tw-transition-transform ' +
+                  (quickActionsOpen ? 'tw-rotate-180' : '')
+                }
+              />
+            </button>
+            {quickActionsOpen && (
+              <div className="tw-mt-2 tw-w-full tw-max-w-sm tw-rounded-2xl tw-bg-[#FDFBF5] tw-shadow-2xl tw-ring-1 tw-ring-slate-200">
+                <QuickActions
+                  lang={lang}
+                  onSelectCase={() => {
+                    closeQuickActions();
+                    onSelectCase();
+                  }}
+                  selectedCaseLabel={selectedCaseLabel}
+                  onNewDocument={() => {
+                    closeQuickActions();
+                    onNewDocumentFromSelectedCase();
+                  }}
+                  onCreateMeeting={() => {
+                    closeQuickActions();
+                    createMeetingForSelectedCase();
+                  }}
+                  onCreateTask={() => {
+                    closeQuickActions();
+                    createTaskForSelectedCase();
+                  }}
+                  onCreatePayment={() => {
+                    closeQuickActions();
+                    createPaymentForSelectedCase();
+                  }}
+                />
+              </div>
+            )}
+          </div>
+
           <div className="tw-flex-1 tw-space-y-4 tw-overflow-y-auto tw-p-5">
             <div className="tw-mx-auto tw-w-fit tw-rounded-full tw-bg-slate-100 tw-px-4 tw-py-1 tw-text-xs tw-font-medium tw-text-slate-500">
               {T.today}
             </div>
             {messages.map((m) => (
-              <MessageBubble key={m.id} message={m} />
+              <MessageBubble
+                key={m.id}
+                message={m}
+                onClientFileDoubleClick={openAddDocumentFromClientFile}
+                lang={lang}
+              />
             ))}
           </div>
-          <ChatComposer lang={lang} />
+          <ChatComposer
+            lang={lang}
+            onSubmit={sendChatText}
+            onAttach={attachFileToChat}
+            onRecord={attachVoiceToChat}
+          />
         </section>
         <aside className="tw-hidden lg:tw-block tw-border-r tw-border-slate-200 tw-bg-[#FDFBF5]/70 tw-p-4">
-          <ActionPanel
-            lang={lang}
-            onSendCase={openCase}
-            onCreateMessage={onBack}
-            onUploadDocument={goToDocuments}
-            onReminders={goToTasks}
-          />
+          <ActionPanel lang={lang} selectedCaseId={selectedCaseId} />
         </aside>
       </div>
     </div>
@@ -2236,33 +2669,91 @@ function Avatar({ label }: { label: string }) {
   );
 }
 
+/* Client row redesigned: one card per client, with a dedicated chip per
+ * active case. Each chip opens that case's WhatsApp thread, so clients
+ * with multiple active cases (e.g. alimony + custody) are no longer
+ * collapsed to just the first case. */
+function ClientChatCard({
+  client,
+  caseSingular,
+  casePlural,
+  emptyLabel,
+  onOpen,
+}: {
+  client: ClientRow;
+  caseSingular: string;
+  casePlural: string;
+  emptyLabel: string;
+  onOpen: (caseId?: string) => void;
+}) {
+  const hasCases = client.cases.length > 0;
+  const countLabel = client.cases.length === 1 ? caseSingular : casePlural;
+  return (
+    <div className="tw-group tw-relative tw-overflow-hidden tw-rounded-3xl tw-border tw-border-slate-100 tw-bg-[#FDFBF5] tw-transition hover:tw-border-emerald-200 hover:tw-shadow-sm">
+      <div className="tw-flex tw-items-center tw-gap-3 tw-px-4 tw-pt-4">
+        <button
+          type="button"
+          onClick={() => onOpen(client.cases[0]?.id)}
+          className="tw-flex tw-min-w-0 tw-flex-1 tw-items-center tw-gap-3 tw-text-right"
+          aria-label={client.name}
+        >
+          <Avatar label={client.avatar} />
+          <div className="tw-min-w-0 tw-flex-1">
+            <div className="tw-flex tw-items-center tw-gap-2">
+              <div className="tw-truncate tw-font-semibold">{client.name}</div>
+              {client.status === 'online' && (
+                <span className="tw-h-2 tw-w-2 tw-rounded-full tw-bg-emerald-500" />
+              )}
+            </div>
+            <div className="tw-mt-0.5 tw-truncate tw-text-xs tw-text-slate-400">
+              {hasCases ? `${client.cases.length} ${countLabel}` : emptyLabel}
+            </div>
+          </div>
+        </button>
+        <div className="tw-flex tw-flex-col tw-items-end tw-gap-2 tw-text-xs tw-text-slate-500">
+          <span>{client.time}</span>
+          {client.unread > 0 && (
+            <span className="tw-grid tw-h-6 tw-min-w-[1.5rem] tw-place-items-center tw-rounded-full tw-bg-emerald-500 tw-px-2 tw-text-xs tw-font-bold tw-text-white">
+              {client.unread}
+            </span>
+          )}
+        </div>
+      </div>
+      <div className="tw-flex tw-flex-wrap tw-gap-1.5 tw-px-4 tw-pb-3 tw-pt-3">
+        {hasCases ? (
+          client.cases.map((cs) => (
+            <button
+              key={cs.id}
+              type="button"
+              onClick={() => onOpen(cs.id)}
+              className="tw-inline-flex tw-max-w-full tw-items-center tw-gap-1.5 tw-rounded-full tw-border tw-border-slate-200 tw-bg-white tw-px-3 tw-py-1.5 tw-text-xs tw-font-medium tw-text-slate-700 tw-transition hover:tw-border-emerald-300 hover:tw-bg-emerald-50 hover:tw-text-emerald-700"
+              title={cs.title}
+            >
+              <span className="tw-h-1.5 tw-w-1.5 tw-shrink-0 tw-rounded-full tw-bg-emerald-500" />
+              <span className="tw-truncate">{cs.title}</span>
+              {cs.caseNumber && cs.caseNumber !== cs.title && (
+                <span className="tw-shrink-0 tw-text-[10px] tw-font-normal tw-text-slate-400">
+                  #{cs.caseNumber}
+                </span>
+              )}
+            </button>
+          ))
+        ) : (
+          <span className="tw-inline-flex tw-items-center tw-rounded-full tw-border tw-border-dashed tw-border-slate-200 tw-px-3 tw-py-1.5 tw-text-xs tw-text-slate-400">
+            {emptyLabel}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function FeatureRow({ icon, title }: { icon: ReactNode; title: string }) {
   return (
     <div className="tw-flex tw-items-center tw-justify-between tw-rounded-2xl tw-bg-[#F8F2E4] tw-px-4 tw-py-4">
       <div className="tw-text-sm tw-font-medium">{title}</div>
       <div className="tw-text-indigo-600">{icon}</div>
     </div>
-  );
-}
-
-function TopAction({
-  icon,
-  label,
-  onClick,
-}: {
-  icon: ReactNode;
-  label: string;
-  onClick?: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="tw-hidden sm:tw-flex tw-items-center tw-gap-2 tw-rounded-2xl tw-px-3 tw-py-2 tw-text-xs tw-font-medium hover:tw-bg-slate-100"
-    >
-      {icon}
-      {label}
-    </button>
   );
 }
 
@@ -2306,35 +2797,35 @@ function QuickActions({
   onSelectCase,
   selectedCaseLabel,
   onNewDocument,
-  onUploadDocument,
-  onCreateMessage,
-  onOpenChat,
+  onCreateMeeting,
+  onCreateTask,
+  onCreatePayment,
 }: {
   lang: 'he' | 'ar';
   onSelectCase?: () => void;
   selectedCaseLabel?: string;
   onNewDocument?: () => void;
-  onUploadDocument?: () => void;
-  onCreateMessage?: () => void;
-  onOpenChat?: () => void;
+  onCreateMeeting?: () => void;
+  onCreateTask?: () => void;
+  onCreatePayment?: () => void;
 }) {
   const T = {
     title: lang === 'ar' ? 'إجراءات سريعة' : 'פעולות מהירות',
     selectedCase: lang === 'ar' ? 'الملف المختار' : 'תיק נבחר',
     items: [
       lang === 'ar' ? 'اختيار ملف' : 'בחירת תיק',
-      lang === 'ar' ? 'مستند جديد' : 'מסמך חדש',
-      lang === 'ar' ? 'إنشاء رسالة' : 'צור הודעה',
-      lang === 'ar' ? 'رفع مستند' : 'העלאת מסמך',
-      lang === 'ar' ? 'فتح مكالمة' : 'פתח שיחה',
+      lang === 'ar' ? 'رفع مستند للملف' : 'העלאת מסמך בתיק',
+      lang === 'ar' ? 'إنشاء مهمة' : 'צור משימה',
+      lang === 'ar' ? 'إنشاء موعد' : 'צור פגישה',
+      lang === 'ar' ? 'إنشاء دفعة' : 'צור תשלום',
     ],
   };
   const handlers: Array<(() => void) | undefined> = [
     onSelectCase,
     onNewDocument,
-    onCreateMessage,
-    onUploadDocument,
-    onOpenChat,
+    onCreateTask,
+    onCreateMeeting,
+    onCreatePayment,
   ];
   return (
     <Panel className="tw-rounded-3xl tw-p-4">
@@ -2385,21 +2876,94 @@ function InfoRow({
   );
 }
 
-function MessageBubble({ message }: { message: { side: string; type: string; text: string; time: string } }) {
-  const office = message.side === 'office';
+/* Tiny audio player for voice bubbles — toggles play/pause on the
+ * hidden <audio> element so the lawyer can listen back to a clip
+ * they (or, in a future flow, the client) recorded. Falls back to
+ * just the duration label if no voiceUrl is present (sample data). */
+function VoiceBubble({ message }: { message: ChatMessage }) {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [playing, setPlaying] = useState(false);
+  const toggle = () => {
+    const el = audioRef.current;
+    if (!el || !message.voiceUrl) return;
+    if (playing) {
+      el.pause();
+      setPlaying(false);
+    } else {
+      void el.play().then(() => setPlaying(true));
+    }
+  };
   return (
-    <div className={cn('tw-flex', office ? 'tw-justify-end' : 'tw-justify-start')}>
+    <div className="tw-flex tw-min-w-[220px] tw-items-center tw-gap-3">
+      <button
+        type="button"
+        onClick={toggle}
+        disabled={!message.voiceUrl}
+        className="tw-grid tw-h-9 tw-w-9 tw-place-items-center tw-rounded-full tw-bg-white tw-shadow-sm disabled:tw-opacity-50"
+        aria-label={playing ? 'pause' : 'play'}
+      >
+        {playing ? '⏸' : '▶'}
+      </button>
+      <div className="tw-h-3 tw-flex-1 tw-rounded-full tw-bg-slate-300" />
+      <span className="tw-text-xs">{message.text}</span>
+      {message.voiceUrl && (
+        <audio
+          ref={audioRef}
+          src={message.voiceUrl}
+          onEnded={() => setPlaying(false)}
+          preload="none"
+        />
+      )}
+    </div>
+  );
+}
+
+function MessageBubble({
+  message,
+  onClientFileDoubleClick,
+  lang,
+}: {
+  message: ChatMessage;
+  onClientFileDoubleClick?: (m: ChatMessage) => void;
+  lang?: 'he' | 'ar';
+}) {
+  const office = message.side === 'office';
+  const isClientFile = !office && message.type === 'file';
+  // WhatsApp Hebrew convention: lawyer ("office") bubbles sit on the
+  // RIGHT, client bubbles on the LEFT. The chat container is RTL, so
+  // `tw-justify-start` resolves to visual-right and `tw-justify-end`
+  // to visual-left. The "tail" corner (`rounded-t?-md`) sits on the
+  // side closest to the chat edge so the bubble points at its sender.
+  return (
+    <div className={cn('tw-flex', office ? 'tw-justify-start' : 'tw-justify-end')}>
       <div
         className={cn(
           'tw-max-w-[78%] tw-rounded-3xl tw-p-4 tw-text-sm tw-shadow-sm',
           office
-            ? 'tw-rounded-tl-md tw-bg-blue-50 tw-text-slate-800'
-            : 'tw-rounded-tr-md tw-bg-slate-100 tw-text-slate-700',
+            ? 'tw-rounded-tr-md tw-bg-blue-50 tw-text-slate-800'
+            : 'tw-rounded-tl-md tw-bg-slate-100 tw-text-slate-700',
         )}
       >
         {message.type === 'text' && <div className="tw-leading-7">{message.text}</div>}
         {message.type === 'file' && (
-          <div className="tw-flex tw-items-center tw-gap-3">
+          <div
+            className={cn(
+              'tw-flex tw-items-center tw-gap-3',
+              isClientFile && onClientFileDoubleClick ? 'tw-cursor-pointer' : '',
+            )}
+            onDoubleClick={
+              isClientFile && onClientFileDoubleClick
+                ? () => onClientFileDoubleClick(message)
+                : undefined
+            }
+            title={
+              isClientFile && onClientFileDoubleClick
+                ? lang === 'ar'
+                  ? 'انقر نقرة مزدوجة لإضافة المستند إلى ملف الموكل'
+                  : 'לחיצה כפולה להוספת המסמך לתיק הלקוח'
+                : undefined
+            }
+          >
             <div className="tw-grid tw-h-10 tw-w-10 tw-place-items-center tw-rounded-2xl tw-bg-red-50 tw-text-red-600">
               <FileText className="tw-h-5 tw-w-5" />
             </div>
@@ -2409,15 +2973,7 @@ function MessageBubble({ message }: { message: { side: string; type: string; tex
             </div>
           </div>
         )}
-        {message.type === 'voice' && (
-          <div className="tw-flex tw-min-w-[220px] tw-items-center tw-gap-3">
-            <button className="tw-grid tw-h-9 tw-w-9 tw-place-items-center tw-rounded-full tw-bg-white tw-shadow-sm">
-              ▶
-            </button>
-            <div className="tw-h-3 tw-flex-1 tw-rounded-full tw-bg-slate-300" />
-            <span className="tw-text-xs">{message.text}</span>
-          </div>
-        )}
+        {message.type === 'voice' && <VoiceBubble message={message} />}
         <div className="tw-mt-2 tw-text-left tw-text-xs tw-text-slate-400">{message.time}</div>
       </div>
     </div>
@@ -2429,26 +2985,44 @@ function ChatComposer({
   lang,
   readOnly = false,
   onSubmit,
+  onAttach,
+  onRecord,
 }: {
   bot?: boolean;
   lang: 'he' | 'ar';
   readOnly?: boolean;
   onSubmit?: (text: string) => void;
+  /** Lawyer attached a file via the paperclip button. */
+  onAttach?: (file: File) => void;
+  /** Lawyer finished recording a voice clip via the mic button. */
+  onRecord?: (blob: Blob, durationSeconds: number) => void;
 }) {
   const [text, setText] = useState('');
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const recorderRef = useRef<MediaRecorder | null>(null);
+  const recordedChunksRef = useRef<Blob[]>([]);
+  const recordStartRef = useRef<number>(0);
+  const recordStreamRef = useRef<MediaStream | null>(null);
+
   const readOnlyPlaceholder =
     lang === 'ar'
       ? 'وضع القراءة فقط — لا يمكن إرسال رسائل'
       : 'מצב קריאה בלבד — לא ניתן לשלוח הודעות';
+  const recordingPlaceholder =
+    lang === 'ar' ? '... جاري التسجيل' : '... מקליט';
   const placeholder = readOnly
     ? readOnlyPlaceholder
-    : bot
-      ? lang === 'ar'
-        ? 'اكتب سؤال...'
-        : 'הקלד שאלה...'
-      : lang === 'ar'
-        ? 'اكتب رسالة...'
-        : 'הקלד הודעה...';
+    : isRecording
+      ? recordingPlaceholder
+      : bot
+        ? lang === 'ar'
+          ? 'اكتب سؤال...'
+          : 'הקלד שאלה...'
+        : lang === 'ar'
+          ? 'اكتب رسالة...'
+          : 'הקלד הודעה...';
+
   const submit = () => {
     if (readOnly || !onSubmit) return;
     const v = text.trim();
@@ -2456,19 +3030,121 @@ function ChatComposer({
     onSubmit(v);
     setText('');
   };
+
+  // Paperclip → opens the OS file picker. Hidden input behind it
+  // keeps the styled button clean.
+  const onPaperclipClick = () => {
+    if (readOnly) return;
+    fileInputRef.current?.click();
+  };
+  const onFileSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && onAttach) onAttach(file);
+    // Reset the input so picking the same file twice re-fires onChange.
+    e.target.value = '';
+  };
+
+  // Mic → start MediaRecorder on first click, stop + emit blob on
+  // second click. Requires user permission. Gracefully falls back
+  // with an alert if the browser blocks the mic or the API is
+  // unavailable (older browsers / non-HTTPS contexts).
+  const startRecording = async () => {
+    if (
+      typeof navigator === 'undefined' ||
+      !navigator.mediaDevices?.getUserMedia ||
+      typeof window === 'undefined' ||
+      typeof window.MediaRecorder === 'undefined'
+    ) {
+      window.alert(
+        lang === 'ar'
+          ? 'تسجيل الصوت غير مدعوم في هذا المتصفح'
+          : 'הקלטת קול לא נתמכת בדפדפן זה',
+      );
+      return;
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      recordStreamRef.current = stream;
+      const rec = new MediaRecorder(stream);
+      recordedChunksRef.current = [];
+      rec.ondataavailable = (ev) => {
+        if (ev.data && ev.data.size > 0) recordedChunksRef.current.push(ev.data);
+      };
+      rec.onstop = () => {
+        const blob = new Blob(recordedChunksRef.current, {
+          type: rec.mimeType || 'audio/webm',
+        });
+        const duration = (Date.now() - recordStartRef.current) / 1000;
+        recordStreamRef.current?.getTracks().forEach((t) => t.stop());
+        recordStreamRef.current = null;
+        setIsRecording(false);
+        if (onRecord && blob.size > 0) onRecord(blob, duration);
+      };
+      recorderRef.current = rec;
+      recordStartRef.current = Date.now();
+      rec.start();
+      setIsRecording(true);
+    } catch {
+      window.alert(
+        lang === 'ar'
+          ? 'لا يمكن الوصول إلى الميكروفون'
+          : 'אין גישה למיקרופון',
+      );
+      setIsRecording(false);
+    }
+  };
+  const stopRecording = () => {
+    const rec = recorderRef.current;
+    if (rec && rec.state !== 'inactive') rec.stop();
+  };
+  const onMicClick = () => {
+    if (readOnly) return;
+    if (isRecording) stopRecording();
+    else void startRecording();
+  };
+
   return (
     <div className="tw-border-t tw-border-slate-200 tw-bg-[#FDFBF5] tw-p-4">
       <div className="tw-flex tw-items-center tw-gap-2 tw-rounded-full tw-border tw-border-slate-200 tw-bg-[#FDFBF5] tw-p-2 tw-shadow-sm">
         {!bot && !readOnly && (
-          <button className="tw-grid tw-h-11 tw-w-11 tw-place-items-center tw-rounded-full tw-bg-slate-950 tw-text-white">
+          <button
+            type="button"
+            onClick={onMicClick}
+            title={
+              isRecording
+                ? lang === 'ar'
+                  ? 'إيقاف التسجيل'
+                  : 'עצור הקלטה'
+                : lang === 'ar'
+                  ? 'تسجيل صوت'
+                  : 'הקלט קול'
+            }
+            className={
+              'tw-grid tw-h-11 tw-w-11 tw-place-items-center tw-rounded-full tw-text-white ' +
+              (isRecording
+                ? 'tw-bg-red-600 tw-animate-pulse'
+                : 'tw-bg-slate-950')
+            }
+          >
             <Mic className="tw-h-5 tw-w-5" />
           </button>
         )}
         {!bot && !readOnly && (
-          <button className="tw-grid tw-h-11 tw-w-11 tw-place-items-center tw-rounded-full hover:tw-bg-slate-100">
+          <button
+            type="button"
+            onClick={onPaperclipClick}
+            title={lang === 'ar' ? 'إرفاق ملف' : 'צרף קובץ'}
+            className="tw-grid tw-h-11 tw-w-11 tw-place-items-center tw-rounded-full hover:tw-bg-slate-100"
+          >
             <Paperclip className="tw-h-5 tw-w-5" />
           </button>
         )}
+        <input
+          ref={fileInputRef}
+          type="file"
+          onChange={onFileSelected}
+          style={{ display: 'none' }}
+        />
         <input
           value={text}
           onChange={(e) => setText(e.target.value)}
@@ -2479,14 +3155,14 @@ function ChatComposer({
             }
           }}
           placeholder={placeholder}
-          readOnly={readOnly}
+          readOnly={readOnly || isRecording}
           disabled={readOnly}
           className="tw-h-11 tw-flex-1 tw-bg-transparent tw-px-2 tw-text-sm tw-outline-none placeholder:tw-text-slate-400 disabled:tw-cursor-not-allowed"
         />
         <button
           type="button"
           onClick={submit}
-          disabled={readOnly || !onSubmit}
+          disabled={readOnly || !onSubmit || !text.trim()}
           className="tw-grid tw-h-11 tw-w-11 tw-place-items-center tw-rounded-full tw-bg-slate-950 tw-text-white disabled:tw-cursor-not-allowed disabled:tw-bg-slate-400"
         >
           <Send className="tw-h-5 tw-w-5" />
@@ -2498,74 +3174,211 @@ function ChatComposer({
 
 function ActionPanel({
   lang,
-  onSendCase,
-  onCreateMessage,
-  onUploadDocument,
-  onReminders,
+  selectedCaseId,
 }: {
   lang: 'he' | 'ar';
-  onSendCase?: () => void;
-  onCreateMessage?: () => void;
-  onUploadDocument?: () => void;
-  onReminders?: () => void;
+  selectedCaseId: string | null;
 }) {
-  const { dispatch } = useAppState();
+  const { state, dispatch } = useAppState();
   const goToDocuments = () => dispatch({ type: 'SET_TAB', tab: 'documents' });
   const T = {
-    actions: lang === 'ar' ? 'إجراءات' : 'פעולות',
-    items: [
-      lang === 'ar' ? 'إرسال الملف' : 'שלח את התיק',
-      lang === 'ar' ? 'إنشاء رسالة' : 'צור הודעה',
-      lang === 'ar' ? 'سؤال AI' : 'שאל AI',
-      lang === 'ar' ? 'رفع مستند' : 'העלאת מסמך',
-      lang === 'ar' ? 'تذكيرات' : 'תזכורות',
-    ],
-    sharedFiles: lang === 'ar' ? 'ملفات تمت مشاركتها' : 'קבצים משותפים',
-    docs: ['אישור_הסכם.pdf', 'כתב_תביעה.pdf', 'תצהיר_עדים.pdf'],
+    finance: lang === 'ar' ? 'الوضع المالي' : 'מצב כספי',
+    agreedFee: lang === 'ar' ? 'الأتعاب المتفق عليها' : 'שכר טרחה',
+    balance: lang === 'ar' ? 'الرصيد المتبقي' : 'יתרת חוב',
+    recentPayments:
+      lang === 'ar' ? 'آخر المدفوعات' : 'תשלומים אחרונים',
+    paid: lang === 'ar' ? 'مسدد' : 'שולם במלואו',
+    noPayments:
+      lang === 'ar' ? 'لم يتم تسجيل مدفوعات بعد' : 'טרם נרשמו תשלומים',
+    sharedFiles: lang === 'ar' ? 'أحدث مستندات الملف' : 'מסמכים אחרונים בתיק',
+    noCaseSelected:
+      lang === 'ar'
+        ? 'اختر ملفًا لعرض مستنداته'
+        : 'בחר תיק כדי להציג את מסמכיו',
+    noDocs:
+      lang === 'ar' ? 'لا توجد مستندات في الملف' : 'אין מסמכים בתיק',
   };
-  // "שאל AI" doesn't map to a screen; route it to documents as a safe
-  // fallback so the button still leads somewhere actionable.
-  const handlers: Array<(() => void) | undefined> = [
-    onSendCase,
-    onCreateMessage,
-    goToDocuments,
-    onUploadDocument,
-    onReminders,
-  ];
+
+  // Finance summary for the currently-picked case. Falls back to "no
+  // case" empty state when the lawyer hasn't picked one yet.
+  const selectedCase = selectedCaseId
+    ? state.casesArr.find((c) => String(c.id) === String(selectedCaseId)) ?? null
+    : null;
+  const agreedFee = Number(selectedCase?.agreedFee || 0);
+  const balance = selectedCase ? financeCaseBalance(selectedCase, state.finances) : 0;
+  const recentPayments = useMemo(() => {
+    if (!selectedCaseId) return [];
+    return financePaidItemsForCase(selectedCaseId, state.finances).slice(0, 3);
+  }, [selectedCaseId, state.finances]);
+
+  const fmtMoney = (n: number) => {
+    try {
+      return new Intl.NumberFormat(lang === 'ar' ? 'ar-EG' : 'he-IL', {
+        style: 'currency',
+        currency: 'ILS',
+        maximumFractionDigits: 0,
+      }).format(n);
+    } catch {
+      return '₪' + Math.round(n).toLocaleString();
+    }
+  };
+  const fmtDate = (raw: string | undefined) => {
+    if (!raw) return '';
+    const dt = new Date(raw);
+    if (Number.isNaN(dt.getTime())) return '';
+    return dt.toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'he-IL', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+  };
+
+  // Latest documents for the case the lawyer picked via "בחירת תיק".
+  // Sorted newest-first; capped at 3 per spec so the sidebar stays
+  // compact. Falls back to empty when no case is selected yet.
+  const recentDocs = useMemo(() => {
+    if (!selectedCaseId) return [];
+    const caseDocs = state.documentsArr.filter(
+      (d) => String(d.caseId || '') === String(selectedCaseId),
+    );
+    return [...caseDocs]
+      .sort((a, b) => {
+        const da = new Date(
+          (a as { uploadedAt?: string }).uploadedAt || a.date || '0',
+        ).getTime();
+        const db = new Date(
+          (b as { uploadedAt?: string }).uploadedAt || b.date || '0',
+        ).getTime();
+        return db - da;
+      })
+      .slice(0, 3);
+  }, [selectedCaseId, state.documentsArr]);
+
+  const formatDocDate = (d: { uploadedAt?: string; date?: string }) => {
+    const raw = d.uploadedAt || d.date;
+    if (!raw) return '';
+    const dt = new Date(raw);
+    if (Number.isNaN(dt.getTime())) return '';
+    return dt.toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'he-IL', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+  };
+
   return (
     <div className="tw-space-y-4">
       <Panel className="tw-rounded-3xl tw-p-4">
-        <h3 className="tw-mb-4 tw-font-bold">{T.actions}</h3>
-        {T.items.map((item, i) => (
-          <button
-            key={item}
-            type="button"
-            onClick={handlers[i]}
-            className="tw-flex tw-w-full tw-items-center tw-justify-between tw-border-b tw-border-slate-100 tw-px-1 tw-py-3 tw-text-sm last:tw-border-b-0 hover:tw-text-indigo-700"
-          >
-            {item}
-            <FileText className="tw-h-4 tw-w-4 tw-text-slate-400" />
-          </button>
-        ))}
+        <h3 className="tw-mb-4 tw-font-bold">{T.finance}</h3>
+        {!selectedCaseId ? (
+          <div className="tw-py-3 tw-text-center tw-text-xs tw-text-slate-400">
+            {T.noCaseSelected}
+          </div>
+        ) : (
+          <>
+            {/* KPIs: שכר טרחה + יתרת חוב */}
+            <div className="tw-mb-4 tw-grid tw-grid-cols-2 tw-gap-2">
+              <div className="tw-rounded-2xl tw-bg-emerald-50 tw-px-3 tw-py-3">
+                <div className="tw-text-[11px] tw-font-semibold tw-text-emerald-700">
+                  {T.agreedFee}
+                </div>
+                <div className="tw-mt-1 tw-text-base tw-font-bold tw-text-slate-900">
+                  {fmtMoney(agreedFee)}
+                </div>
+              </div>
+              <div
+                className={
+                  'tw-rounded-2xl tw-px-3 tw-py-3 ' +
+                  (balance > 0 ? 'tw-bg-red-50' : 'tw-bg-slate-100')
+                }
+              >
+                <div
+                  className={
+                    'tw-text-[11px] tw-font-semibold ' +
+                    (balance > 0 ? 'tw-text-red-700' : 'tw-text-slate-500')
+                  }
+                >
+                  {T.balance}
+                </div>
+                <div className="tw-mt-1 tw-text-base tw-font-bold tw-text-slate-900">
+                  {balance > 0 ? fmtMoney(balance) : T.paid}
+                </div>
+              </div>
+            </div>
+
+            {/* 3 last payments */}
+            <div className="tw-mb-2 tw-text-xs tw-font-semibold tw-text-slate-500">
+              {T.recentPayments}
+            </div>
+            {recentPayments.length === 0 ? (
+              <div className="tw-py-2 tw-text-center tw-text-xs tw-text-slate-400">
+                {T.noPayments}
+              </div>
+            ) : (
+              recentPayments.map((p) => {
+                const desc =
+                  (lang === 'ar' ? p.descriptionAr || p.description : p.description) ||
+                  paymentTypeLabel(p.type, lang);
+                return (
+                  <div
+                    key={p.id}
+                    className="tw-flex tw-items-center tw-justify-between tw-gap-3 tw-border-b tw-border-slate-100 tw-py-2 last:tw-border-b-0"
+                  >
+                    <div className="tw-min-w-0 tw-flex-1">
+                      <div className="tw-truncate tw-text-sm tw-font-medium">
+                        {desc}
+                      </div>
+                      <div className="tw-text-xs tw-text-slate-400">
+                        {fmtDate(p.date)}
+                      </div>
+                    </div>
+                    <div className="tw-shrink-0 tw-text-sm tw-font-bold tw-text-emerald-600">
+                      {fmtMoney(Number(p.amount || 0))}
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </>
+        )}
       </Panel>
       <Panel className="tw-rounded-3xl tw-p-4">
         <h3 className="tw-mb-4 tw-font-bold">{T.sharedFiles}</h3>
-        {T.docs.map((doc) => (
-          <button
-            key={doc}
-            type="button"
-            onClick={goToDocuments}
-            className="tw-flex tw-w-full tw-items-center tw-gap-3 tw-border-b tw-border-slate-100 tw-py-3 tw-text-right last:tw-border-b-0 hover:tw-text-indigo-700"
-          >
-            <div className="tw-grid tw-h-9 tw-w-9 tw-place-items-center tw-rounded-xl tw-bg-red-50 tw-text-red-600">
-              <FileText className="tw-h-4 tw-w-4" />
-            </div>
-            <div className="tw-min-w-0 tw-flex-1">
-              <div className="tw-truncate tw-text-sm tw-font-medium">{doc}</div>
-              <div className="tw-text-xs tw-text-slate-400">12.05.2026</div>
-            </div>
-          </button>
-        ))}
+        {!selectedCaseId ? (
+          <div className="tw-py-3 tw-text-center tw-text-xs tw-text-slate-400">
+            {T.noCaseSelected}
+          </div>
+        ) : recentDocs.length === 0 ? (
+          <div className="tw-py-3 tw-text-center tw-text-xs tw-text-slate-400">
+            {T.noDocs}
+          </div>
+        ) : (
+          recentDocs.map((doc) => {
+            const fileName =
+              doc.fileName || doc.title || (lang === 'ar' ? 'مستند' : 'מסמך');
+            return (
+              <button
+                key={doc.id}
+                type="button"
+                onClick={goToDocuments}
+                className="tw-flex tw-w-full tw-items-center tw-gap-3 tw-border-b tw-border-slate-100 tw-py-3 tw-text-right last:tw-border-b-0 hover:tw-text-indigo-700"
+                title={fileName}
+              >
+                <div className="tw-grid tw-h-9 tw-w-9 tw-place-items-center tw-rounded-xl tw-bg-red-50 tw-text-red-600">
+                  <FileText className="tw-h-4 tw-w-4" />
+                </div>
+                <div className="tw-min-w-0 tw-flex-1">
+                  <div className="tw-truncate tw-text-sm tw-font-medium">
+                    {fileName}
+                  </div>
+                  <div className="tw-text-xs tw-text-slate-400">
+                    {formatDocDate(doc)}
+                  </div>
+                </div>
+              </button>
+            );
+          })
+        )}
       </Panel>
     </div>
   );

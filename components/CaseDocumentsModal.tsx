@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useAppState } from '@/hooks/useAppState';
 import { useModalStack } from '@/hooks/useModalStack';
 import { useT } from '@/hooks/useT';
@@ -96,8 +97,24 @@ export function CaseDocumentsModal({ caseId, onPickDocument }: CaseDocumentsModa
   const pickMode = !!onPickDocument;
   const pickBanner =
     lang === 'ar'
-      ? 'وضع الإرفاق بالمحادثة — انقر نقرة مزدوجة على المستند لإرساله إلى المحادثة مع الموكل'
-      : 'מצב צירוף לשיחה — לחיצה כפולה על מסמך תצרף אותו לשיחת WhatsApp עם הלקוח';
+      ? 'وضع الإرفاق بالمحادثة — اختر مستندًا ثم اضغط "اختيار" لإرساله إلى المحادثة'
+      : 'מצב צירוף לשיחה — בחר מסמך ולחץ "בחר" כדי לצרפו לשיחה עם הלקוח';
+  // Two-step pattern in pick mode: tap a row to highlight ("pending"),
+  // then confirm with the bottom "בחר" button. "בטל" closes without
+  // attaching anything to the chat.
+  const [pendingDocId, setPendingDocId] = useState<string | null>(null);
+  const confirmLabel = lang === 'ar' ? 'اختيار' : 'בחר';
+  const cancelLabel = lang === 'ar' ? 'إلغاء' : 'בטל';
+  const confirmPick = () => {
+    if (!pendingDocId) return;
+    const doc = docs.find((d) => String(d.id) === String(pendingDocId));
+    if (!doc) return;
+    // Close first so the modal disappears immediately, then hand the
+    // picked doc to the parent (which appends it to the chat).
+    // `close()` is idempotent so the parent's own close() is harmless.
+    close();
+    onPickDocument!(doc);
+  };
 
   return (
     <Modal onClose={close}>
@@ -153,34 +170,59 @@ export function CaseDocumentsModal({ caseId, onPickDocument }: CaseDocumentsModa
             const titleStr = doc.title || doc.fileName || '';
             const openTitle = lang === 'ar' ? 'افتح المستند' : 'פתח מסמך';
             const pickTitle =
-              lang === 'ar'
-                ? 'إرفاق إلى المحادثة (نقرة مزدوجة)'
-                : 'צירוף לשיחה (לחיצה כפולה)';
-            // In pick mode the double-click attaches the doc to the chat
-            // instead of opening it. The two semantics never run together —
-            // one of them is bound per modal instance.
-            const onRowDoubleClick = pickMode
-              ? () => onPickDocument!(doc)
-              : () => onOpen(doc.relativePath);
+              lang === 'ar' ? 'تحديد المستند' : 'סימון מסמך';
+            // In pick mode a single click highlights the row as the
+            // pending pick. The actual attach happens on the bottom
+            // "בחר" button. Outside pick mode the legacy double-click
+            // on the title opens the file (unchanged).
+            const isPending = pickMode && String(pendingDocId) === String(doc.id);
+            const togglePending = () => setPendingDocId(doc.id);
             return (
               <div
                 key={doc.id}
-                className="case-docs-modal-row"
+                className={
+                  'case-docs-modal-row' + (isPending ? ' is-pending-pick' : '')
+                }
                 data-case-doc-row={doc.id}
+                role={pickMode ? 'button' : undefined}
+                tabIndex={pickMode ? 0 : undefined}
+                aria-pressed={pickMode ? isPending : undefined}
+                onClick={pickMode ? togglePending : undefined}
+                onKeyDown={
+                  pickMode
+                    ? (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          togglePending();
+                        }
+                      }
+                    : undefined
+                }
+                style={pickMode ? { cursor: 'pointer' } : undefined}
+                aria-label={pickMode ? pickTitle + ' — ' + fileName : undefined}
               >
                 <div>
                   <div className="case-docs-modal-title">
-                    <i className="fas fa-file-lines" />
+                    <i
+                      className={
+                        isPending
+                          ? 'fas fa-check-circle'
+                          : 'fas fa-file-lines'
+                      }
+                      style={isPending ? { color: 'var(--primary)' } : undefined}
+                    />
                     <span
                       title={pickMode ? pickTitle : openTitle}
-                      onDoubleClick={onRowDoubleClick}
+                      onDoubleClick={
+                        pickMode ? undefined : () => onOpen(doc.relativePath)
+                      }
                       style={{
                         cursor: 'pointer',
                         color: 'var(--primary)',
                         fontWeight: 700,
                       }}
                       aria-label={
-                        (pickMode ? pickTitle : openTitle) + ' — ' + fileName
+                        pickMode ? undefined : openTitle + ' — ' + fileName
                       }
                     >
                       {titleStr}
@@ -192,7 +234,10 @@ export function CaseDocumentsModal({ caseId, onPickDocument }: CaseDocumentsModa
                     <button
                       type="button"
                       className="case-docs-modal-btn delete"
-                      onClick={() => onDelete(doc.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDelete(doc.id);
+                      }}
                     >
                       <i className="fas fa-trash" />
                       {lang === 'ar' ? 'حذف' : 'מחק'}
@@ -202,6 +247,26 @@ export function CaseDocumentsModal({ caseId, onPickDocument }: CaseDocumentsModa
               </div>
             );
           })}
+        </div>
+      )}
+
+      {pickMode && (
+        <div className="cpm-footer">
+          <button
+            type="button"
+            className="cpm-footer-btn cpm-cancel"
+            onClick={close}
+          >
+            {cancelLabel}
+          </button>
+          <button
+            type="button"
+            className="cpm-footer-btn cpm-confirm"
+            onClick={confirmPick}
+            disabled={!pendingDocId}
+          >
+            {confirmLabel}
+          </button>
         </div>
       )}
     </Modal>
