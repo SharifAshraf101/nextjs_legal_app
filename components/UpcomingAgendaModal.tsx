@@ -56,6 +56,12 @@ export function UpcomingAgendaModal() {
             const client = c ? clientName(c.clientId, state.clients, lang) : '-';
             const caseTitle = c ? caseName(c, lang) : '';
             const caseNumber = c ? ` · ${c.caseNumber}` : '';
+            // Court name follows the case number so the lawyer sees both the
+            // file ID and where the hearing takes place at a glance.
+            const courtName = c
+              ? (lang === 'ar' ? c.courtAr || c.court : c.court || c.courtAr) || ''
+              : '';
+            const courtText = courtName ? ` · ${courtName}` : '';
             const titleText =
               lang === 'ar'
                 ? entry.item.titleAr || entry.item.title
@@ -98,6 +104,7 @@ export function UpcomingAgendaModal() {
                     {eventTypeLabel(String(entry.item.type ?? ''), lang, t)} · {client}
                     {caseTitle ? ' · ' + caseTitle : ''}
                     {caseNumber}
+                    {courtText}
                   </div>
                 </div>
               </div>

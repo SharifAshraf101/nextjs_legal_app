@@ -23,7 +23,7 @@ export function useConflictConfirm(): (
     (existing: CalendarEvent) => {
       const dt = new Date(existing.dateTime || '');
       const dateStr = Number.isFinite(dt.getTime())
-        ? dt.toLocaleString(lang === 'ar' ? 'ar-IL' : 'he-IL', {
+        ? dt.toLocaleString(lang === 'ar' ? 'ar-IL-u-nu-latn' : 'he-IL-u-nu-latn', {
             day: '2-digit',
             month: '2-digit',
             year: 'numeric',

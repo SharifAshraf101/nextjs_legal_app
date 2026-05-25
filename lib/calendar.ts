@@ -60,9 +60,12 @@ export function weekdayNames(lang: Lang, full = false): string[] {
     : ['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ש'];
 }
 
-/** Source line 4069. */
+/** Source line 4069. The `-u-nu-latn` Unicode extension forces
+ *  Western Arabic numerals (0-9) in both languages — without it
+ *  `ar-EG` would format dates/times/numbers with Eastern Arabic
+ *  numerals (٠١٢٣٤٥٦٧٨٩) which the firm does not use. */
 export function calendarLocale(lang: Lang): string {
-  return lang === 'ar' ? 'ar-EG' : 'he-IL';
+  return lang === 'ar' ? 'ar-EG-u-nu-latn' : 'he-IL-u-nu-latn';
 }
 
 /** Source line 4308. */
@@ -340,7 +343,7 @@ export function conflictWarningMessage(
 ): string {
   const dt = new Date(existing.dateTime || '');
   const dateStr = Number.isFinite(dt.getTime())
-    ? dt.toLocaleString(lang === 'ar' ? 'ar-IL' : 'he-IL', {
+    ? dt.toLocaleString(lang === 'ar' ? 'ar-IL-u-nu-latn' : 'he-IL-u-nu-latn', {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',

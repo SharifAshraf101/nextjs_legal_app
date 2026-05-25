@@ -244,7 +244,7 @@ export function CaseDetail({ caseId }: CaseDetailProps) {
         title={lang === 'ar' ? 'رجوع' : 'חזרה'}
         onClick={close}
       >
-        <i className="fas fa-arrow-right" />
+        <i className="fas fa-arrow-left" />
         <span>{lang === 'ar' ? 'رجوع' : 'חזרה'}</span>
       </button>
       <div
@@ -390,7 +390,7 @@ export function CaseDetail({ caseId }: CaseDetailProps) {
                 <BoxedField label={lang === 'ar' ? 'رقم الملف' : 'מספר תיק'} value={c.caseNumber || ''} full />
                 <BoxedField label={lang === 'ar' ? 'المحكمة' : 'בית משפט'} value={court || ''} />
                 <BoxedField
-                  label={lang === 'ar' ? 'الرصيد' : 'יתרת חוב'}
+                  label={lang === 'ar' ? 'الدين' : 'יתרת חוב'}
                   value={money(balance)}
                   balance
                 />
@@ -817,8 +817,8 @@ function CaseTimelineSection({
 
   const labels =
     lang === 'ar'
-      ? { clear: 'إلغاء التحديد', note: 'ملاحظة', call: 'مكالمة', task: 'مهمة', document: 'مستند', open: 'فتح المستند', empty: 'لا توجد إدخالات في الجدول الزمني.' }
-      : { clear: 'ניקוי בחירה', note: 'הערה', call: 'שיחה', task: 'משימה', document: 'מסמך', open: 'פתח מסמך', empty: 'אין רשומות בציר הזמן.' };
+      ? { clear: 'إلغاء التحديد', note: 'ملاحظات', call: 'مكالمات', task: 'مهام', document: 'مستندات', open: 'فتح المستند', empty: 'لا توجد إدخالات في الجدول الزمني.' }
+      : { clear: 'ניקוי בחירה', note: 'הערות', call: 'שיחות', task: 'משימות', document: 'מסמכים', open: 'פתח מסמך', empty: 'אין רשומות בציר הזמן.' };
 
   const FILTERS: { key: TimelineFilterType; cls: string; icon: string }[] = [
     { key: 'note', cls: 'filter-note', icon: 'fa-note-sticky' },
@@ -843,14 +843,6 @@ function CaseTimelineSection({
         />
       </div>
       <div id="caseTimelineFilters" className="case-timeline-filter-bar">
-        <button
-          type="button"
-          className={'case-timeline-filter-btn clear' + (selected.size > 0 ? ' active' : '')}
-          onClick={clear}
-        >
-          <i className="fas fa-rotate-left" />
-          <span>{labels.clear}</span>
-        </button>
         {FILTERS.map((f) => (
           <button
             key={f.key}

@@ -9,6 +9,7 @@ import { clientDisplayName } from '@/lib/clients';
 import { ClientDetail } from './ClientDetail';
 import { CaseDetail } from './CaseDetail';
 import { CalendarEventDetail } from './CalendarEventDetail';
+import { MainScreenBackButton } from './MainScreenBackButton';
 
 /**
  * Port of the global-search aggregator (source line 5487+, `gs*` helpers and
@@ -119,6 +120,7 @@ export function GlobalSearchScreen() {
 
   return (
     <section className="panel global-search-panel">
+      <MainScreenBackButton />
       <div className="panel-body">
         <div className="case-search-wrap">
           <label>{lang === 'ar' ? 'بحث' : 'חיפוש'}</label>

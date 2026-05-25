@@ -14,6 +14,7 @@ import {
 } from '@/lib/documents';
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 import { CaseDetail } from './CaseDetail';
+import { MainScreenBackButton } from './MainScreenBackButton';
 import { NewEventModal } from './NewEventModal';
 import { openDocumentFromLegalOfficeFolder } from '@/lib/disk';
 import type { DocumentRecord } from '@/types';
@@ -140,6 +141,7 @@ export function DocumentsScreen() {
 
   return (
     <section className="panel documents-screen-panel">
+      <MainScreenBackButton />
       <div className="panel-body documents-panel-body">
         <div className="documents-toolbar">
           <div className="case-search-wrap">

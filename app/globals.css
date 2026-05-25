@@ -3247,6 +3247,7 @@ button[data-settings-toggle],
 .sidebar .nav-btn span {
   white-space: nowrap;
 }
+
 /* ── Canonical dark theme ──
  *
  * Mirrors the light :root token set with dark-mode equivalents.
@@ -16491,7 +16492,7 @@ body:has(.content:not(.home-content)){
 .home-grid-wrap .home-greeting,
 .content.home-content .home-grid-wrap .home-greeting{
   position:absolute!important;
-  top:-24px!important;
+  top:calc(-24px + 1cm)!important; /* lowered 1cm per user request */
   left:50%!important;
   transform:translateX(-50%)!important;
   z-index:6!important;
@@ -16507,7 +16508,7 @@ body:has(.content:not(.home-content)){
   .home-grid-wrap .home-greeting,
   .content.home-content .home-grid-wrap .home-greeting{
     font-size:14px!important;
-    top:calc(-10px - 2cm)!important; /* moved up another 2cm per user request */
+    top:calc(-10px - 1cm)!important; /* was -2cm, now -1cm — lowered 1cm */
     padding:0 8px!important;
     /* Strip any inherited writing-mode that might rotate the text */
     writing-mode:horizontal-tb!important;
@@ -20188,14 +20189,72 @@ html body:not(.dark) .calendar-grid .cal-event .cal-event-details {
  * ===================================================================== */
 .calendar-list-title,
 .content.content.content.content:not(.home-content) .calendar-list-title {
-  margin: 0 0 10px 0 !important;
-  padding: 0 !important;
+  /* Title sits flush with the top of the panel-body and has NO
+   * bottom margin — the search box that follows must hug the
+   * back button directly underneath. */
+  margin: 0 !important;
+  /* Inline-end padding (LEFT in RTL) reserved for the back button.
+   * Tightened so the title fills more of the row up to the button. */
+  padding: 0 0 0 clamp(4.75rem, 20vw, 6.5rem) !important;
   text-align: start !important;
-  font-size: 18px !important;
-  font-weight: 950 !important;
+  /* Title vertical-aligns to button by matching its height/centre. */
+  min-height: 38px !important;
+  display: flex !important;
+  align-items: center !important;
+  /* ONE LINE — never wrap. The user asked for the text to fit
+   * on a single row without colliding with the back button. */
+  white-space: nowrap !important;
+  /* Ellipsis as a last-resort safety net if the viewport is
+   * narrower than the smallest readable font can serve. */
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  /* Font shrunk by 5% per user request — was
+   * clamp(0.88rem, 3.9vw, 1.15rem), each value × 0.95. */
+  font-size: clamp(0.84rem, 3.7vw, 1.09rem) !important;
+  font-weight: 900 !important;
   color: #0F172A !important;
   letter-spacing: -0.01em !important;
-  line-height: 1.25 !important;
+  line-height: 1.2 !important;
+}
+/* Inner spans (if any future markup nests the title text) must
+ * inherit nowrap + ellipsis so the constraint cascades through. */
+.calendar-list-title > *,
+.content.content.content.content:not(.home-content) .calendar-list-title > * {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  font-size: inherit !important;
+}
+
+/* Arabic-only: shrink the title another 5% because the Arabic
+ * string is glyph-wider than the Hebrew one and was getting closer
+ * to the back button. Each clamp value × 0.95 from the shared rule
+ * (0.84→0.80, 3.7→3.5, 1.09→1.04). */
+html[lang="ar"] .calendar-list-title,
+html[lang="ar"] .content.content.content.content:not(.home-content) .calendar-list-title {
+  font-size: clamp(0.8rem, 3.5vw, 1.04rem) !important;
+}
+
+/* Calendar panel — pull the panel-body padding-top back to the
+ * button's own inset (12px) so the title sits ON the button row
+ * (rather than below it), and the back button ends up directly
+ * above the search box exactly as requested.
+ *
+ * Targeted via `:has(.calendar-list-title)` so it only applies to
+ * the calendar's list view — other main-screen panels keep their
+ * 56px clearance untouched. */
+.panel:has(> .main-screen-back-btn):has(.calendar-list-title) > .panel-body,
+.panel.panel:has(> .main-screen-back-btn):has(.calendar-list-title) > .panel-body {
+  padding-top: clamp(0.6rem, 2.5vw, 0.85rem) !important;
+}
+
+/* Search input sits IMMEDIATELY under the back-button + title row,
+ * flush against it — no top margin/padding so the input rises up
+ * to touch the row above it. */
+.calendar-list-search-wrap,
+.content.content.content.content:not(.home-content) .calendar-list-search-wrap {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
 }
 
 /* =====================================================================
@@ -20889,6 +20948,102 @@ html[lang="ar"] body .settings-modal-box * {
 }
 
 /* ============================================================ *
+ * Main-tab screens — back-to-home arrow.
+ *
+ * Sits at the TOP-LEFT of every main tab panel (Search, Clients,
+ * Cases, Documents, Calendar, Tasks, Finance). Visual style mirrors
+ * `.client-detail-back-btn` (same 38px height, same icon+label
+ * layout, same hover treatment) but positioned on the left edge
+ * opposite where the screen title sits in the topbar above.
+ *
+ * The host panel must be `position: relative` so the button
+ * anchors to its top-left corner instead of bubbling up to the
+ * viewport. Each of the seven host panels already uses `.panel`
+ * which is relative by default.
+ * ============================================================ */
+.main-screen-back-btn {
+  position: absolute !important;
+  top: 12px !important;
+  left: 12px !important;
+  right: auto !important;
+  z-index: 10 !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  padding: 0 14px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  background: #ffffff !important;
+  border: 1px solid #e2ebf6 !important;
+  border-radius: 10px !important;
+  color: #0f172a !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04) !important;
+  margin: 0 !important;
+  white-space: nowrap !important;
+  transition: background 140ms, color 140ms, border-color 140ms !important;
+}
+.main-screen-back-btn i {
+  color: #0f172a !important;
+  font-size: 14px !important;
+}
+.main-screen-back-btn:hover {
+  background: #111827 !important;
+  color: #ffffff !important;
+  border-color: #111827 !important;
+}
+.main-screen-back-btn:hover i {
+  color: #ffffff !important;
+}
+/* Make the host panel the positioning context for the absolute
+ * back button. The default `.panel` rule has no `position`, so
+ * without this override the button would anchor to <body> and
+ * float at the top-left of the viewport instead of the panel.
+ *
+ * Belt-and-suspenders approach: explicit class-list for the 7
+ * main-screen panels (broad browser support) PLUS a `:has()` rule
+ * for any future screens that pick up the button automatically. */
+.panel.clients-screen-panel,
+.panel.cases-screen-panel,
+.panel.documents-screen-panel,
+.panel.tasks-screen-panel,
+.panel.finance-screen-panel,
+.panel.global-search-panel,
+.panel:has(> .main-screen-back-btn) {
+  position: relative !important;
+}
+
+/* Push the panel content down so the absolute-positioned button
+ * doesn't overlap the search row. 56px = 38 button + 12 top inset
+ * + ~6 breathing room. */
+.panel:has(> .main-screen-back-btn) > .panel-body,
+.panel.panel:has(> .main-screen-back-btn) > .panel-body {
+  padding-top: 56px !important;
+}
+
+/* Dark-mode treatment. */
+body.dark .main-screen-back-btn {
+  background: var(--surface) !important;
+  border-color: var(--line) !important;
+  color: var(--text) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+}
+body.dark .main-screen-back-btn i {
+  color: var(--text) !important;
+}
+body.dark .main-screen-back-btn:hover {
+  background: var(--primary) !important;
+  border-color: var(--primary) !important;
+  color: #ffffff !important;
+}
+body.dark .main-screen-back-btn:hover i {
+  color: #ffffff !important;
+}
+
+/* ============================================================ *
  * ClientDetail + CaseDetail — three-element header row:
  *   ┌──────────────────────────────────────────────────────────┐
  *   │  [X]              פרטי לקוח/תיק          [→ חזרה]        │
@@ -20981,6 +21136,69 @@ html[lang="ar"] body .settings-modal-box * {
   z-index: 70 !important;
   margin: 0 !important;
   float: none !important;
+}
+
+/* ============================================================ *
+ * ClientDetail — POSITION SWAP ONLY.
+ *
+ * Swaps just the left/right anchor between the back-arrow and the
+ * X close — nothing else. Borders, colors, sizes, hover treatment,
+ * etc. all stay exactly as the source rules define them.
+ *
+ * High-specificity selectors here are needed to beat the existing
+ * positioning rules at lines ~20041 (X close, `.ls×8`) and
+ * ~21003 / ~29497 (back-arrow, `.ls×12` / `.ls×13` in dark mode).
+ * Chained `.ls` segments add specificity without changing semantics.
+ * ============================================================ */
+html body .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.client-detail-stable-v229 .client-detail-back-btn,
+html body.dark .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.client-detail-stable-v229 .client-detail-back-btn,
+html body .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.client-details-existing-v137 .client-detail-back-btn,
+html body.dark .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.client-details-existing-v137 .client-detail-back-btn {
+  left: 0.25cm !important;
+  right: auto !important;
+}
+html body .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.client-detail-stable-v229 .modal-box > .modal-close-x,
+html body.dark .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.client-detail-stable-v229 .modal-box > .modal-close-x,
+html body .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.client-mobile-fullscreen .modal-box > .modal-close-x,
+html body.dark .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.client-mobile-fullscreen .modal-box > .modal-close-x,
+html body .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.client-mobile-fullscreen .client-mobile-fullscreen-box > .modal-close-x,
+html body.dark .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.client-mobile-fullscreen .client-mobile-fullscreen-box > .modal-close-x {
+  left: auto !important;
+  right: 0.25cm !important;
+}
+
+/* ============================================================ *
+ * CaseDetail — POSITION SWAP ONLY.
+ *
+ * Same idea as the ClientDetail block above: swap just the
+ * left/right anchor between back-arrow and X close in the
+ * case-detail variants (mobile, desktop, open). No other
+ * styling is touched — borders, colors, sizes, hover states,
+ * etc. all remain as defined by the source rules.
+ *
+ * The chained `.ls` segments beat the existing positioning
+ * rules at lines ~20036 (X close, `.ls×8`) and ~21004
+ * (back-arrow, `.ls×12`).
+ * ============================================================ */
+html body .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.case-detail-mobile-v140 .case-detail-back-btn,
+html body .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.case-detail-desktop-v215 .case-detail-back-btn,
+html body .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.case-detail-open-v210 .case-detail-back-btn,
+html body.dark .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.case-detail-mobile-v140 .case-detail-back-btn,
+html body.dark .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.case-detail-desktop-v215 .case-detail-back-btn,
+html body.dark .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.ls.case-detail-open-v210 .case-detail-back-btn {
+  left: 0.25cm !important;
+  right: auto !important;
+}
+html body .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.case-detail-mobile-v140 .modal-box > .modal-close-x,
+html body .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.case-detail-desktop-v215 .modal-box > .modal-close-x,
+html body .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.case-detail-open-v210 .modal-box > .modal-close-x,
+html body .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.case-detail-mobile-v140 .case-detail-modal-box > .modal-close-x,
+html body .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.case-detail-desktop-v215 .case-detail-modal-box > .modal-close-x,
+html body.dark .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.case-detail-mobile-v140 .modal-box > .modal-close-x,
+html body.dark .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.case-detail-desktop-v215 .modal-box > .modal-close-x,
+html body.dark .modal.ls.ls.ls.ls.ls.ls.ls.ls.ls.case-detail-open-v210 .modal-box > .modal-close-x {
+  left: auto !important;
+  right: 0.25cm !important;
 }
 
 /* Title — vertically centered with the 38px button row. */
@@ -33521,6 +33739,314 @@ html body .client-avatar.client-avatar > .client-avatar-placeholder.client-avata
   -webkit-user-select: none !important;
 }
 
+/* ============================================================ *
+ * Case status pill — RED when the case is closed (inactive).
+ * The label "סגור" / "مغلق" reads as a destructive/locked state,
+ * so we paint it red to signal the critical status and to draw
+ * the lawyer's eye before they click to re-open. Click opens
+ * the professional CaseStatusWarning modal.
+ *
+ * Specificity: the cream/dark-text rule at line ~18927 chains
+ * 14 `.ls` selectors. To beat it for BOTH background AND text
+ * color we self-chain `.case-status-btn` and `.inactive` (same
+ * element matches every chain), pushing specificity well above
+ * 14 classes. The wrapper-element child selector `> *` also
+ * paints any inner span/i in case future markup nests the label.
+ * ============================================================ */
+html body
+  .case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.inactive.inactive.inactive,
+html body
+  .case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.closed.closed.closed {
+  background: #dc2626 !important;
+  background-color: #dc2626 !important;
+  background-image: none !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  border: 1px solid #b91c1c !important;
+  border-color: #b91c1c !important;
+  box-shadow: 0 6px 14px rgba(220, 38, 38, 0.28) !important;
+}
+/* Any child element (span / i) inside the inactive pill inherits
+ * white. Covers the cream-rule's `* { color: ... }` companions. */
+html body
+  .case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.inactive.inactive.inactive
+  *,
+html body
+  .case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.closed.closed.closed
+  * {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* ============================================================ *
+ * Case status pill — GREEN when the case is active (open).
+ * Mirror of the red-inactive rule above. The label "פעיל" /
+ * "نشط" reads as a positive, live-status indicator, so we paint
+ * the pill solid green with high-contrast white text.
+ *
+ * Same self-chain specificity trick (15× .case-status-btn + 3×
+ * .active = 0,18,1) used to beat the 14× .ls cream-text rule at
+ * line ~18927 plus the muted overrides at lines ~13776, ~15047
+ * that would otherwise paint the button as a faint green tint
+ * on a cream background.
+ * ============================================================ */
+html body
+  .case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.active.active.active {
+  background: #16a34a !important;
+  background-color: #16a34a !important;
+  background-image: none !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  border: 1px solid #15803d !important;
+  border-color: #15803d !important;
+  box-shadow: 0 6px 14px rgba(22, 163, 74, 0.28) !important;
+}
+html body
+  .case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.case-status-btn.active.active.active
+  * {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* ============================================================ *
+ * Client detail — per-case status pill (`.client-case-status-btn`)
+ * The same red-for-closed / green-for-active treatment used on
+ * the case-detail toolbar, applied to the small status badge
+ * shown next to each case in the client's cases list.
+ *
+ * Self-chained 15× plus state class 3× — reaches (0, 18, 1),
+ * beating the per-device modal overrides (lines ~12291, ~16288,
+ * ~32395) that paint the badge in the cream/dark theme colours.
+ * ============================================================ */
+html body
+  .client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.closed.closed.closed,
+html body
+  .client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.inactive.inactive.inactive {
+  background: #dc2626 !important;
+  background-color: #dc2626 !important;
+  background-image: none !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  border: 1px solid #b91c1c !important;
+  border-color: #b91c1c !important;
+  box-shadow: 0 6px 14px rgba(220, 38, 38, 0.28) !important;
+}
+html body
+  .client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.closed.closed.closed
+  *,
+html body
+  .client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.inactive.inactive.inactive
+  * {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+html body
+  .client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.active.active.active {
+  background: #16a34a !important;
+  background-color: #16a34a !important;
+  background-image: none !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  border: 1px solid #15803d !important;
+  border-color: #15803d !important;
+  box-shadow: 0 6px 14px rgba(22, 163, 74, 0.28) !important;
+}
+html body
+  .client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.client-case-status-btn.active.active.active
+  * {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* ============================================================ *
+ * Finance screen — empty "אין" / "لا يوجد" cell alignment.
+ *
+ * `.finance-last-payment` carries `direction: ltr` because the
+ * normal content is a money + date string ("₪500 · 12/03/2026")
+ * that must read left-to-right even in Hebrew/Arabic. But when
+ * the cell is just the noPay word ("אין" / "لا يوجد"), the LTR
+ * direction left-aligns it inside its cell while the RTL header
+ * stays right-aligned — they end up on opposite edges of the
+ * same column. This restores RTL for the empty state so the
+ * label sits directly UNDER its header.
+ * ============================================================ */
+html body .finance-table td.finance-last-payment.finance-last-payment-empty {
+  direction: rtl !important;
+  unicode-bidi: plaintext !important;
+  text-align: center !important;
+}
+
+/* ============================================================ *
+ * Finance screen — DESKTOP: hide the 3-span info-box captions.
+ * On desktop the table's <thead> is fully visible and labels the
+ * columns directly, so the captions row above became redundant
+ * (and visually noisy). It stays visible on mobile where the
+ * <thead> is hidden by the card-stacking rule at line ~4667.
+ * ============================================================ */
+@media (min-width: 621px) {
+  html body .finance-screen-panel .finance-info-box {
+    display: none !important;
+  }
+}
+
+/* ============================================================ *
+ * Finance screen — MOBILE + ARABIC: fit captions and amounts.
+ *
+ * The Arabic captions ("أتعاب متفق عليها", "تاريخ وموعد آخر دفعة",
+ * "الدين المتبقي للأتعاب") are glyph-wider than the Hebrew ones
+ * and were overflowing the 3-span info row on phones. The amount
+ * cells (agreed fee / last payment / balance) read with currency
+ * + date and also need to fit in narrow column cards.
+ *
+ * Fluid units only. Beats the inline `font-size: 15` on the info
+ * box via `!important` (legitimate use: defeating inline styles).
+ * ============================================================ */
+@media (max-width: 620px) {
+  html[lang="ar"] body .finance-screen-panel .finance-info-box {
+    gap: clamp(0.35rem, 1.4vw, 0.6rem) !important;
+    font-size: clamp(0.55rem, 2.3vw, 0.75rem) !important;
+    flex-wrap: nowrap !important;
+    overflow: hidden !important;
+  }
+  html[lang="ar"] body .finance-screen-panel .finance-info-box > span {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    font-size: inherit !important;
+    line-height: 1.15 !important;
+    white-space: normal !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  /* Table cells — agreed fee, last payment, balance. The first
+   * cell holds the case-name + sub-line, so we scope the shrink
+   * to the AMOUNT cells (.amount, .finance-last-payment,
+   * .finance-balance-red) to keep the title readable. */
+  html[lang="ar"] body .finance-screen-panel .finance-table td.amount,
+  html[lang="ar"] body .finance-screen-panel .finance-table td.finance-last-payment,
+  html[lang="ar"] body .finance-screen-panel .finance-table td.finance-balance-red {
+    font-size: clamp(0.6rem, 2.5vw, 0.8rem) !important;
+    line-height: 1.2 !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+  }
+  /* Case-name + sub-meta inside the first cell — slightly smaller
+   * so the case-card height stays compact alongside the amounts. */
+  html[lang="ar"] body .finance-screen-panel .finance-table td .row-title {
+    font-size: clamp(0.7rem, 2.9vw, 0.9rem) !important;
+    line-height: 1.2 !important;
+  }
+  html[lang="ar"] body .finance-screen-panel .finance-table td .sub {
+    font-size: clamp(0.55rem, 2.2vw, 0.72rem) !important;
+    line-height: 1.2 !important;
+  }
+}
+
+/* ============================================================ *
+ * Case timeline filters — MOBILE: 5 equal-width chips on ONE row.
+ * Base CSS uses `flex-wrap:nowrap; overflow-x:auto`, which lets
+ * the chips scroll horizontally on narrow phones. The user wants
+ * all 5 (clear + note + call + task + document) visible at once,
+ * symmetric, no overflow. Solution: stretch the row to fill the
+ * available width and give each chip `flex:1 1 0` so they share
+ * the row in equal slices. All sizes are fluid (rem/vw/clamp)
+ * per the project rule against hardcoded px.
+ * ============================================================ */
+@media (max-width: 620px) {
+  /* Selectors carry the .modal.case-detail-mobile-v140 and
+   * .modal.case-detail-desktop-v215 wrappers so this beats the
+   * mobile-modal rule at line ~23328 which sets a much larger
+   * font/padding. Bare-page selectors stay listed too for any
+   * future non-modal mount of CaseDetail. */
+  html body .case-timeline-filter-bar,
+  html body .modal.case-detail-mobile-v140 .case-timeline-filter-bar,
+  html body .modal.case-detail-desktop-v215 .case-timeline-filter-bar {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow: hidden !important;
+    width: 100% !important;
+    gap: clamp(0.15rem, 0.8vw, 0.35rem) !important;
+    align-items: stretch !important;
+  }
+  html body .case-timeline-filter-bar .case-timeline-filter-btn,
+  html body .modal.case-detail-mobile-v140 .case-timeline-filter-btn,
+  html body .modal.case-detail-desktop-v215 .case-timeline-filter-btn {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    width: auto !important;
+    padding: clamp(0.2rem, 0.9vw, 0.35rem) clamp(0.08rem, 0.4vw, 0.2rem) !important;
+    /* Smaller, tighter font so the longest label
+     * ("ביטול הסינון" / "إلغاء التحديد") fits inside its 1/5 slice. */
+    font-size: clamp(0.38rem, 1.5vw, 0.55rem) !important;
+    line-height: 1.05 !important;
+    letter-spacing: 0 !important;
+    gap: clamp(0.08rem, 0.35vw, 0.2rem) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    overflow: hidden !important;
+  }
+  html body .case-timeline-filter-bar .case-timeline-filter-btn i,
+  html body .modal.case-detail-mobile-v140 .case-timeline-filter-btn i,
+  html body .modal.case-detail-desktop-v215 .case-timeline-filter-btn i {
+    /* Icon also shrinks so it stays in proportion with the label. */
+    font-size: clamp(0.48rem, 1.8vw, 0.7rem) !important;
+    flex: 0 0 auto !important;
+  }
+  html body .case-timeline-filter-bar .case-timeline-filter-btn span,
+  html body .modal.case-detail-mobile-v140 .case-timeline-filter-btn span,
+  html body .modal.case-detail-desktop-v215 .case-timeline-filter-btn span {
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    min-width: 0 !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+  }
+  /* Override the Hebrew/Arabic global font-size that targets
+   * .case-timeline-filter-btn unconditionally (lines ~27831,
+   * ~28166). The lang selector has specificity (0,2,1); the
+   * `.modal.<v>` chain here reaches (0,3,2), so we win. */
+  html[lang="he"] body .modal.case-detail-mobile-v140 .case-timeline-filter-btn,
+  html[lang="he"] body .modal.case-detail-desktop-v215 .case-timeline-filter-btn,
+  html[lang="ar"] body .modal.case-detail-mobile-v140 .case-timeline-filter-btn,
+  html[lang="ar"] body .modal.case-detail-desktop-v215 .case-timeline-filter-btn {
+    font-size: clamp(0.38rem, 1.5vw, 0.55rem) !important;
+    line-height: 1.05 !important;
+  }
+}
+
+/* ============================================================ *
+ * Case timeline filter bar — remove the surrounding box.
+ * The 5 filter chips (clear / note / call / task / document)
+ * keep their individual pill styling, but the wrapper that
+ * gave them a beige/grey box (background + border + radius +
+ * padding) is stripped. Beats the chained .ls overrides, the
+ * desktop/mobile modal overrides, the .content overrides, and
+ * the dark-mode overrides — all selectors layered for safety.
+ * ============================================================ */
+html body .case-timeline-filter-bar,
+html body.dark .case-timeline-filter-bar,
+html body .modal .case-timeline-filter-bar,
+html body.dark .modal .case-timeline-filter-bar,
+html body .modal.ls.ls.ls.ls.ls.ls .case-timeline-filter-bar,
+html body .modal.case-detail-desktop-v215 .case-timeline-filter-bar,
+html body .modal.case-detail-mobile-v140 .case-timeline-filter-bar,
+html body .content.content.content.content:not(.home-content) .case-timeline-filter-bar,
+html body .case-detail-modal-box #caseTimelineFilters .case-timeline-filter-bar,
+html body.dark.dark .modal.case-detail-desktop-v215 .case-timeline-filter-bar,
+html body.dark.dark .modal.case-detail-mobile-v140 .case-timeline-filter-bar {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: 0 !important;
+  border-color: transparent !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+
+
 /* 2) Ensure the avatar itself clips anything that would spill
  *    beyond its rounded edge. */
 html body .client-avatar.client-avatar.client-avatar.client-avatar.client-avatar.client-avatar:has(> .client-avatar-placeholder) {
@@ -34813,5 +35339,423 @@ html body .modern-portal-root input::placeholder {
   opacity: 1 !important;
   text-align: right !important;
   direction: rtl !important;
+}
+
+/* ================================================================ *
+ * MINIMALIST home style — activated via body[data-home-style="minimalist"]
+ * (set in hooks/useAppState when the user picks "עיצוב מינימליסטי"
+ * in Settings).
+ *
+ * Two coordinated visual changes:
+ *  (a) Home cards lose their colored gradient backgrounds. Each
+ *      card's border + icon + text are repainted in that card's
+ *      own brand color (sky / violet / amber / teal) so the card
+ *      keeps its identity without the heavy fill.
+ *  (b) Sidebar nav icons swap from FA glyphs to the SVG set at
+ *      /public/icons/nav-*.svg.
+ *
+ * Modern and classic modes are NOT affected — those CSS rules
+ * continue to win because they have no `[data-home-style=...]`
+ * attribute filter on this selector chain.
+ * ================================================================ */
+
+/* — (a) Home cards: strip gradient, keep colored border + brand
+ *   text + brand icon. Each card has its own nth-child color. — */
+body[data-home-style="minimalist"] .content.home-content .home-card-grid .home-card:nth-child(1),
+body[data-home-style="minimalist"] .content.home-content .home-card-grid .home-card:nth-child(2),
+body[data-home-style="minimalist"] .content.home-content .home-card-grid .home-card:nth-child(3),
+body[data-home-style="minimalist"] .content.home-content .home-card-grid .home-card:nth-child(4) {
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+body[data-home-style="minimalist"] .content.home-content .home-card-grid .home-card::after {
+  display: none !important;
+}
+
+/* Card 1 — Sky (clients). */
+body[data-home-style="minimalist"] .content.home-content .home-card-grid .home-card:nth-child(1) h2,
+body[data-home-style="minimalist"] .content.home-content .home-card-grid .home-card:nth-child(1) p {
+  color: #0284c7 !important;
+  text-shadow: none !important;
+}
+body[data-home-style="minimalist"] .content.home-content .home-card-grid .home-card:nth-child(1) .card-icon {
+  background: transparent !important;
+  background-image: none !important;
+  border: 1.5px solid #38bdf8 !important;
+  color: #0284c7 !important;
+  box-shadow: none !important;
+}
+body[data-home-style="minimalist"] .content.home-content .home-card-grid .home-card:nth-child(1) .card-icon i,
+body[data-home-style="minimalist"] .home-content .home-card-grid .home-card:nth-child(1) .card-icon i {
+  color: #0284c7 !important;
+}
+
+/* Card 2 — Violet (cases). */
+body[data-home-style="minimalist"] .content.home-content .home-card-grid .home-card:nth-child(2) h2,
+body[data-home-style="minimalist"] .content.home-content .home-card-grid .home-card:nth-child(2) p {
+  color: #6d28d9 !important;
+  text-shadow: none !important;
+}
+body[data-home-style="minimalist"] .content.home-content .home-card-grid .home-card:nth-child(2) .card-icon {
+  background: transparent !important;
+  background-image: none !important;
+  border: 1.5px solid #8b5cf6 !important;
+  color: #6d28d9 !important;
+  box-shadow: none !important;
+}
+body[data-home-style="minimalist"] .content.home-content .home-card-grid .home-card:nth-child(2) .card-icon i,
+body[data-home-style="minimalist"] .home-content .home-card-grid .home-card:nth-child(2) .card-icon i {
+  color: #6d28d9 !important;
+}
+
+/* Card 3 — Amber (calendar). */
+body[data-home-style="minimalist"] .content.home-content .home-card-grid .home-card:nth-child(3) h2,
+body[data-home-style="minimalist"] .content.home-content .home-card-grid .home-card:nth-child(3) p {
+  color: #b45309 !important;
+  text-shadow: none !important;
+}
+body[data-home-style="minimalist"] .content.home-content .home-card-grid .home-card:nth-child(3) .card-icon {
+  background: transparent !important;
+  background-image: none !important;
+  border: 1.5px solid #f59e0b !important;
+  color: #b45309 !important;
+  box-shadow: none !important;
+}
+body[data-home-style="minimalist"] .content.home-content .home-card-grid .home-card:nth-child(3) .card-icon i,
+body[data-home-style="minimalist"] .home-content .home-card-grid .home-card:nth-child(3) .card-icon i {
+  color: #b45309 !important;
+}
+
+/* Card 4 — Teal (portal). */
+body[data-home-style="minimalist"] .content.home-content .home-card-grid .home-card:nth-child(4) h2,
+body[data-home-style="minimalist"] .content.home-content .home-card-grid .home-card:nth-child(4) p {
+  color: #0f766e !important;
+  text-shadow: none !important;
+}
+body[data-home-style="minimalist"] .content.home-content .home-card-grid .home-card:nth-child(4) .card-icon {
+  background: transparent !important;
+  background-image: none !important;
+  border: 1.5px solid #14b8a6 !important;
+  color: #0f766e !important;
+  box-shadow: none !important;
+}
+body[data-home-style="minimalist"] .content.home-content .home-card-grid .home-card:nth-child(4) .card-icon i,
+body[data-home-style="minimalist"] .home-content .home-card-grid .home-card:nth-child(4) .card-icon i {
+  color: #0f766e !important;
+}
+
+/* — (b) Sidebar icons: swap FA glyphs for SVG files via
+ *   background-image. The FA glyph itself is hidden with
+ *   `font-size: 0 / color: transparent` so the original `<i>`
+ *   structure (and any active-state coloring) still works.
+ *
+ *   Specificity-wise this beats the existing
+ *   `.sidebar×4 .nav-btn i { background: transparent !important }`
+ *   shorthand at line ~15779: the body attribute selector adds
+ *   one more attribute-match to push past the chained .sidebar
+ *   classes when combined with the !important on every property
+ *   below. — */
+body[data-home-style="minimalist"] .sidebar .nav-btn i.nav-icon-home,
+body[data-home-style="minimalist"] .sidebar .nav-btn i.nav-icon-search,
+body[data-home-style="minimalist"] .sidebar .nav-btn i.nav-icon-contacts,
+body[data-home-style="minimalist"] .sidebar .nav-btn i.nav-icon-cases,
+body[data-home-style="minimalist"] .sidebar .nav-btn i.nav-icon-documents,
+body[data-home-style="minimalist"] .sidebar .nav-btn i.nav-icon-calendar,
+body[data-home-style="minimalist"] .sidebar .nav-btn i.nav-icon-tasks,
+body[data-home-style="minimalist"] .sidebar .nav-btn i.nav-icon-finance,
+body[data-home-style="minimalist"] .sidebar .nav-btn i.nav-icon-portal,
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn i.nav-icon-home,
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn i.nav-icon-search,
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn i.nav-icon-contacts,
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn i.nav-icon-cases,
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn i.nav-icon-documents,
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn i.nav-icon-calendar,
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn i.nav-icon-tasks,
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn i.nav-icon-finance,
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn i.nav-icon-portal {
+  background-color: transparent !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: contain !important;
+  width: 36px !important;
+  min-width: 36px !important;
+  height: 36px !important;
+  border-radius: 0 !important;
+  /* Hide the FA glyph so only the SVG shows. */
+  font-size: 0 !important;
+  color: transparent !important;
+  line-height: 0 !important;
+}
+
+/* Per-tab background-image. High-specificity selectors so they
+ * beat any inactive/active state rules below them in the cascade. */
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn i.nav-icon-home {
+  background-image: url('/icons/nav-home.svg') !important;
+}
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn i.nav-icon-search {
+  background-image: url('/icons/nav-search.svg') !important;
+}
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn i.nav-icon-contacts {
+  background-image: url('/icons/nav-clients.svg') !important;
+}
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn i.nav-icon-cases {
+  background-image: url('/icons/nav-cases.svg') !important;
+}
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn i.nav-icon-documents {
+  background-image: url('/icons/nav-documents.svg') !important;
+}
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn i.nav-icon-calendar {
+  background-image: url('/icons/nav-calendar.svg') !important;
+}
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn i.nav-icon-tasks {
+  background-image: url('/icons/nav-tasks.svg') !important;
+}
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn i.nav-icon-finance {
+  background-image: url('/icons/nav-finance.svg') !important;
+}
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn i.nav-icon-portal {
+  background-image: url('/icons/nav-portal.svg') !important;
+}
+
+/* Active state on minimalist sidebar — make the active button
+ * look identical to inactive. The SVG icons ship with a white
+ * background rect, so any colored pill behind them (on the BUTTON
+ * or the <i>) would show as a white square instead of the icon.
+ *
+ * Two-level override:
+ *  (1) Strip the colored backdrop from the active BUTTON itself
+ *      (the rule at line ~17704 paints `background: var(--accent)`).
+ *  (2) Strip the dark pill from the active <i> (line ~15833 uses
+ *      `background:#0F172A` shorthand). */
+body[data-home-style="minimalist"] .sidebar .nav-btn.active,
+body[data-home-style="minimalist"] .sidebar .nav-btn[aria-current="page"],
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn.active,
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn[aria-current="page"],
+body[data-home-style="minimalist"] aside.sidebar .nav-btn.active,
+body[data-home-style="minimalist"] aside.sidebar .nav-btn[aria-current="page"] {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn.active i,
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn[aria-current="page"] i {
+  background-color: transparent !important;
+  border-radius: 0 !important;
+}
+
+/* Re-assert each per-icon background-image specifically for the
+ * active state, in case the active <i> shorthand at line ~15833
+ * (`background:#0F172A !important`) wipes background-image to
+ * none and our per-icon selector doesn't quite outscore it. */
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn.active i.nav-icon-home,
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn[aria-current="page"] i.nav-icon-home {
+  background-image: url('/icons/nav-home.svg') !important;
+}
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn.active i.nav-icon-search,
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn[aria-current="page"] i.nav-icon-search {
+  background-image: url('/icons/nav-search.svg') !important;
+}
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn.active i.nav-icon-contacts,
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn[aria-current="page"] i.nav-icon-contacts {
+  background-image: url('/icons/nav-clients.svg') !important;
+}
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn.active i.nav-icon-cases,
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn[aria-current="page"] i.nav-icon-cases {
+  background-image: url('/icons/nav-cases.svg') !important;
+}
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn.active i.nav-icon-documents,
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn[aria-current="page"] i.nav-icon-documents {
+  background-image: url('/icons/nav-documents.svg') !important;
+}
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn.active i.nav-icon-calendar,
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn[aria-current="page"] i.nav-icon-calendar {
+  background-image: url('/icons/nav-calendar.svg') !important;
+}
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn.active i.nav-icon-tasks,
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn[aria-current="page"] i.nav-icon-tasks {
+  background-image: url('/icons/nav-tasks.svg') !important;
+}
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn.active i.nav-icon-finance,
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn[aria-current="page"] i.nav-icon-finance {
+  background-image: url('/icons/nav-finance.svg') !important;
+}
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn.active i.nav-icon-portal,
+body[data-home-style="minimalist"] .sidebar.sidebar.sidebar.sidebar .nav-btn[aria-current="page"] i.nav-icon-portal {
+  background-image: url('/icons/nav-portal.svg') !important;
+}
+
+/* Mobile bottom nav — same SVG swap. Uses 5 chained `.mobile-nav`
+ * to beat the existing 4-chain color rules at line ~21174 and
+ * the active-state halo at line ~21197. */
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn i.nav-icon-home,
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn i.nav-icon-search,
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn i.nav-icon-contacts,
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn i.nav-icon-cases,
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn i.nav-icon-documents,
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn i.nav-icon-calendar,
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn i.nav-icon-tasks,
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn i.nav-icon-finance,
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn i.nav-icon-portal {
+  background-color: transparent !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: contain !important;
+  width: 32px !important;
+  min-width: 32px !important;
+  max-width: 32px !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  max-height: 32px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  /* Hide the FA glyph so only the SVG renders. */
+  font-size: 0 !important;
+  color: transparent !important;
+  line-height: 0 !important;
+}
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn i.nav-icon-home {
+  background-image: url('/icons/nav-home.svg') !important;
+}
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn i.nav-icon-search {
+  background-image: url('/icons/nav-search.svg') !important;
+}
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn i.nav-icon-contacts {
+  background-image: url('/icons/nav-clients.svg') !important;
+}
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn i.nav-icon-cases {
+  background-image: url('/icons/nav-cases.svg') !important;
+}
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn i.nav-icon-documents {
+  background-image: url('/icons/nav-documents.svg') !important;
+}
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn i.nav-icon-calendar {
+  background-image: url('/icons/nav-calendar.svg') !important;
+}
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn i.nav-icon-tasks {
+  background-image: url('/icons/nav-tasks.svg') !important;
+}
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn i.nav-icon-finance {
+  background-image: url('/icons/nav-finance.svg') !important;
+}
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn i.nav-icon-portal {
+  background-image: url('/icons/nav-portal.svg') !important;
+}
+
+/* Active state on mobile nav minimalist — strip the tinted halo
+ * (line ~21197) and any colored backdrop so the SVG (which has a
+ * white background rect) doesn't appear as a white square. */
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn.active > i,
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn[aria-current="page"] > i {
+  background-color: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+}
+
+/* Re-assert per-icon background-image in active state too. */
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn.active i.nav-icon-home,
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn[aria-current="page"] i.nav-icon-home {
+  background-image: url('/icons/nav-home.svg') !important;
+}
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn.active i.nav-icon-search,
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn[aria-current="page"] i.nav-icon-search {
+  background-image: url('/icons/nav-search.svg') !important;
+}
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn.active i.nav-icon-contacts,
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn[aria-current="page"] i.nav-icon-contacts {
+  background-image: url('/icons/nav-clients.svg') !important;
+}
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn.active i.nav-icon-cases,
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn[aria-current="page"] i.nav-icon-cases {
+  background-image: url('/icons/nav-cases.svg') !important;
+}
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn.active i.nav-icon-documents,
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn[aria-current="page"] i.nav-icon-documents {
+  background-image: url('/icons/nav-documents.svg') !important;
+}
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn.active i.nav-icon-calendar,
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn[aria-current="page"] i.nav-icon-calendar {
+  background-image: url('/icons/nav-calendar.svg') !important;
+}
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn.active i.nav-icon-tasks,
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn[aria-current="page"] i.nav-icon-tasks {
+  background-image: url('/icons/nav-tasks.svg') !important;
+}
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn.active i.nav-icon-finance,
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn[aria-current="page"] i.nav-icon-finance {
+  background-image: url('/icons/nav-finance.svg') !important;
+}
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn.active i.nav-icon-portal,
+body[data-home-style="minimalist"] .mobile-nav.mobile-nav.mobile-nav.mobile-nav.mobile-nav .nav-btn[aria-current="page"] i.nav-icon-portal {
+  background-image: url('/icons/nav-portal.svg') !important;
+}
+
+/* ================================================================ *
+ * MINIMALIST mode — main-screen back button visibility fix v2.
+ *
+ * The previous attempt (white pill + dark text) kept the button
+ * blending into the cream/white minimalist panel background. The
+ * user reported it stayed invisible. This v2 flips the palette to
+ * a SOLID DARK pill with WHITE text + arrow — guaranteed contrast
+ * against any panel surface (cream, white, or dark mode slate).
+ *
+ * Specificity is pushed beyond any plausible competing rule by
+ * self-chaining `.main-screen-back-btn` 6× and `[data-home-style=
+ * "minimalist"]` 2× on the body. This reaches (0, 11, 1) for the
+ * button and (0, 11, 2) for the inner i/span — well above the
+ * 14×.ls rules that haunt other layers of this stylesheet, and
+ * comfortably above the base (0, 1, 0) rule at line 20906.
+ *
+ * The child selector also covers .fas (Font Awesome arrow) and
+ * every descendant via `*` to defeat any inherited white from an
+ * upstream `[data-home-style="minimalist"] .panel *` rule.
+ * ================================================================ */
+body[data-home-style="minimalist"][data-home-style="minimalist"]
+  .main-screen-back-btn.main-screen-back-btn.main-screen-back-btn.main-screen-back-btn.main-screen-back-btn.main-screen-back-btn {
+  background: #0f172a !important;
+  background-color: #0f172a !important;
+  background-image: none !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  border: 1px solid #0f172a !important;
+  border-color: #0f172a !important;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.25) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+body[data-home-style="minimalist"][data-home-style="minimalist"]
+  .main-screen-back-btn.main-screen-back-btn.main-screen-back-btn.main-screen-back-btn.main-screen-back-btn.main-screen-back-btn
+  * {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  fill: #ffffff !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+body[data-home-style="minimalist"][data-home-style="minimalist"]
+  .main-screen-back-btn.main-screen-back-btn.main-screen-back-btn.main-screen-back-btn.main-screen-back-btn.main-screen-back-btn
+  i,
+body[data-home-style="minimalist"][data-home-style="minimalist"]
+  .main-screen-back-btn.main-screen-back-btn.main-screen-back-btn.main-screen-back-btn.main-screen-back-btn.main-screen-back-btn
+  i.fas,
+body[data-home-style="minimalist"][data-home-style="minimalist"]
+  .main-screen-back-btn.main-screen-back-btn.main-screen-back-btn.main-screen-back-btn.main-screen-back-btn.main-screen-back-btn
+  span {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  text-shadow: none !important;
+  background: transparent !important;
+  background-image: none !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+}
+body[data-home-style="minimalist"][data-home-style="minimalist"]
+  .main-screen-back-btn.main-screen-back-btn.main-screen-back-btn.main-screen-back-btn.main-screen-back-btn.main-screen-back-btn:hover {
+  background: #1e293b !important;
+  background-color: #1e293b !important;
+  border-color: #1e293b !important;
 }
 

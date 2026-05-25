@@ -26,6 +26,7 @@ import {
 import { useDeleteConfirm } from '@/hooks/useDeleteConfirm';
 import { TaskModal } from './TaskModal';
 import { CaseDetail } from './CaseDetail';
+import { MainScreenBackButton } from './MainScreenBackButton';
 import type { Task } from '@/types';
 
 /**
@@ -99,6 +100,7 @@ export function TasksScreen() {
   if (filtered.length === 0 && (state.tasksArr || []).length === 0) {
     return (
       <section className="panel tasks-screen-panel">
+        <MainScreenBackButton />
         <div className="panel-body tasks-panel-body">
           <div className="tasks-toolbar">
             <div className="case-search-wrap">
@@ -127,6 +129,7 @@ export function TasksScreen() {
 
   return (
     <section className="panel tasks-screen-panel">
+      <MainScreenBackButton />
       <div className="panel-body tasks-panel-body">
         <div className="tasks-toolbar">
           <div className="case-search-wrap">

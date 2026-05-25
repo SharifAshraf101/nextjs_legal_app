@@ -21,6 +21,7 @@ import {
 } from '@/lib/calendar';
 import { caseSearchText } from '@/lib/cases';
 import { CalendarAgendaRow } from './CalendarAgendaRow';
+import { MainScreenBackButton } from './MainScreenBackButton';
 
 /**
  * Calendar screen. Port of renderCalendar (source line 4106) with all four
@@ -70,6 +71,7 @@ export function CalendarScreen() {
 
   return (
     <section className="panel">
+      <MainScreenBackButton />
       <div className="panel-body">
         {view === 'list' && (
           <>

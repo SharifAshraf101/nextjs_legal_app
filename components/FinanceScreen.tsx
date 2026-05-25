@@ -5,6 +5,7 @@ import { useAppState } from '@/hooks/useAppState';
 import { useT } from '@/hooks/useT';
 import { caseName, clientName, money } from '@/lib/cases';
 import { financeCaseBalance, financePaidItemsForCase, financeSearchText } from '@/lib/finance';
+import { MainScreenBackButton } from './MainScreenBackButton';
 
 /**
  * Port of renderFinance (source line 4047) + financeRows (line 3795) +
@@ -43,9 +44,12 @@ export function FinanceScreen() {
   };
 
   // Symmetric info box from source line 4052 (HTML inline styles preserved).
+  // `finance-info-box` className lets the stylesheet shrink it down on
+  // mobile + Arabic where the longer Arabic captions overflow.
   const infoBox =
     lang === 'ar' ? (
       <div
+        className="finance-info-box"
         style={{
           display: 'flex',
           justifyContent: 'flex-start',
@@ -58,10 +62,11 @@ export function FinanceScreen() {
       >
         <span>أتعاب متفق عليها</span>
         <span>تاريخ وموعد آخر دفعة</span>
-        <span>الرصيد المتبقي للأتعاب</span>
+        <span>الدين المتبقي للأتعاب</span>
       </div>
     ) : (
       <div
+        className="finance-info-box"
         style={{
           display: 'flex',
           justifyContent: 'flex-start',
@@ -80,6 +85,7 @@ export function FinanceScreen() {
 
   return (
     <section className="panel finance-screen-panel">
+      <MainScreenBackButton />
       <div className="panel-body finance-screen-body">
         <div className="case-search-wrap">
           <label>{searchLabel}</label>
@@ -106,7 +112,7 @@ export function FinanceScreen() {
                 <th>
                   {lang === 'ar' ? 'آخر دفعة وتاريخها' : 'תשלום אחרון ותאריכו'}
                 </th>
-                <th>{lang === 'ar' ? 'رصيد الأتعاب' : 'יתרת שכר הטרחה'}</th>
+                <th>{lang === 'ar' ? 'دين الأتعاب' : 'יתרת שכר הטרחה'}</th>
               </tr>
             </thead>
             <tbody>
@@ -131,7 +137,14 @@ export function FinanceScreen() {
                       </div>
                     </td>
                     <td className="amount">{money(c.agreedFee || 0)}</td>
-                    <td className="finance-last-payment">{lastText}</td>
+                    <td
+                      className={
+                        'finance-last-payment' +
+                        (last ? '' : ' finance-last-payment-empty')
+                      }
+                    >
+                      {lastText}
+                    </td>
                     <td className="finance-balance-red">
                       {money(financeCaseBalance(c, state.finances))}
                     </td>

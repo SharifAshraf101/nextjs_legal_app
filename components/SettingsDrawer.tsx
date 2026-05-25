@@ -141,6 +141,18 @@ export function SettingsDrawer() {
           >
             {settingsText('עיצוב קלאסי', 'تصميم كلاسيكي')}
           </button>
+          <button
+            type="button"
+            className={
+              'mini-btn' + (state.homeStyle === 'minimalist' ? ' active' : '')
+            }
+            data-settings-home-style="minimalist"
+            onClick={() =>
+              dispatch({ type: 'SET_HOME_STYLE', style: 'minimalist' })
+            }
+          >
+            {settingsText('עיצוב מינימליסטי', 'تصميم مبسّط')}
+          </button>
         </div>
         <div className="settings-save-hint">
           {settingsText(

@@ -43,7 +43,15 @@ export function HomeDashboard() {
 
   return (
     <div
-      className={'home-grid-wrap home-v2-fluid home-style-' + state.homeStyle}
+      className={
+        // For minimalist, layer the classic class as well so the
+        // grid keeps the classic symmetric-square LAYOUT while the
+        // minimalist CSS (transparent cards + colored border + brand
+        // text/icon color) handles the APPEARANCE on top.
+        'home-grid-wrap home-v2-fluid home-style-' +
+        state.homeStyle +
+        (state.homeStyle === 'minimalist' ? ' home-style-classic' : '')
+      }
       data-home-style={state.homeStyle}
     >
       <div className="home-greeting">{greetingText}</div>

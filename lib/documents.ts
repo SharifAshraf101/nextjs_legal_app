@@ -35,7 +35,7 @@ export function formatDocumentDate(raw: string | undefined, lang: Lang): string 
   if (!raw) return lang === 'ar' ? 'غير محدد' : 'לא צוין';
   const d = new Date(raw);
   if (isNaN(d.getTime())) return String(raw);
-  return d.toLocaleString(lang === 'ar' ? 'ar-EG' : 'he-IL', {
+  return d.toLocaleString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'he-IL-u-nu-latn', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',

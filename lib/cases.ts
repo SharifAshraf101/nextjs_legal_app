@@ -7,9 +7,10 @@ export function caseName(c: Case, lang: Lang): string {
   return lang === 'ar' ? c.titleAr || c.title || '' : c.title || c.titleAr || '';
 }
 
-/** Source line 3777. */
+/** Source line 3777. `-u-nu-latn` keeps the Western Arabic digits
+ *  the firm uses (0-9) regardless of the user's browser locale. */
 export function money(n: number | undefined): string {
-  return '₪' + Number(n || 0).toLocaleString('he-IL');
+  return '₪' + Number(n || 0).toLocaleString('he-IL-u-nu-latn');
 }
 
 /** Source line 3919. Computes the next CS-NNNN id. */
@@ -115,7 +116,7 @@ export function formatCaseDateTime(raw: string | Date, lang: Lang): string {
       ? raw
       : new Date(String(raw).includes('T') ? raw : String(raw) + 'T09:00:00');
   if (isNaN(d.getTime())) return String(raw);
-  return d.toLocaleString(lang === 'ar' ? 'ar-EG' : 'he-IL', {
+  return d.toLocaleString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'he-IL-u-nu-latn', {
     weekday: 'long',
     day: '2-digit',
     month: '2-digit',

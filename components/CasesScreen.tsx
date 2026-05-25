@@ -6,6 +6,7 @@ import { useModalStack } from '@/hooks/useModalStack';
 import { useT } from '@/hooks/useT';
 import { caseName, caseSearchText, clientName } from '@/lib/cases';
 import { CaseDetail } from './CaseDetail';
+import { MainScreenBackButton } from './MainScreenBackButton';
 
 /**
  * Port of renderCases (source line 3898) + caseRows (line 3780) +
@@ -60,6 +61,7 @@ export function CasesScreen() {
 
   return (
     <section className="panel cases-screen-panel cases-v2-fluid">
+      <MainScreenBackButton />
       <div className="panel-body cases-panel-body">
         <div className="case-search-wrap">
           <label>{searchLabel}</label>

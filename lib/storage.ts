@@ -181,7 +181,7 @@ export interface LoadedSettings {
   showUpcomingHome: boolean;
   officeName: string;
   officeAddress: string;
-  homeStyle: 'modern' | 'classic';
+  homeStyle: 'modern' | 'classic' | 'minimalist';
 }
 
 export function loadUserSettings(): LoadedSettings {
@@ -208,10 +208,11 @@ export function loadUserSettings(): LoadedSettings {
 
   // Default to "classic" for new installs (matches the look the user
   // designed for the home screen). "modern" is opt-in via Settings.
-  let homeStyle: 'modern' | 'classic' = 'classic';
+  let homeStyle: 'modern' | 'classic' | 'minimalist' = 'classic';
   const savedHomeStyle = lsGet(LS.HOME_STYLE);
   if (savedHomeStyle === 'classic') homeStyle = 'classic';
   if (savedHomeStyle === 'modern') homeStyle = 'modern';
+  if (savedHomeStyle === 'minimalist') homeStyle = 'minimalist';
 
   return {
     currentLang,

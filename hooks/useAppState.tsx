@@ -91,7 +91,7 @@ export type Action =
   | { type: 'SET_SHOW_UPCOMING'; show: boolean }
   | { type: 'SET_OFFICE_NAME'; name: string }
   | { type: 'SET_OFFICE_ADDRESS'; address: string }
-  | { type: 'SET_HOME_STYLE'; style: 'modern' | 'classic' }
+  | { type: 'SET_HOME_STYLE'; style: 'modern' | 'classic' | 'minimalist' }
   | { type: 'SET_CLIENTS'; clients: Client[] }
   | { type: 'SET_CASES'; cases: Case[] }
   | { type: 'SET_EVENTS'; events: CalendarEvent[] }
@@ -319,6 +319,13 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!state.hydrated) return;
     lsSet(LS.HOME_STYLE, state.homeStyle);
+    // Mirror the home style onto <body> so CSS can target the sidebar
+    // (and any other element outside the HomeDashboard) via
+    // `body[data-home-style="..."]` selectors. The HomeDashboard's
+    // own className keeps working alongside this for backward compat.
+    if (typeof document !== 'undefined') {
+      document.body.dataset.homeStyle = state.homeStyle;
+    }
   }, [state.hydrated, state.homeStyle]);
 
   // -----------------------------------------------------------------------

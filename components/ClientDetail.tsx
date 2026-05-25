@@ -207,7 +207,7 @@ export function ClientDetail({ clientId }: ClientDetailProps) {
         title={lang === 'ar' ? 'رجوع' : 'חזרה'}
         onClick={close}
       >
-        <i className="fas fa-arrow-right" />
+        <i className="fas fa-arrow-left" />
         <span>{lang === 'ar' ? 'رجوع' : 'חזרה'}</span>
       </button>
       <h2 className="client-detail-title-centered">{t('clientDetails')}</h2>

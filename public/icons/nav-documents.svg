@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+<rect width="256" height="256" fill="white"/>
+<g stroke="#404B5A" stroke-width="6" fill="none">
+<rect x="60" y="50" width="120" height="150" rx="16"/>
+<path d="M180 80h-30V50"/>
+<line x1="90" y1="100" x2="160" y2="100"/>
+<line x1="90" y1="125" x2="160" y2="125"/>
+<line x1="90" y1="150" x2="145" y2="150" stroke="#2F80ED"/>
+</g>
+<rect x="90" y="165" width="16" height="16" rx="3" fill="#7AC943"/>
+</svg>

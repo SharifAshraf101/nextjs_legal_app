@@ -6,6 +6,7 @@ import { useModalStack } from '@/hooks/useModalStack';
 import { useT } from '@/hooks/useT';
 import { clientCaseCounts, clientSearchText } from '@/lib/clients';
 import { ClientDetail } from './ClientDetail';
+import { MainScreenBackButton } from './MainScreenBackButton';
 
 /**
  * Port of renderContacts (line 3899) + filterClientsScreen (line 4612) +
@@ -63,6 +64,7 @@ export function ClientsScreen() {
 
   return (
     <section className="panel clients-screen-panel clients-v2-fluid">
+      <MainScreenBackButton />
       <div className="panel-body clients-panel-body">
         <div className="case-search-wrap">
           <label>{searchLabel}</label>

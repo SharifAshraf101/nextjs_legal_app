@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import {
   Bell,
   Bot,
@@ -229,6 +229,10 @@ function PortalShell() {
         <ClientChatScreen
           client={selectedClient}
           onBack={() => setScreen('hub')}
+          onOpenBotLogin={() => {
+            setLawyerView(false);
+            setScreen('login');
+          }}
           lang={lang}
         />
       )}
@@ -319,25 +323,44 @@ function TopBar({
   title,
   subtitle,
   lang,
+  leadingIcon,
 }: {
-  title: string;
+  /** Plain string for most screens; ReactNode allows inline icons
+   *  or other markup adjacent to the title text (e.g. the bot icon
+   *  rendered inside the title block on the bot-mode hub screen). */
+  title: ReactNode;
   subtitle: string;
   lang: 'he' | 'ar';
+  /** Optional decorative icon rendered immediately before the title
+   *  inside the title block. In RTL this appears to the right of
+   *  the title text (visually "before" it in reading order). */
+  leadingIcon?: ReactNode;
 }) {
   const { dispatch } = useAppState();
   const waLabel = lang === 'ar' ? 'WhatsApp متصل' : 'WhatsApp מחובר';
   const goToTasks = () => dispatch({ type: 'SET_TAB', tab: 'tasks' });
   return (
     <header className="tw-sticky tw-top-0 tw-z-20 tw-border-b tw-border-slate-200 tw-bg-[#FDFBF5]/95 tw-px-5 tw-py-4 tw-backdrop-blur lg:tw-px-10">
-      <div className="tw-flex tw-items-center tw-justify-between tw-gap-4">
-        <div>
-          <h1 className="tw-text-2xl tw-font-bold tw-tracking-tight lg:tw-text-3xl">
-            {title}
-          </h1>
-          <p className="tw-mt-1 tw-text-sm tw-text-slate-500">{subtitle}</p>
+      {/* All four header elements (leading icon, title, WA-connected
+       *  pill, bell) sit on a single 44px horizontal line. `h-11` on
+       *  both flex groups + `tw-leading-none` on the title force a
+       *  consistent height so nothing drifts vertically. */}
+      <div className="tw-flex tw-h-11 tw-items-center tw-justify-between tw-gap-4">
+        <div className="tw-flex tw-h-11 tw-items-center tw-gap-3">
+          {leadingIcon}
+          <div className="tw-flex tw-flex-col tw-justify-center">
+            <h1 className="tw-text-2xl tw-font-bold tw-tracking-tight tw-leading-none lg:tw-text-3xl">
+              {title}
+            </h1>
+            {subtitle && (
+              <p className="tw-mt-1 tw-text-sm tw-text-slate-500 tw-leading-none">
+                {subtitle}
+              </p>
+            )}
+          </div>
         </div>
-        <div className="tw-flex tw-items-center tw-gap-3">
-          <div className="tw-hidden sm:tw-flex tw-items-center tw-gap-2 tw-rounded-full tw-bg-emerald-50 tw-px-4 tw-py-2 tw-text-sm tw-font-medium tw-text-emerald-700">
+        <div className="tw-flex tw-h-11 tw-items-center tw-gap-3">
+          <div className="tw-hidden sm:tw-inline-flex tw-h-11 tw-items-center tw-gap-2 tw-rounded-full tw-bg-emerald-50 tw-px-4 tw-text-sm tw-font-medium tw-text-emerald-700">
             <MessageCircle className="tw-h-5 tw-w-5" />
             {waLabel}
             <span className="tw-h-2 tw-w-2 tw-rounded-full tw-bg-emerald-500" />
@@ -381,14 +404,20 @@ function HubScreen({
   lang: 'he' | 'ar';
 }) {
   const T = {
-    title: lang === 'ar' ? 'مركز التواصل' : 'מרכז תקשורת',
+    title:
+      mode === 'bot'
+        ? lang === 'ar'
+          ? 'مركز التواصل مع بوت الموكلين'
+          : 'מרכז תקשורת עם בוט לקוחות'
+        : lang === 'ar'
+          ? 'مركز التواصل مع الموكلين'
+          : 'מרכז תקשורת עם לקוחות',
     subtitle:
-      lang === 'ar'
-        ? 'إدارة الاتصال مع الموكلين، بوت الموكلين والمستندات'
-        : 'ניהול קשר עם הלקוחות, בוט הלקוחות והמסמכים',
-    clients: lang === 'ar' ? 'الموكلون' : 'לקוחות',
-    clientsSub:
-      lang === 'ar' ? 'محادثات، تنبيهات وقبض المستندات' : 'שיחות, התראות וקבלת מסמכים',
+      mode === 'bot'
+        ? lang === 'ar'
+          ? 'إجابات تلقائية للموكلين'
+          : 'מענה אוטומטי ללקוחות'
+        : '',
     searchPh:
       lang === 'ar' ? 'ابحث عن موكل أو رقم ملف...' : 'חיפוש לקוח או מספר תיק...',
     recent: lang === 'ar' ? 'محادثات أخيرة' : 'שיחות אחרונות',
@@ -412,36 +441,90 @@ function HubScreen({
   const backLabel = lang === 'ar' ? 'رجوع' : 'חזרה';
   return (
     <>
-      <TopBar title={T.title} subtitle={T.subtitle} lang={lang} />
-      <div className="tw-flex tw-items-center tw-px-5 tw-pt-4 lg:tw-px-10">
-        <button
-          type="button"
-          onClick={onBack}
-          className="tw-flex tw-items-center tw-gap-2 tw-rounded-2xl tw-border tw-border-slate-200 tw-bg-white tw-px-3 tw-py-2 tw-text-sm tw-font-semibold tw-text-slate-700 hover:tw-bg-[#F8F2E4]"
-        >
-          <ChevronLeft className="tw-h-4 tw-w-4" />
-          {backLabel}
-        </button>
-      </div>
+      <TopBar
+        title={
+          mode === 'bot' ? (
+            // Bot icon rendered inline immediately before the title
+            // text ("מרכז תקשורת עם בוט לקוחות") — sits inside the
+            // title block, not in the leadingIcon slot. That slot
+            // is now occupied by the back button.
+            <span className="tw-inline-flex tw-items-center tw-gap-2">
+              <span
+                className="tw-grid tw-h-9 tw-w-9 tw-shrink-0 tw-place-items-center tw-rounded-2xl tw-bg-indigo-500 tw-text-white tw-shadow-sm"
+                aria-label="Bot"
+              >
+                <Bot className="tw-h-5 tw-w-5" />
+              </span>
+              <span>{T.title}</span>
+            </span>
+          ) : (
+            T.title
+          )
+        }
+        subtitle={T.subtitle}
+        lang={lang}
+        leadingIcon={
+          mode === 'whatsapp' ? (
+            <div
+              className="tw-grid tw-h-11 tw-w-11 tw-place-items-center tw-rounded-2xl tw-bg-emerald-500 tw-text-white tw-shadow-sm"
+              style={{ transform: 'translateY(-6px)' }}
+              aria-label="WhatsApp"
+            >
+              <MessageCircle className="tw-h-6 tw-w-6" />
+            </div>
+          ) : undefined
+        }
+      />
+      {/* Action row — WhatsApp gets back button + search box. Bot
+       *  gets just the back button on the LEFT side (sitting
+       *  directly under the bell that lives in the top-left of the
+       *  TopBar above). `flex-row-reverse` in RTL puts the first
+       *  JSX child on the visual LEFT. */}
+      {mode === 'whatsapp' && (
+        <div className="tw-flex tw-flex-row-reverse tw-items-center tw-gap-3 tw-px-5 tw-pt-4 lg:tw-px-10">
+          <button
+            type="button"
+            onClick={onBack}
+            className="tw-flex tw-shrink-0 tw-items-center tw-gap-2 tw-rounded-2xl tw-border tw-border-slate-200 tw-bg-white tw-px-3 tw-py-2 tw-text-sm tw-font-semibold tw-text-slate-700 hover:tw-bg-[#F8F2E4]"
+          >
+            <ChevronLeft className="tw-h-4 tw-w-4" />
+            {backLabel}
+          </button>
+          <div className="tw-flex-1">
+            <SearchBox placeholder={T.searchPh} />
+          </div>
+        </div>
+      )}
+      {mode === 'bot' && (
+        // Back button sits directly under the bell (top-LEFT of the
+        // screen in RTL — flex-row-reverse on RTL puts the single
+        // child at the left edge). Styling matches `.main-screen-back-btn`
+        // visually but written inline so we don't inherit the
+        // `position: absolute !important` from that class — which
+        // would yank the button out of the flex layout and anchor
+        // it to <body> instead of sitting in this row.
+        <div className="tw-flex tw-flex-row-reverse tw-items-center tw-gap-3 tw-px-5 tw-pt-4 lg:tw-px-10">
+          <button
+            type="button"
+            onClick={onBack}
+            aria-label={backLabel}
+            title={backLabel}
+            className="tw-inline-flex tw-h-[38px] tw-items-center tw-gap-2 tw-rounded-xl tw-border tw-border-slate-200 tw-bg-white tw-px-3.5 tw-text-sm tw-font-semibold tw-text-slate-700 tw-shadow-sm hover:tw-bg-slate-900 hover:tw-text-white hover:tw-border-slate-900"
+          >
+            <i className="fas fa-arrow-left" />
+            <span>{backLabel}</span>
+          </button>
+        </div>
+      )}
       <div
         className={
-          'tw-grid tw-flex-1 tw-gap-5 tw-p-5 lg:tw-p-10 ' +
+          'tw-grid tw-flex-1 tw-gap-5 tw-px-5 tw-pb-5 tw-pt-3 lg:tw-px-10 lg:tw-pb-10 ' +
           (mode === 'whatsapp' ? 'tw-grid-cols-1' : 'tw-grid-cols-1')
         }
       >
         {mode === 'whatsapp' && (
         <Panel className="tw-min-h-[520px]">
-          <div className="tw-mb-7 tw-flex tw-items-start tw-justify-between">
-            <div className="tw-grid tw-h-16 tw-w-16 tw-place-items-center tw-rounded-3xl tw-bg-emerald-500 tw-text-white tw-shadow-sm">
-              <MessageCircle className="tw-h-9 tw-w-9" />
-            </div>
-            <div className="tw-text-right">
-              <h2 className="tw-text-2xl tw-font-bold">{T.clients}</h2>
-              <p className="tw-mt-1 tw-text-sm tw-text-slate-500">{T.clientsSub}</p>
-            </div>
-          </div>
-          <SearchBox placeholder={T.searchPh} />
-          <div className="tw-mt-7">
+          <div>
             <div className="tw-mb-3 tw-text-sm tw-font-semibold tw-text-slate-500">
               {T.recent}
             </div>
@@ -468,15 +551,6 @@ function HubScreen({
 
         {mode === 'bot' && (
         <Panel className="tw-min-h-[520px]">
-          <div className="tw-mb-10 tw-flex tw-items-start tw-justify-between">
-            <div className="tw-grid tw-h-16 tw-w-16 tw-place-items-center tw-rounded-3xl tw-bg-indigo-500 tw-text-white tw-shadow-sm">
-              <Bot className="tw-h-9 tw-w-9" />
-            </div>
-            <div className="tw-text-right">
-              <h2 className="tw-text-2xl tw-font-bold">{T.bot}</h2>
-              <p className="tw-mt-1 tw-text-sm tw-text-slate-500">{T.botSub}</p>
-            </div>
-          </div>
           <div className="tw-space-y-5 tw-text-slate-600">
             <FeatureRow icon={<Lock className="tw-h-5 tw-w-5" />} title={T.bullets[0]} />
             <FeatureRow icon={<Users className="tw-h-5 tw-w-5" />} title={T.bullets[1]} />
@@ -890,7 +964,7 @@ const SAMPLE_MESSAGES = [
 type ChatMessage = {
   id: number;
   side: 'client' | 'office';
-  type: 'text' | 'file' | 'voice';
+  type: 'text' | 'file' | 'voice' | 'bot-help';
   text: string;
   time: string;
   /** When the client uploads a real file to the chat (vs. a sample
@@ -906,10 +980,14 @@ type ChatMessage = {
 function ClientChatScreen({
   client,
   onBack,
+  onOpenBotLogin,
   lang,
 }: {
   client: ClientRow;
   onBack: () => void;
+  /** Called when the client clicks the "Open secure bot login" link
+   *  inside an auto-injected bot-help bubble. */
+  onOpenBotLogin: () => void;
   lang: 'he' | 'ar';
 }) {
   const { state, dispatch } = useAppState();
@@ -971,42 +1049,40 @@ function ClientChatScreen({
   const goToDocuments = () => dispatch({ type: 'SET_TAB', tab: 'documents' });
   const goToTasks = () => dispatch({ type: 'SET_TAB', tab: 'tasks' });
 
-  // "צור משימה" quick action: switch to the tasks tab and open a fresh
-  // TaskModal pre-seeded with the case the lawyer picked via "בחירת תיק".
-  // TaskModal pulls the clientId from the case itself, so passing the
-  // caseId is enough to bind the new task to both client and case.
+  // "צור משימה" quick action: open a fresh TaskModal on top of the
+  // WhatsApp chat, pre-seeded with the case the lawyer picked via
+  // "בחירת תיק". TaskModal pulls the clientId from the case itself,
+  // so passing the caseId is enough to bind the new task to both
+  // client and case. We do NOT switch tabs — the modal opens as an
+  // overlay so the lawyer stays in the conversation.
   const createTaskForSelectedCase = () => {
-    dispatch({ type: 'SET_TAB', tab: 'tasks' });
     modalStack.open(
       <TaskModal preselectedCaseId={selectedCaseId ?? ''} />,
     );
   };
 
-  // "צור פגישה" quick action: switch to the calendar tab and open a
-  // fresh NewEventModal pre-seeded with the case (the modal renders
-  // the case + client name as the initial value of its case-search
-  // field). Defaults type to "hearingMeeting" — already the modal's
-  // default when no preselectedType is passed.
+  // "צור פגישה" quick action: open NewEventModal as an overlay on
+  // top of the WhatsApp chat, pre-seeded with the case. Stays on
+  // the chat screen so the lawyer doesn't lose the conversation.
   const createMeetingForSelectedCase = () => {
-    dispatch({ type: 'SET_TAB', tab: 'calendar' });
     modalStack.open(
       <NewEventModal preselectedCaseId={selectedCaseId ?? ''} />,
     );
   };
 
-  // "צור תשלום" quick action: switch to the finance tab and open the
-  // AddPaymentModal. The modal reads the case from
+  // "צור תשלום" quick action: open AddPaymentModal as an overlay
+  // on top of the WhatsApp chat. The modal reads the case from
   // `state.selectedFinanceCaseId`, so we dispatch SET_FINANCE_CASE
   // first to bind it to whichever case the lawyer picked via
-  // "בחירת תיק". Without a selected case the modal would auto-close
-  // with an alert, so we guard upfront and surface a friendlier
-  // message in that path.
+  // "בחירת תיק" — but we do NOT switch to the finance tab, so the
+  // chat remains visible underneath the modal. Without a selected
+  // case the modal would auto-close with an alert, so we guard
+  // upfront and surface a friendlier message in that path.
   const createPaymentForSelectedCase = () => {
     if (!selectedCaseId) {
       window.alert(lang === 'ar' ? 'اختر ملفاً أولاً' : 'יש לבחור תיק קודם');
       return;
     }
-    dispatch({ type: 'SET_TAB', tab: 'finance' });
     dispatch({ type: 'SET_FINANCE_CASE', caseId: selectedCaseId });
     modalStack.open(<AddPaymentModal />);
   };
@@ -1046,7 +1122,7 @@ function ClientChatScreen({
   // to the local `messages` state so the chat updates live.
   // ──────────────────────────────────────────────────────────
   const nowHHMM = () =>
-    new Date().toLocaleTimeString(lang === 'ar' ? 'ar-EG' : 'he-IL', {
+    new Date().toLocaleTimeString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'he-IL-u-nu-latn', {
       hour: '2-digit',
       minute: '2-digit',
     });
@@ -1119,6 +1195,53 @@ function ClientChatScreen({
       },
     ]);
   };
+
+  // ──────────────────────────────────────────────────────────
+  // Bot-help auto-prompt.
+  //
+  // (1) Inject once when the chat opens — first message the client
+  //     sees offers a link to the secure bot login screen.
+  // (2) Re-inject after 60 minutes of zero chat activity (no messages
+  //     sent or received). The timer resets on every change to
+  //     `messages.length`.
+  //
+  // Both effects below de-dupe so back-to-back help bubbles never
+  // appear when the trailing message is already a bot-help one.
+  // ──────────────────────────────────────────────────────────
+  const injectBotHelp = useCallback(() => {
+    setMessages((prev) => {
+      const last = prev[prev.length - 1];
+      if (last && last.type === 'bot-help') return prev;
+      return [
+        ...prev,
+        {
+          id: Date.now(),
+          side: 'office',
+          type: 'bot-help',
+          text: '',
+          time: nowHHMM(),
+        },
+      ];
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lang]);
+
+  // (1) Show the help bubble once when the chat screen first mounts.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    injectBotHelp();
+    // Run exactly once per chat open. `client.id` keeps it stable
+    // even if the parent re-renders.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [client.id]);
+
+  // (2) 60-minute idle re-prompt. Cleared and rescheduled on every
+  // message activity (which changes messages.length).
+  useEffect(() => {
+    const SIXTY_MIN_MS = 60 * 60 * 1000;
+    const id = window.setTimeout(injectBotHelp, SIXTY_MIN_MS);
+    return () => window.clearTimeout(id);
+  }, [messages.length, injectBotHelp]);
 
   // Step 1: "Select case" — opens the case picker showing every case
   // linked to this client. Always opens (even for a single case) so the
@@ -1200,14 +1323,21 @@ function ClientChatScreen({
   return (
     <div className="tw-flex tw-min-h-full tw-flex-col tw-bg-[#FDFBF5]">
       <header className="tw-sticky tw-top-0 tw-z-20 tw-border-b tw-border-slate-200 tw-bg-[#FDFBF5]/95 tw-px-4 tw-py-3 tw-backdrop-blur">
-        <div className="tw-flex tw-items-center tw-justify-between tw-gap-3">
-          <button
-            onClick={onBack}
-            className="tw-grid tw-h-10 tw-w-10 tw-place-items-center tw-rounded-full hover:tw-bg-slate-100"
-            aria-label="חזור"
+        {/* In RTL: first JSX child = visual RIGHT, last = visual LEFT.
+         *  WhatsApp icon sits on the right (replaces the old arrow),
+         *  avatar + name/case info sit in the middle stretching to
+         *  fill, and the rectangular back button anchors to the left
+         *  (same visual style as the back button on the global-search
+         *  main screen). `items-center` aligns the WhatsApp icon's
+         *  vertical center with the midline of the two-line text
+         *  block (client name on top, case info on bottom). */}
+        <div className="tw-flex tw-items-center tw-gap-3">
+          <div
+            className="tw-grid tw-h-10 tw-w-10 tw-place-items-center tw-rounded-2xl tw-bg-emerald-500 tw-text-white tw-shadow-sm"
+            aria-label="WhatsApp"
           >
-            <ChevronLeft className="tw-h-6 tw-w-6" />
-          </button>
+            <MessageCircle className="tw-h-5 tw-w-5" />
+          </div>
           <div className="tw-flex tw-flex-1 tw-items-center tw-gap-3">
             <Avatar label={client.avatar} />
             <div>
@@ -1218,6 +1348,16 @@ function ClientChatScreen({
               </div>
             </div>
           </div>
+          <button
+            type="button"
+            onClick={onBack}
+            aria-label={lang === 'ar' ? 'رجوع' : 'חזרה'}
+            title={lang === 'ar' ? 'رجوع' : 'חזרה'}
+            className="tw-flex tw-h-10 tw-shrink-0 tw-items-center tw-gap-2 tw-rounded-xl tw-border tw-border-slate-200 tw-bg-white tw-px-3 tw-text-sm tw-font-semibold tw-text-slate-700 tw-shadow-sm hover:tw-bg-slate-900 hover:tw-text-white hover:tw-border-slate-900"
+          >
+            <i className="fas fa-arrow-left" />
+            <span>{lang === 'ar' ? 'رجوع' : 'חזרה'}</span>
+          </button>
         </div>
       </header>
 
@@ -1300,6 +1440,7 @@ function ClientChatScreen({
                 key={m.id}
                 message={m}
                 onClientFileDoubleClick={openAddDocumentFromClientFile}
+                onOpenBotLogin={onOpenBotLogin}
                 lang={lang}
               />
             ))}
@@ -2169,7 +2310,7 @@ function BotChatScreen({
   const formatBubbleTime = (iso: string) => {
     try {
       const d = new Date(iso);
-      return d.toLocaleTimeString(lang === 'ar' ? 'ar-EG' : 'he-IL', {
+      return d.toLocaleTimeString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'he-IL-u-nu-latn', {
         hour: '2-digit',
         minute: '2-digit',
       });
@@ -2404,20 +2545,42 @@ function BotChatScreen({
   return (
     <div className="tw-mx-auto tw-flex tw-min-h-full tw-w-full tw-max-w-4xl tw-flex-col tw-bg-[#FDFBF5]">
       <header className="tw-sticky tw-top-0 tw-z-20 tw-border-b tw-border-slate-200 tw-bg-[#FDFBF5]/95 tw-px-4 tw-py-3 tw-backdrop-blur">
-        <div className="tw-flex tw-items-center tw-justify-between">
-          <button
-            onClick={onBack}
-            className="tw-grid tw-h-10 tw-w-10 tw-place-items-center tw-rounded-full hover:tw-bg-slate-100"
-          >
-            <ChevronLeft className="tw-h-6 tw-w-6" />
-          </button>
-          <div className="tw-text-center">
-            <div className="tw-font-bold tw-text-indigo-900">{T.title}</div>
-            <div className="tw-text-xs tw-text-emerald-600">{T.online}</div>
-          </div>
+        {/* Position-swapped per spec: in RTL with `justify-between`,
+         *  the first JSX child renders on the visual RIGHT and the
+         *  last on the visual LEFT. So Bot icon is now FIRST (→
+         *  visual right, where the back arrow used to live) and the
+         *  back button is LAST (→ visual left, where the Bot icon
+         *  used to live). The back button reuses the
+         *  `.main-screen-back-btn` class from globals.css so its
+         *  structure is identical to the global-search screen one. */}
+        {/* Title is absolutely centered to the screen midline (not
+         *  the midpoint between the two side elements) so an
+         *  asymmetric icon vs back-button width can't drift it
+         *  sideways. `relative` on the container anchors the
+         *  absolute title; `pointer-events: none` keeps the side
+         *  buttons clickable even where the title overlaps. */}
+        <div className="tw-relative tw-flex tw-items-center tw-justify-between">
           <div className="tw-grid tw-h-10 tw-w-10 tw-place-items-center tw-rounded-full tw-bg-indigo-500 tw-text-white">
             <Bot className="tw-h-5 tw-w-5" />
           </div>
+          <div
+            className="tw-pointer-events-none tw-absolute tw-left-1/2 tw-top-1/2 tw-text-center"
+            style={{ transform: 'translate(-50%, -50%)' }}
+          >
+            <div className="tw-font-bold tw-text-indigo-900">{T.title}</div>
+            <div className="tw-text-xs tw-text-emerald-600">{T.online}</div>
+          </div>
+          <button
+            type="button"
+            onClick={onBack}
+            aria-label={lang === 'ar' ? 'رجوع' : 'חזרה'}
+            title={lang === 'ar' ? 'رجوع' : 'חזרה'}
+            className="main-screen-back-btn"
+            style={{ position: 'static' }}
+          >
+            <i className="fas fa-arrow-left" />
+            <span>{lang === 'ar' ? 'رجوع' : 'חזרה'}</span>
+          </button>
         </div>
       </header>
       {lawyerView && (
@@ -2568,17 +2731,28 @@ function AuthShell({
   onBack?: () => void;
   children: ReactNode;
 }) {
+  const { lang } = useT();
+  const backLabel = lang === 'ar' ? 'رجوع' : 'חזרה';
   return (
-    <div className="tw-grid tw-min-h-full tw-place-items-center tw-p-5">
-      <div className="tw-relative tw-w-full tw-max-w-md tw-rounded-[32px] tw-border tw-border-slate-200 tw-bg-[#FDFBF5] tw-p-7 tw-shadow-sm">
-        {onBack && (
-          <button
-            onClick={onBack}
-            className="tw-absolute tw-right-5 tw-top-5 tw-grid tw-h-10 tw-w-10 tw-place-items-center tw-rounded-full hover:tw-bg-slate-100"
-          >
-            <ChevronLeft className="tw-h-5 tw-w-5" />
-          </button>
-        )}
+    // `tw-relative` on the outer container so the absolutely-
+    // positioned back button anchors to the SCREEN's top-left
+    // corner (not the centered card's top-left). That matches the
+    // global-search screen behavior where the back button sits at
+    // the panel's left edge — here the "panel" is the full screen.
+    <div className="tw-relative tw-grid tw-min-h-full tw-place-items-center tw-p-5">
+      {onBack && (
+        <button
+          type="button"
+          onClick={onBack}
+          aria-label={backLabel}
+          title={backLabel}
+          className="main-screen-back-btn"
+        >
+          <i className="fas fa-arrow-left" />
+          <span>{backLabel}</span>
+        </button>
+      )}
+      <div className="tw-w-full tw-max-w-md tw-rounded-[32px] tw-border tw-border-slate-200 tw-bg-[#FDFBF5] tw-p-7 tw-shadow-sm">
         <div className="tw-mx-auto tw-mb-6 tw-grid tw-h-20 tw-w-20 tw-place-items-center tw-rounded-full tw-bg-indigo-50 tw-text-indigo-600">
           {icon}
         </div>
@@ -2921,14 +3095,65 @@ function VoiceBubble({ message }: { message: ChatMessage }) {
 function MessageBubble({
   message,
   onClientFileDoubleClick,
+  onOpenBotLogin,
   lang,
 }: {
   message: ChatMessage;
   onClientFileDoubleClick?: (m: ChatMessage) => void;
+  /** Click handler for the link inside a `bot-help` bubble — takes
+   *  the client to the secure bot login screen. */
+  onOpenBotLogin?: () => void;
   lang?: 'he' | 'ar';
 }) {
   const office = message.side === 'office';
   const isClientFile = !office && message.type === 'file';
+
+  // Bot-help bubbles render as a centered card spanning the full chat
+  // width — visually distinct from the back-and-forth client/office
+  // bubbles. The "כניסה לבוט מאובטח" link launches BotLoginScreen.
+  if (message.type === 'bot-help') {
+    const title = lang === 'ar' ? 'بحاجة لمساعدة سريعة؟' : 'צריך עזרה מהירה?';
+    const sub =
+      lang === 'ar'
+        ? 'بوت الموكلين يجيب على الأسئلة الشائعة 24/7. اضغط لدخول آمن.'
+        : 'בוט הלקוחות עונה על שאלות נפוצות 24/7. לחץ לכניסה מאובטחת.';
+    const cta =
+      lang === 'ar' ? 'دخول إلى البوت المؤمَّن →' : 'כניסה לבוט המאובטח ←';
+    return (
+      <div className="tw-flex tw-justify-center">
+        <div className="tw-w-full tw-max-w-md tw-rounded-3xl tw-border tw-border-indigo-200 tw-bg-indigo-50/60 tw-p-4 tw-shadow-sm">
+          <div className="tw-flex tw-items-start tw-gap-3">
+            <div
+              className="tw-grid tw-h-10 tw-w-10 tw-shrink-0 tw-place-items-center tw-rounded-2xl tw-bg-indigo-500 tw-text-white tw-shadow-sm"
+              aria-label="Bot"
+            >
+              <Bot className="tw-h-5 tw-w-5" />
+            </div>
+            <div className="tw-min-w-0 tw-flex-1">
+              <div className="tw-text-sm tw-font-bold tw-text-indigo-900">
+                {title}
+              </div>
+              <div className="tw-mt-1 tw-text-xs tw-leading-5 tw-text-slate-600">
+                {sub}
+              </div>
+              <button
+                type="button"
+                onClick={onOpenBotLogin}
+                disabled={!onOpenBotLogin}
+                className="tw-mt-3 tw-inline-flex tw-items-center tw-gap-2 tw-rounded-xl tw-bg-indigo-600 tw-px-4 tw-py-2 tw-text-xs tw-font-semibold tw-text-white tw-shadow-sm tw-transition hover:tw-bg-indigo-700 disabled:tw-cursor-not-allowed disabled:tw-opacity-50"
+              >
+                {cta}
+              </button>
+            </div>
+          </div>
+          <div className="tw-mt-2 tw-text-left tw-text-[10px] tw-text-slate-400">
+            {message.time}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // WhatsApp Hebrew convention: lawyer ("office") bubbles sit on the
   // RIGHT, client bubbles on the LEFT. The chat container is RTL, so
   // `tw-justify-start` resolves to visual-right and `tw-justify-end`
@@ -3213,20 +3438,20 @@ function ActionPanel({
 
   const fmtMoney = (n: number) => {
     try {
-      return new Intl.NumberFormat(lang === 'ar' ? 'ar-EG' : 'he-IL', {
+      return new Intl.NumberFormat(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'he-IL-u-nu-latn', {
         style: 'currency',
         currency: 'ILS',
         maximumFractionDigits: 0,
       }).format(n);
     } catch {
-      return '₪' + Math.round(n).toLocaleString();
+      return '₪' + Math.round(n).toLocaleString('he-IL-u-nu-latn');
     }
   };
   const fmtDate = (raw: string | undefined) => {
     if (!raw) return '';
     const dt = new Date(raw);
     if (Number.isNaN(dt.getTime())) return '';
-    return dt.toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'he-IL', {
+    return dt.toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'he-IL-u-nu-latn', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
@@ -3259,7 +3484,7 @@ function ActionPanel({
     if (!raw) return '';
     const dt = new Date(raw);
     if (Number.isNaN(dt.getTime())) return '';
-    return dt.toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'he-IL', {
+    return dt.toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'he-IL-u-nu-latn', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
