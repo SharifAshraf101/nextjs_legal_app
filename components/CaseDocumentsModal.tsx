@@ -60,6 +60,35 @@ export function CaseDocumentsModal({ caseId, onPickDocument }: CaseDocumentsModa
     });
   };
 
+  // Inline-edit state for renaming a document's title. Only one
+  // document is editable at a time. `editTitleDraft` holds the
+  // working text; commit writes it back via SET_DOCUMENTS.
+  const [editingDocId, setEditingDocId] = useState<string | null>(null);
+  const [editTitleDraft, setEditTitleDraft] = useState<string>('');
+  const startEdit = (docId: string, currentTitle: string) => {
+    setEditingDocId(docId);
+    setEditTitleDraft(currentTitle);
+  };
+  const cancelEdit = () => {
+    setEditingDocId(null);
+    setEditTitleDraft('');
+  };
+  const saveEdit = () => {
+    if (!editingDocId) return;
+    const trimmed = editTitleDraft.trim();
+    if (!trimmed) {
+      cancelEdit();
+      return;
+    }
+    dispatch({
+      type: 'SET_DOCUMENTS',
+      documents: state.documentsArr.map((d) =>
+        String(d.id) === String(editingDocId) ? { ...d, title: trimmed } : d,
+      ),
+    });
+    cancelEdit();
+  };
+
   const onOpen = async (relativePath: string | undefined) => {
     if (!relativePath) {
       window.alert(
@@ -117,7 +146,7 @@ export function CaseDocumentsModal({ caseId, onPickDocument }: CaseDocumentsModa
   };
 
   return (
-    <Modal onClose={close}>
+    <Modal onClose={close} className="case-docs-modal">
       <div className="case-docs-modal-head">
         <div>
           <h2>
@@ -211,38 +240,98 @@ export function CaseDocumentsModal({ caseId, onPickDocument }: CaseDocumentsModa
                       }
                       style={isPending ? { color: 'var(--primary)' } : undefined}
                     />
-                    <span
-                      title={pickMode ? pickTitle : openTitle}
-                      onDoubleClick={
-                        pickMode ? undefined : () => onOpen(doc.relativePath)
-                      }
-                      style={{
-                        cursor: 'pointer',
-                        color: 'var(--primary)',
-                        fontWeight: 700,
-                      }}
-                      aria-label={
-                        pickMode ? undefined : openTitle + ' — ' + fileName
-                      }
-                    >
-                      {titleStr}
-                    </span>
+                    {String(editingDocId) === String(doc.id) ? (
+                      <input
+                        type="text"
+                        className="case-docs-modal-title-input"
+                        value={editTitleDraft}
+                        onChange={(e) => setEditTitleDraft(e.target.value)}
+                        onClick={(e) => e.stopPropagation()}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            saveEdit();
+                          } else if (e.key === 'Escape') {
+                            e.preventDefault();
+                            cancelEdit();
+                          }
+                        }}
+                        autoFocus
+                        aria-label={lang === 'ar' ? 'تعديل اسم المستند' : 'עריכת שם המסמך'}
+                      />
+                    ) : (
+                      <span
+                        title={pickMode ? pickTitle : openTitle}
+                        onDoubleClick={
+                          pickMode ? undefined : () => onOpen(doc.relativePath)
+                        }
+                        style={{
+                          cursor: 'pointer',
+                          color: 'var(--primary)',
+                          fontWeight: 700,
+                        }}
+                        aria-label={
+                          pickMode ? undefined : openTitle + ' — ' + fileName
+                        }
+                      >
+                        {titleStr}
+                      </span>
+                    )}
                   </div>
                 </div>
                 <div className="case-docs-modal-row-actions">
-                  {!doc.isTask && (
-                    <button
-                      type="button"
-                      className="case-docs-modal-btn delete"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onDelete(doc.id);
-                      }}
-                    >
-                      <i className="fas fa-trash" />
-                      {lang === 'ar' ? 'حذف' : 'מחק'}
-                    </button>
-                  )}
+                  {!doc.isTask &&
+                    (String(editingDocId) === String(doc.id) ? (
+                      <>
+                        <button
+                          type="button"
+                          className="case-docs-modal-btn save"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            saveEdit();
+                          }}
+                        >
+                          <i className="fas fa-check" />
+                          {lang === 'ar' ? 'حفظ' : 'שמור'}
+                        </button>
+                        <button
+                          type="button"
+                          className="case-docs-modal-btn cancel"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            cancelEdit();
+                          }}
+                        >
+                          <i className="fas fa-xmark" />
+                          {lang === 'ar' ? 'إلغاء' : 'בטל'}
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          type="button"
+                          className="case-docs-modal-btn edit"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            startEdit(doc.id, titleStr);
+                          }}
+                        >
+                          <i className="fas fa-pen" />
+                          {lang === 'ar' ? 'تعديل' : 'עריכה'}
+                        </button>
+                        <button
+                          type="button"
+                          className="case-docs-modal-btn delete"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onDelete(doc.id);
+                          }}
+                        >
+                          <i className="fas fa-trash" />
+                          {lang === 'ar' ? 'حذف' : 'מחק'}
+                        </button>
+                      </>
+                    ))}
                 </div>
               </div>
             );

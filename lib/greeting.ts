@@ -16,6 +16,9 @@ export function getTimeGreeting(lang: Lang, firmName: string): string {
   // "أشرف شريف - مكتب محاماة".
   const firstName = (firmName || '').split(/\s+/)[0] || '';
   const comma = lang === 'ar' ? '، ' : ', ';
+  // Professional title prefixed to the first name. Hebrew uses the
+  // standard "עו"ד" (עורך דין) abbreviation; Arabic uses "المحامي".
+  const title = lang === 'ar' ? 'المحامي ' : 'עו"ד ';
   let phrase: string;
   if (lang === 'ar') {
     if (hour < 11) phrase = 'صباح الخير';
@@ -26,5 +29,5 @@ export function getTimeGreeting(lang: Lang, firmName: string): string {
     else if (hour < 17) phrase = 'יום טוב';
     else phrase = 'ערב טוב';
   }
-  return firstName ? phrase + comma + firstName : phrase;
+  return firstName ? phrase + comma + title + firstName : phrase;
 }

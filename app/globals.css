@@ -748,8 +748,175 @@ body.font-family-calibri{--app-font-family:Calibri, Arial, sans-serif;}
 .case-docs-btn .quick-plus{display:inline-grid;place-items:center;width:20px;height:20px;line-height:1;flex:0 0 20px;}
 .case-docs-btn .quick-plus i{display:block;width:20px;height:20px;line-height:20px;text-align:center;margin:0;padding:0;}
 .case-docs-btn .quick-label{display:inline-block;white-space:nowrap;}
-.case-docs-modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin:0 0 14px;padding-left:46px;}
-.case-docs-modal-head h2{margin:0;font-size:20px;font-weight:950;}
+.case-docs-modal-head{display:flex;align-items:flex-start;justify-content:center;gap:12px;margin:0 0 14px;padding-left:46px;padding-right:46px;text-align:center;}
+.case-docs-modal-head h2{margin:0;font-size:20px;font-weight:950;text-align:center;}
+.case-docs-modal-head > div{flex:1;text-align:center;}
+/* Case-documents modal — back-arrow + X close styled EXACTLY
+ * like the case-detail screen header. Scoped via the dedicated
+ * `.case-docs-modal` class on the Modal root + `.modal.ls × N`
+ * self-chain to beat the high-specificity base mobile rules at
+ * lines ~1547 and ~1724 (both `.modal .modal-mobile-back-btn`
+ * style — only 2 classes but inside @media). */
+
+/* ── X close — RIGHT side, dark slate 2rem rounded square ── */
+html body .modal.case-docs-modal.ls.ls.ls.ls.ls .modal-box > .modal-close-x {
+  position: absolute !important;
+  top: 14px !important;
+  right: 0.25cm !important;
+  left: auto !important;
+  margin: 0 !important;
+  float: none !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  min-width: 2rem !important;
+  min-height: 2rem !important;
+  max-width: 2rem !important;
+  max-height: 2rem !important;
+  border-radius: 0.5rem !important;
+  background: #1E293B !important;
+  background-color: #1E293B !important;
+  background-image: none !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  border: 1px solid #334155 !important;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.28) !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  z-index: 70 !important;
+  font-weight: 800 !important;
+  font-size: 1rem !important;
+  line-height: 1 !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  transition: background-color 0.16s ease, border-color 0.16s ease, transform 0.12s ease !important;
+}
+html body .modal.case-docs-modal.ls.ls.ls.ls.ls .modal-box > .modal-close-x:hover {
+  background: #0F172A !important;
+  background-color: #0F172A !important;
+  border-color: #475569 !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+html body .modal.case-docs-modal.ls.ls.ls.ls.ls .modal-box > .modal-close-x:active {
+  transform: scale(0.96) !important;
+}
+
+/* ── Back arrow — LEFT side, white pill with icon + label ── */
+html body .modal.case-docs-modal.ls.ls.ls.ls.ls .modal-box > .modal-mobile-back-btn {
+  display: inline-flex !important;
+  position: absolute !important;
+  top: 14px !important;
+  left: 0.25cm !important;
+  right: auto !important;
+  z-index: 70 !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  padding: 0 14px !important;
+  align-items: center !important;
+  gap: 8px !important;
+  background: #ffffff !important;
+  border: 1px solid #e2ebf6 !important;
+  border-radius: 0 !important;
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  white-space: nowrap !important;
+  width: auto !important;
+}
+html body .modal.case-docs-modal.ls.ls.ls.ls.ls .modal-box > .modal-mobile-back-btn i {
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+  font-size: 14px !important;
+}
+html body .modal.case-docs-modal.ls.ls.ls.ls.ls .modal-box > .modal-mobile-back-btn .modal-mobile-back-btn-label {
+  display: inline !important;
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+html body .modal.case-docs-modal.ls.ls.ls.ls.ls .modal-box > .modal-mobile-back-btn:hover {
+  background: #111827 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  border-color: #111827 !important;
+}
+html body .modal.case-docs-modal.ls.ls.ls.ls.ls .modal-box > .modal-mobile-back-btn:hover i {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+html body .modal.case-docs-modal.ls.ls.ls.ls.ls .modal-box > .modal-mobile-back-btn:hover .modal-mobile-back-btn-label {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+@media (max-width: 700px) {
+  /* Mobile: defeat the base rule at line 1547 that re-anchors
+   * .modal-close-x to sticky right:0/float:right. Re-assert the
+   * dark-slate rounded-square layout that mirrors case-detail. */
+  html body .modal.case-docs-modal.ls.ls.ls.ls.ls.ls.ls .modal-box > .modal-close-x {
+    position: absolute !important;
+    top: 14px !important;
+    right: 0.25cm !important;
+    left: auto !important;
+    margin: 0 !important;
+    float: none !important;
+    width: 2rem !important;
+    height: 2rem !important;
+    min-width: 2rem !important;
+    min-height: 2rem !important;
+    max-width: 2rem !important;
+    max-height: 2rem !important;
+    border-radius: 0.5rem !important;
+    background: #1E293B !important;
+    background-color: #1E293B !important;
+    background-image: none !important;
+    color: #FFFFFF !important;
+    -webkit-text-fill-color: #FFFFFF !important;
+    border: 1px solid #334155 !important;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.28) !important;
+    display: inline-grid !important;
+    place-items: center !important;
+    z-index: 70 !important;
+    font-weight: 800 !important;
+    font-size: 1rem !important;
+    line-height: 1 !important;
+    padding: 0 !important;
+  }
+  /* Mobile back arrow — same as desktop, re-asserted to beat the
+   * base sticky/grid rules at line 1559+. */
+  html body .modal.case-docs-modal.ls.ls.ls.ls.ls.ls.ls .modal-box > .modal-mobile-back-btn {
+    display: inline-flex !important;
+    position: absolute !important;
+    top: 14px !important;
+    left: 0.25cm !important;
+    right: auto !important;
+    z-index: 70 !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    padding: 0 14px !important;
+    align-items: center !important;
+    gap: 8px !important;
+    background: #ffffff !important;
+    border: 1px solid #e2ebf6 !important;
+    border-radius: 0 !important;
+    color: #0f172a !important;
+    -webkit-text-fill-color: #0f172a !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    line-height: 1 !important;
+    cursor: pointer !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    white-space: nowrap !important;
+    width: auto !important;
+  }
+}
 .case-docs-modal-sub{margin-top:5px;color:var(--muted);font-size:12px;line-height:1.5;}
 .case-docs-modal-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;}
 .case-docs-modal-list{display:grid;gap:10px;max-height:52vh;overflow:auto;padding-inline-end:6px;scrollbar-width:thin;}
@@ -762,6 +929,25 @@ body.font-family-calibri{--app-font-family:Calibri, Arial, sans-serif;}
 .case-docs-modal-btn{border:0;border-radius:999px;padding:8px 11px;font-weight:900;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;}
 .case-docs-modal-btn.open{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;}
 .case-docs-modal-btn.delete{background:#fff1f2;color:#be123c;border:1px solid #fecdd3;}
+.case-docs-modal-btn.edit{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;}
+.case-docs-modal-btn.save{background:#ecfdf5;color:#059669;border:1px solid #a7f3d0;}
+.case-docs-modal-btn.cancel{background:#f8fafc;color:#475569;border:1px solid #cbd5e1;}
+.case-docs-modal-title-input{
+  flex:1;
+  min-width:0;
+  border:1px solid #bfdbfe;
+  border-radius:8px;
+  padding:6px 10px;
+  font:inherit;
+  font-weight:700;
+  color:var(--text);
+  background:#fff;
+  outline:none;
+}
+.case-docs-modal-title-input:focus{
+  border-color:#2563eb;
+  box-shadow:0 0 0 3px rgba(37,99,235,.15);
+}
 .case-docs-modal-empty{padding:22px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:18px;background:var(--surface-soft);font-weight:850;}
 @media(max-width:620px){.case-docs-btn{width:46px;height:46px;min-width:46px;border-radius:999px;padding:0!important;display:inline-grid!important;place-items:center!important;gap:0!important}.case-docs-btn .quick-label{display:none!important}.case-docs-btn .quick-plus{width:46px;height:46px;display:grid!important;place-items:center!important}.case-docs-btn .quick-plus i{width:46px;height:46px;line-height:46px;text-align:center;font-size:16px}.case-docs-modal-head{flex-direction:column;padding-left:46px}.case-docs-modal-actions{width:100%;justify-content:flex-start}.case-docs-modal-row{grid-template-columns:1fr}.case-docs-modal-row-actions{justify-content:flex-start}.case-docs-modal-btn{flex:1;justify-content:center}}
 
@@ -1509,6 +1695,10 @@ body.font-family-calibri{--app-font-family:Calibri, Arial, sans-serif;}
  * ============================================================ */
 /* v101: Mobile full-screen modal screens get a Back button opposite the X close button. */
 .modal-mobile-back-btn{display:none;}
+/* Label hidden by default — only the case-docs modal override
+ * reveals it via :has(.case-docs-modal-head). All other modals
+ * keep their icon-only back arrow look. */
+.modal-mobile-back-btn-label{display:none;}
 @media (max-width:700px){
   .modal .modal-box{padding-top:18px!important;}
   .modal .modal-close-x,
@@ -20248,6 +20438,28 @@ html[lang="ar"] .content.content.content.content:not(.home-content) .calendar-li
   padding-top: clamp(0.6rem, 2.5vw, 0.85rem) !important;
 }
 
+/* Calendar panel — DAY / WEEK / MONTH views (no list title).
+ * Pull the calendar content right under the back button, flush
+ * against its bottom edge. The back button occupies the top
+ * 12-50px (top:12px + height:38px). We use ~52px so the toolbar
+ * starts immediately below it with a 2px breathing line.
+ *
+ * Selected via `:has(.calendar-toolbar):not(:has(.calendar-list-title))`
+ * — i.e. a calendar panel that's NOT in list mode. List view
+ * keeps the earlier compact-padding rule above. Other main-screen
+ * panels (Search/Clients/Cases/Documents/Tasks/Finance) are
+ * unaffected since they lack `.calendar-toolbar`. */
+.panel:has(> .main-screen-back-btn):has(.calendar-toolbar):not(:has(.calendar-list-title)) > .panel-body,
+.panel.panel:has(> .main-screen-back-btn):has(.calendar-toolbar):not(:has(.calendar-list-title)) > .panel-body {
+  padding-top: clamp(3.1rem, 12vw, 3.5rem) !important;
+}
+/* Zero the toolbar's top margin so it hugs the back button row. */
+.panel:has(> .main-screen-back-btn):has(.calendar-toolbar):not(:has(.calendar-list-title)) > .panel-body > .calendar-toolbar,
+.panel.panel:has(> .main-screen-back-btn):has(.calendar-toolbar):not(:has(.calendar-list-title)) > .panel-body > .calendar-toolbar {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
 /* Search input sits IMMEDIATELY under the back-button + title row,
  * flush against it — no top margin/padding so the input rises up
  * to touch the row above it. */
@@ -33859,6 +34071,47 @@ html body
 }
 
 /* ============================================================ *
+ * Client detail — total-debt summary row, placed ABOVE the cases
+ * list. Sums `financeCaseBalance` across every case of the
+ * client (rendered only when the total is positive). Red-tinted
+ * to flag outstanding fees the same way the case-balance pill
+ * does. Fluid units throughout. Light + dark mode both covered.
+ * ============================================================ */
+.client-total-debt-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: clamp(0.5rem, 2vw, 1rem) !important;
+  margin: clamp(0.4rem, 1.6vw, 0.7rem) 0 clamp(0.55rem, 2.2vw, 0.9rem) 0 !important;
+  padding: clamp(0.45rem, 1.8vw, 0.7rem) clamp(0.7rem, 2.8vw, 1.1rem) !important;
+  background: #fef2f2 !important;
+  border: 1px solid #fecaca !important;
+  border-radius: clamp(0.75rem, 3vw, 1.1rem) !important;
+}
+.client-total-debt-label {
+  font-weight: 850 !important;
+  font-size: clamp(0.72rem, 3vw, 0.92rem) !important;
+  color: #991b1b !important;
+}
+.client-total-debt-amount {
+  font-weight: 950 !important;
+  font-size: clamp(0.85rem, 3.4vw, 1.05rem) !important;
+  color: #dc2626 !important;
+  direction: ltr !important;
+  white-space: nowrap !important;
+}
+body.dark .client-total-debt-row {
+  background: rgba(220, 38, 38, 0.12) !important;
+  border-color: rgba(220, 38, 38, 0.35) !important;
+}
+body.dark .client-total-debt-label {
+  color: #fecaca !important;
+}
+body.dark .client-total-debt-amount {
+  color: #fca5a5 !important;
+}
+
+/* ============================================================ *
  * Finance screen — empty "אין" / "لا يوجد" cell alignment.
  *
  * `.finance-last-payment` carries `direction: ltr` because the
@@ -33902,44 +34155,564 @@ html body .finance-table td.finance-last-payment.finance-last-payment-empty {
  * box via `!important` (legitimate use: defeating inline styles).
  * ============================================================ */
 @media (max-width: 620px) {
-  html[lang="ar"] body .finance-screen-panel .finance-info-box {
-    gap: clamp(0.35rem, 1.4vw, 0.6rem) !important;
-    font-size: clamp(0.55rem, 2.3vw, 0.75rem) !important;
+  /* InfoBox: 4 equal-width cells matching the table's 4 columns
+   * below. The first cell is an empty `.finance-info-box-spacer`
+   * sitting above the case-info column; the other 3 spans label
+   * agreedFee / lastPayment / balance directly.
+   *
+   * To make the captions line up under the cells, force the
+   * table to `table-layout: fixed` with equal-width columns
+   * (default `auto` lets the case-info column auto-expand and
+   * mis-aligns the captions). The flex info-box also uses equal
+   * `flex: 1 1 0` children — so caption[i] sits exactly above
+   * column[i]. */
+  html body .finance-screen-panel .finance-table {
+    table-layout: fixed !important;
+    width: 100% !important;
+  }
+  html body .finance-screen-panel .finance-table colgroup,
+  html body .finance-screen-panel .finance-table col {
+    width: 25% !important;
+  }
+  html body .finance-screen-panel .finance-table > thead > tr > th,
+  html body .finance-screen-panel .finance-table > tbody > tr > td {
+    width: 25% !important;
+    box-sizing: border-box !important;
+  }
+  /* Match info-box padding to the table cells' so the caption's
+   * visual center lines up with the cell's visual center. */
+  html body .finance-screen-panel .finance-info-box {
+    padding: 0 !important;
+    margin-inline: 0 !important;
+    gap: 0 !important;
+    font-size: clamp(0.48rem, 1.9vw, 0.62rem) !important;
     flex-wrap: nowrap !important;
     overflow: hidden !important;
+    align-items: flex-start !important;
+    justify-content: stretch !important;
+    width: 100% !important;
   }
-  html[lang="ar"] body .finance-screen-panel .finance-info-box > span {
+  html body .finance-screen-panel .finance-info-box > span {
     flex: 1 1 0 !important;
+    width: 25% !important;
     min-width: 0 !important;
     font-size: inherit !important;
-    line-height: 1.15 !important;
+    line-height: 1.2 !important;
     white-space: normal !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
+    word-break: keep-all !important;
+    overflow-wrap: break-word !important;
+    hyphens: none !important;
+    box-sizing: border-box !important;
+    /* Padding matches the table-cell padding so the caption text
+     * sits visually centered above its column's text. */
+    padding: 0 clamp(0.2rem, 0.9vw, 0.4rem) !important;
+    text-align: center !important;
+  }
+  html body .finance-screen-panel .finance-info-box .finance-info-box-spacer {
+    visibility: hidden !important;
   }
 
-  /* Table cells — agreed fee, last payment, balance. The first
-   * cell holds the case-name + sub-line, so we scope the shrink
-   * to the AMOUNT cells (.amount, .finance-last-payment,
-   * .finance-balance-red) to keep the title readable. */
-  html[lang="ar"] body .finance-screen-panel .finance-table td.amount,
-  html[lang="ar"] body .finance-screen-panel .finance-table td.finance-last-payment,
-  html[lang="ar"] body .finance-screen-panel .finance-table td.finance-balance-red {
-    font-size: clamp(0.6rem, 2.5vw, 0.8rem) !important;
+  /* All-payments table on mobile — same compact fluid sizing
+   * convention as the cases table above. */
+  html body .finance-screen-panel .finance-all-payments-table {
+    table-layout: fixed !important;
+    width: 100% !important;
+  }
+  html body .finance-screen-panel .finance-all-payments-table th,
+  html body .finance-screen-panel .finance-all-payments-table td {
+    width: 25% !important;
+    font-size: clamp(0.5rem, 2.1vw, 0.65rem) !important;
+    line-height: 1.25 !important;
+    padding: clamp(0.35rem, 1.4vw, 0.6rem) clamp(0.2rem, 0.9vw, 0.4rem) !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+    white-space: normal !important;
+    word-break: keep-all !important;
+    overflow-wrap: anywhere !important;
+  }
+  html body .finance-screen-panel .finance-all-payments-table .row-title {
+    font-size: inherit !important;
+    line-height: 1.2 !important;
+    font-weight: 850 !important;
+  }
+  html body .finance-screen-panel .finance-all-payments-table .sub {
+    font-size: clamp(0.4rem, 1.7vw, 0.55rem) !important;
+    color: var(--muted) !important;
+    line-height: 1.2 !important;
+    margin-top: 2px !important;
+  }
+  html body .finance-screen-panel .finance-payment-date-cell,
+  html body .finance-screen-panel .finance-payment-amount-cell {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    direction: ltr !important;
+  }
+
+  /* Amount cells — agreed fee, last payment, balance. The amount
+   * line and date line are rendered as SEPARATE divs (see
+   * FinanceScreen.tsx) so each stays whole on its own line —
+   * `white-space: nowrap` prevents an individual line from
+   * wrapping AND the cell allows two lines vertically so the
+   * full amount + full date are both visible. */
+  html body .finance-screen-panel .finance-table td.amount,
+  html body .finance-screen-panel .finance-table td.finance-last-payment,
+  html body .finance-screen-panel .finance-table td.finance-balance-red {
+    font-size: clamp(0.5rem, 2.1vw, 0.65rem) !important;
     line-height: 1.2 !important;
     white-space: normal !important;
-    word-break: break-word !important;
+    word-break: keep-all !important;
+    overflow: visible !important;
+    padding: clamp(0.3rem, 1.2vw, 0.55rem) clamp(0.15rem, 0.7vw, 0.3rem) !important;
+    vertical-align: middle !important;
   }
-  /* Case-name + sub-meta inside the first cell — slightly smaller
-   * so the case-card height stays compact alongside the amounts. */
-  html[lang="ar"] body .finance-screen-panel .finance-table td .row-title {
+  /* Each sub-div on its own line; numbers/dates never wrap. */
+  html body .finance-screen-panel .finance-table td .finance-last-payment-amount,
+  html body .finance-screen-panel .finance-table td .finance-last-payment-date {
+    display: block !important;
+    white-space: nowrap !important;
+    direction: ltr !important;
+    text-align: center !important;
+    line-height: 1.2 !important;
+    font-size: inherit !important;
+  }
+  html body .finance-screen-panel .finance-table td .finance-last-payment-amount {
+    font-weight: 900 !important;
+  }
+  html body .finance-screen-panel .finance-table td .finance-last-payment-date {
+    font-size: clamp(0.42rem, 1.75vw, 0.55rem) !important;
+    color: var(--muted) !important;
+    margin-top: 2px !important;
+  }
+
+  /* Case-name + sub-meta in the first cell — shrunk further per
+   * user request so the client + case-number string fits in the
+   * narrow case-info cell without forcing tokens onto new rows. */
+  html body .finance-screen-panel .finance-table td .row-title {
+    font-size: clamp(0.5rem, 2.1vw, 0.65rem) !important;
+    line-height: 1.2 !important;
+    white-space: normal !important;
+    word-break: keep-all !important;
+    overflow-wrap: anywhere !important;
+    hyphens: none !important;
+  }
+  html body .finance-screen-panel .finance-table td .sub {
+    font-size: clamp(0.42rem, 1.7vw, 0.55rem) !important;
+    line-height: 1.3 !important;
+    white-space: normal !important;
+    word-break: keep-all !important;
+    overflow-wrap: anywhere !important;
+    hyphens: none !important;
+  }
+
+  /* Give the first cell (case info) a touch more room so the
+   * client name + case number can breathe without forcing every
+   * token onto a new line. */
+  html body .finance-screen-panel .finance-table td:first-child {
+    padding: clamp(0.5rem, 2vw, 0.85rem) clamp(0.45rem, 1.8vw, 0.7rem) !important;
+    min-width: 0 !important;
+  }
+
+  /* ───────────────────────────────────────────────────────── *
+   * Arabic + mobile: undo the global `html[lang="ar"] .content
+   * * { font-size: 1.5em }` inflation for the Finance Detail
+   * screen. Without this, "اشرف شريف" / "₪2,000" / "كسبية ·
+   * 1-05-26" all render ~50% larger than the Hebrew equivalent
+   * and overflow the narrow mobile card layout. We re-anchor
+   * to the same px-scale the Hebrew version already uses, with
+   * fluid clamp values so it scales cleanly across phones.
+   * ───────────────────────────────────────────────────────── */
+  html[lang="ar"] body .finance-detail-panel .finance-detail-title,
+  html[lang="ar"] body .finance-detail-panel h2 {
+    font-size: clamp(1.05rem, 4.4vw, 1.35rem) !important;
+    line-height: 1.25 !important;
+  }
+  html[lang="ar"] body .finance-detail-panel .finance-detail-card span {
     font-size: clamp(0.7rem, 2.9vw, 0.9rem) !important;
+    line-height: 1.35 !important;
+  }
+  html[lang="ar"] body .finance-detail-panel .finance-detail-card strong {
+    font-size: clamp(0.9rem, 3.7vw, 1.1rem) !important;
+    line-height: 1.3 !important;
+  }
+  html[lang="ar"] body .finance-detail-panel .finance-debt-pill {
+    font-size: clamp(0.85rem, 3.6vw, 1.05rem) !important;
+    padding: clamp(0.45rem, 1.8vw, 0.7rem) clamp(0.8rem, 3vw, 1.1rem) !important;
+    min-width: clamp(5rem, 22vw, 7rem) !important;
+  }
+  html[lang="ar"] body .finance-detail-panel .finance-payments-title {
+    font-size: clamp(0.95rem, 4vw, 1.2rem) !important;
+    line-height: 1.3 !important;
+  }
+  html[lang="ar"] body .finance-detail-panel .finance-payments-subtitle {
+    font-size: clamp(0.7rem, 2.8vw, 0.88rem) !important;
+    line-height: 1.35 !important;
+  }
+  html[lang="ar"] body .finance-detail-panel .finance-payment-row {
+    padding: clamp(0.5rem, 2vw, 0.8rem) clamp(0.6rem, 2.4vw, 0.9rem) !important;
+  }
+  html[lang="ar"] body .finance-detail-panel .finance-payment-row .payment-date {
+    font-size: clamp(0.75rem, 3.1vw, 0.95rem) !important;
+    line-height: 1.3 !important;
+  }
+  html[lang="ar"] body .finance-detail-panel .finance-payment-row .payment-desc {
+    font-size: clamp(0.7rem, 2.8vw, 0.85rem) !important;
+    line-height: 1.3 !important;
+  }
+  html[lang="ar"] body .finance-detail-panel .finance-payment-row .payment-amount {
+    font-size: clamp(0.85rem, 3.5vw, 1.05rem) !important;
+    line-height: 1.3 !important;
+  }
+  html[lang="ar"] body .finance-detail-panel .case-edit-btn,
+  html[lang="ar"] body .finance-detail-panel .case-edit-btn * {
+    font-size: clamp(0.75rem, 3vw, 0.92rem) !important;
     line-height: 1.2 !important;
   }
-  html[lang="ar"] body .finance-screen-panel .finance-table td .sub {
-    font-size: clamp(0.55rem, 2.2vw, 0.72rem) !important;
-    line-height: 1.2 !important;
+}
+
+/* ============================================================ *
+ * Modern-portal AuthShell — keep the bot login / OTP / success
+ * cards centered on every viewport. v2: stronger horizontal lock
+ * using flexbox + overflow guards, plus the Arabic 1.5em reset.
+ * Selectors chained `html body` to beat any leftover Tailwind
+ * preflight rules.
+ * ============================================================ */
+
+/* Outer shell: switch to FLEX (column) so we don't depend on grid
+ * place-items, and prevent any horizontal overflow leaking up. */
+html body .modern-portal-root .modern-portal-auth-shell {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100vw !important;
+  margin-inline: auto !important;
+  padding-inline: clamp(0.75rem, 4vw, 1.25rem) !important;
+  box-sizing: border-box !important;
+  overflow-x: hidden !important;
+}
+
+/* Card itself: never wider than viewport. min(28rem, …) caps at
+ * the design width on tablets+, the calc() floors to viewport-
+ * minus-padding so the card always has room to breathe and the
+ * margins stay symmetric. */
+html body .modern-portal-root .modern-portal-auth-card {
+  display: block !important;
+  margin-inline: auto !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  width: 100% !important;
+  max-width: min(28rem, calc(100vw - 1.5rem)) !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
+}
+
+/* OTP input row — keep the 6 inputs on a SINGLE ROW. flex-wrap
+ * is forced to NOWRAP and the inputs are sized fluidly via
+ * `flex: 1 1 0` + a fluid `width` so they all fit any phone
+ * width without wrapping to a second line. */
+html body .modern-portal-root .modern-portal-auth-card [dir="ltr"] {
+  width: 100% !important;
+  max-width: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+  gap: clamp(0.2rem, 1.2vw, 0.5rem) !important;
+  box-sizing: border-box !important;
+}
+/* Each OTP input — fluid width so 6 boxes always fit on one row.
+ * Floor: 1.75rem (28px) for the narrowest phones; cap at 3rem
+ * (48px) for the design width. Padding zeroed so the typed digit
+ * isn't clipped at small sizes. */
+html body .modern-portal-root .modern-portal-auth-card [dir="ltr"] > input {
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+  width: auto !important;
+  max-width: clamp(1.75rem, 8vw, 3rem) !important;
+  height: clamp(2.5rem, 11vw, 3.5rem) !important;
+  padding: 0 !important;
+  text-align: center !important;
+  font-size: clamp(0.95rem, 4vw, 1.25rem) !important;
+  box-sizing: border-box !important;
+}
+
+/* Arabic: undo the global .content * { font-size: 1.5em } inflation
+ * inside the auth card so text fits the layout the design uses. */
+html[lang="ar"] body .modern-portal-auth-card,
+html[lang="ar"] body .modern-portal-auth-card * {
+  font-size: revert !important;
+}
+html[lang="ar"] body .modern-portal-auth-card h2 {
+  font-size: 1.5rem !important;
+  line-height: 1.25 !important;
+}
+html[lang="ar"] body .modern-portal-auth-card p {
+  font-size: 0.875rem !important;
+  line-height: 1.5 !important;
+}
+html[lang="ar"] body .modern-portal-auth-card label {
+  font-size: 0.75rem !important;
+}
+html[lang="ar"] body .modern-portal-auth-card input,
+html[lang="ar"] body .modern-portal-auth-card button {
+  font-size: 0.875rem !important;
+  line-height: 1.4 !important;
+}
+
+/* ============================================================ *
+ * Arabic: undo the global 1.5em inflation inside the WhatsApp
+ * one-on-one client chat screen (bubbles, header, quick actions
+ * dropdown, voice/file rows, composer). Same root cause + same
+ * mobile-only scoping pattern as the other portal screens. */
+@media (max-width: 620px) {
+  html[lang="ar"] body .modern-portal-client-chat,
+  html[lang="ar"] body .modern-portal-client-chat * {
+    font-size: revert !important;
   }
+  /* Header title (client name) */
+  html[lang="ar"] body .modern-portal-client-chat header h2,
+  html[lang="ar"] body .modern-portal-client-chat header .tw-text-base,
+  html[lang="ar"] body .modern-portal-client-chat header .tw-text-lg {
+    font-size: 1rem !important;
+    line-height: 1.25 !important;
+  }
+  html[lang="ar"] body .modern-portal-client-chat header .tw-text-xs,
+  html[lang="ar"] body .modern-portal-client-chat header .tw-text-sm {
+    font-size: 0.75rem !important;
+    line-height: 1.3 !important;
+  }
+  /* Quick-actions toggle pill */
+  html[lang="ar"] body .modern-portal-client-chat button {
+    font-size: 0.875rem !important;
+    line-height: 1.4 !important;
+  }
+  /* Bubble body text + timestamps + file-meta */
+  html[lang="ar"] body .modern-portal-client-chat p,
+  html[lang="ar"] body .modern-portal-client-chat span,
+  html[lang="ar"] body .modern-portal-client-chat .tw-text-sm,
+  html[lang="ar"] body .modern-portal-client-chat .tw-text-base {
+    font-size: 0.875rem !important;
+    line-height: 1.45 !important;
+  }
+  html[lang="ar"] body .modern-portal-client-chat .tw-text-xs {
+    font-size: 0.7rem !important;
+    line-height: 1.3 !important;
+  }
+  /* Composer input */
+  html[lang="ar"] body .modern-portal-client-chat input,
+  html[lang="ar"] body .modern-portal-client-chat textarea {
+    font-size: 0.9rem !important;
+    line-height: 1.4 !important;
+  }
+}
+
+/* ============================================================ *
+ * Arabic: undo the global 1.5em inflation inside the WhatsApp /
+ * Bot hub screen. Same root cause — `html[lang="ar"] .content *
+ * { font-size: 1.5em }` was bloating the client list cards, the
+ * top bar title, search box, recent chats heading, etc. Mobile
+ * only — desktop keeps the larger Arabic typography intact. */
+@media (max-width: 620px) {
+  html[lang="ar"] body .modern-portal-hub,
+  html[lang="ar"] body .modern-portal-hub * {
+    font-size: revert !important;
+  }
+  /* Top bar title + status */
+  html[lang="ar"] body .modern-portal-hub header h2,
+  html[lang="ar"] body .modern-portal-hub header .tw-text-base,
+  html[lang="ar"] body .modern-portal-hub header .tw-text-lg {
+    font-size: 1.05rem !important;
+    line-height: 1.25 !important;
+  }
+  html[lang="ar"] body .modern-portal-hub header .tw-text-xs,
+  html[lang="ar"] body .modern-portal-hub header .tw-text-sm {
+    font-size: 0.78rem !important;
+    line-height: 1.3 !important;
+  }
+  /* Search row */
+  html[lang="ar"] body .modern-portal-hub input,
+  html[lang="ar"] body .modern-portal-hub input::placeholder {
+    font-size: 0.9rem !important;
+    line-height: 1.4 !important;
+  }
+  /* "محادثات أخيرة" recent-chats heading */
+  html[lang="ar"] body .modern-portal-hub .tw-text-sm {
+    font-size: 0.85rem !important;
+    line-height: 1.4 !important;
+  }
+  /* Client chat cards: name, case label, time, count badge */
+  html[lang="ar"] body .modern-portal-hub p,
+  html[lang="ar"] body .modern-portal-hub span,
+  html[lang="ar"] body .modern-portal-hub button {
+    font-size: 0.875rem !important;
+    line-height: 1.4 !important;
+  }
+  html[lang="ar"] body .modern-portal-hub .tw-text-xs {
+    font-size: 0.72rem !important;
+    line-height: 1.3 !important;
+  }
+  html[lang="ar"] body .modern-portal-hub .tw-text-base {
+    font-size: 0.95rem !important;
+    line-height: 1.35 !important;
+  }
+  /* Client name — was being truncated by `.tw-truncate` (which sets
+   * `white-space: nowrap; overflow: hidden; text-overflow: ellipsis`).
+   * Arabic names like "إبراهيم شريف" don't fit at the design font,
+   * so allow them to WRAP to a second line and shrink slightly. */
+  html[lang="ar"] body .modern-portal-hub .tw-truncate {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    word-break: keep-all !important;
+    overflow-wrap: anywhere !important;
+    font-size: 0.82rem !important;
+    line-height: 1.25 !important;
+  }
+  /* Sub-meta inside the card (case count / "بدون قضية") stays
+   * one line — it's short enough and gets ellipsis as a safety. */
+  html[lang="ar"] body .modern-portal-hub .tw-text-xs.tw-truncate {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    font-size: 0.7rem !important;
+  }
+}
+
+/* ============================================================ *
+ * Arabic: undo the global 1.5em inflation inside the bot chat
+ * screen too. Same root cause as the auth card — `html[lang="ar"]
+ * .content * { font-size: 1.5em }` was bloating every label,
+ * suggestion chip, quick-action tile, and bubble in the bot UI.
+ * Re-anchors to the design's Tailwind sizes so Arabic reads at
+ * the same scale as Hebrew on mobile. Scoped to mobile + the
+ * `.modern-portal-bot-chat` wrapper to avoid touching desktop. */
+@media (max-width: 620px) {
+  html[lang="ar"] body .modern-portal-bot-chat,
+  html[lang="ar"] body .modern-portal-bot-chat * {
+    font-size: revert !important;
+  }
+  /* Header title */
+  html[lang="ar"] body .modern-portal-bot-chat header h2,
+  html[lang="ar"] body .modern-portal-bot-chat header .tw-text-base,
+  html[lang="ar"] body .modern-portal-bot-chat header .tw-text-lg {
+    font-size: 1rem !important;
+    line-height: 1.25 !important;
+  }
+  html[lang="ar"] body .modern-portal-bot-chat header .tw-text-xs,
+  html[lang="ar"] body .modern-portal-bot-chat header .tw-text-sm {
+    font-size: 0.75rem !important;
+    line-height: 1.3 !important;
+  }
+  /* Chat bubbles and main text */
+  html[lang="ar"] body .modern-portal-bot-chat p,
+  html[lang="ar"] body .modern-portal-bot-chat li,
+  html[lang="ar"] body .modern-portal-bot-chat span,
+  html[lang="ar"] body .modern-portal-bot-chat .tw-text-sm,
+  html[lang="ar"] body .modern-portal-bot-chat .tw-text-base {
+    font-size: 0.875rem !important;
+    line-height: 1.5 !important;
+  }
+  html[lang="ar"] body .modern-portal-bot-chat .tw-text-xs {
+    font-size: 0.72rem !important;
+    line-height: 1.3 !important;
+  }
+  /* Suggestion chips & quick-action buttons */
+  html[lang="ar"] body .modern-portal-bot-chat button {
+    font-size: 0.875rem !important;
+    line-height: 1.4 !important;
+  }
+  html[lang="ar"] body .modern-portal-bot-chat button.tw-text-xs {
+    font-size: 0.72rem !important;
+  }
+  /* Composer input */
+  html[lang="ar"] body .modern-portal-bot-chat input,
+  html[lang="ar"] body .modern-portal-bot-chat textarea {
+    font-size: 0.875rem !important;
+    line-height: 1.4 !important;
+  }
+  /* Icons (lucide-react default 16-20px) — keep them at the design
+   * size, not blown up. SVG width/height attrs are honored unless
+   * a class overrides; the Tailwind h-4/w-4 etc. should win, but
+   * setting font-size: revert is enough since SVGs ignore it. */
+}
+
+/* ============================================================ *
+ * Finance payment row — stack date+type on one line and the
+ * description on a SEPARATE line below (was inline continuation).
+ * Renders inside FinanceDetail under "רשימת התשלומים".
+ * ============================================================ */
+.finance-payment-row .payment-info {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: clamp(0.15rem, 0.6vw, 0.3rem) !important;
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
+}
+.finance-payment-row .payment-info .payment-desc {
+  display: block !important;
+  width: 100% !important;
+  font-weight: 600 !important;
+  color: var(--muted) !important;
+  font-size: clamp(0.72rem, 2.4vw, 0.85rem) !important;
+  line-height: 1.35 !important;
+  white-space: normal !important;
+  word-break: keep-all !important;
+  overflow-wrap: anywhere !important;
+}
+
+/* ============================================================ *
+ * All-payments table base styling (desktop + mobile, outside any
+ * media query — mobile overrides above in the @media block).
+ * ============================================================ */
+.finance-all-payments-wrap {
+  margin-top: clamp(1rem, 4vw, 1.75rem);
+}
+.finance-all-payments-title {
+  margin: 0 0 clamp(0.4rem, 1.6vw, 0.7rem) 0;
+  font-size: clamp(0.95rem, 3.2vw, 1.1rem);
+  font-weight: 950;
+  color: #0F172A;
+}
+.finance-all-payments-table-wrap {
+  overflow-x: auto;
+}
+.finance-all-payments-table {
+  width: 100%;
+}
+.finance-all-payments-table th {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 850;
+  color: var(--muted);
+  padding: 10px 8px;
+}
+.finance-all-payments-table td {
+  padding: 12px 8px;
+  border-top: 1px solid var(--line);
+  text-align: center;
+}
+.finance-all-payments-table .finance-payment-amount-cell {
+  font-weight: 900;
+  color: var(--success);
+  direction: ltr;
+  white-space: nowrap;
+}
+.finance-all-payments-table .finance-payment-date-cell {
+  direction: ltr;
+  white-space: nowrap;
+}
+body.dark .finance-all-payments-title {
+  color: #F1F5F9;
+}
+body.dark .finance-all-payments-table td {
+  border-top-color: rgba(148, 163, 184, 0.28);
+}
+body.dark .finance-all-payments-table th {
+  color: #94A3B8;
 }
 
 /* ============================================================ *

@@ -81,6 +81,7 @@ export function Modal({
             onClick={onClose}
           >
             <i className="fas fa-arrow-left" />
+            <span className="modal-mobile-back-btn-label">{backLabel}</span>
           </button>
         )}
         {children}

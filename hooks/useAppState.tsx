@@ -67,8 +67,9 @@ const initialState: AppState = {
   showUpcomingHome: true,
   officeName: '',
   officeAddress: '',
-  // Classic is the default look for new installs (modern is opt-in).
-  homeStyle: 'classic',
+  // Minimalist is the default look for new installs (classic + modern
+  // are opt-in via Settings → "עיצוב הבית").
+  homeStyle: 'minimalist',
 };
 
 // ---------------------------------------------------------------------------

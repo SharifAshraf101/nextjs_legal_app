@@ -440,7 +440,7 @@ function HubScreen({
 
   const backLabel = lang === 'ar' ? 'رجوع' : 'חזרה';
   return (
-    <>
+    <div className="modern-portal-hub">
       <TopBar
         title={
           mode === 'bot' ? (
@@ -574,7 +574,7 @@ function HubScreen({
         </Panel>
         )}
       </div>
-    </>
+    </div>
   );
 }
 
@@ -1749,7 +1749,7 @@ function LawyerSearchScreen({
   };
 
   return (
-    <div className="tw-mx-auto tw-flex tw-min-h-full tw-w-full tw-max-w-6xl tw-flex-col tw-bg-[#FDFBF5]">
+    <div className="modern-portal-client-chat tw-mx-auto tw-flex tw-min-h-full tw-w-full tw-max-w-6xl tw-flex-col tw-bg-[#FDFBF5]">
       <header className="tw-sticky tw-top-0 tw-z-20 tw-border-b tw-border-slate-200 tw-bg-[#FDFBF5]/95 tw-px-4 tw-py-3 tw-backdrop-blur">
         <div className="tw-flex tw-items-center tw-justify-between tw-gap-3">
           <button
@@ -2543,7 +2543,7 @@ function BotChatScreen({
     return out;
   };
   return (
-    <div className="tw-mx-auto tw-flex tw-min-h-full tw-w-full tw-max-w-4xl tw-flex-col tw-bg-[#FDFBF5]">
+    <div className="modern-portal-bot-chat tw-mx-auto tw-flex tw-min-h-full tw-w-full tw-max-w-4xl tw-flex-col tw-bg-[#FDFBF5]">
       <header className="tw-sticky tw-top-0 tw-z-20 tw-border-b tw-border-slate-200 tw-bg-[#FDFBF5]/95 tw-px-4 tw-py-3 tw-backdrop-blur">
         {/* Position-swapped per spec: in RTL with `justify-between`,
          *  the first JSX child renders on the visual RIGHT and the
@@ -2739,7 +2739,7 @@ function AuthShell({
     // corner (not the centered card's top-left). That matches the
     // global-search screen behavior where the back button sits at
     // the panel's left edge — here the "panel" is the full screen.
-    <div className="tw-relative tw-grid tw-min-h-full tw-place-items-center tw-p-5">
+    <div className="modern-portal-auth-shell tw-relative tw-grid tw-min-h-full tw-place-items-center tw-p-5">
       {onBack && (
         <button
           type="button"
@@ -2752,7 +2752,7 @@ function AuthShell({
           <span>{backLabel}</span>
         </button>
       )}
-      <div className="tw-w-full tw-max-w-md tw-rounded-[32px] tw-border tw-border-slate-200 tw-bg-[#FDFBF5] tw-p-7 tw-shadow-sm">
+      <div className="modern-portal-auth-card tw-w-full tw-max-w-md tw-rounded-[32px] tw-border tw-border-slate-200 tw-bg-[#FDFBF5] tw-p-7 tw-shadow-sm">
         <div className="tw-mx-auto tw-mb-6 tw-grid tw-h-20 tw-w-20 tw-place-items-center tw-rounded-full tw-bg-indigo-50 tw-text-indigo-600">
           {icon}
         </div>

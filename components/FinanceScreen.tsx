@@ -43,16 +43,20 @@ export function FinanceScreen() {
     dispatch({ type: 'SET_TAB', tab: 'financeDetail' });
   };
 
-  // Symmetric info box from source line 4052 (HTML inline styles preserved).
-  // `finance-info-box` className lets the stylesheet shrink it down on
-  // mobile + Arabic where the longer Arabic captions overflow.
+  // Symmetric info box from source line 4052. The 3 captions need to
+  // sit above the 3 RIGHT-MOST data columns of the finance table
+  // (agreedFee / lastPayment / balance). The first table column
+  // (case info) has no caption, so we render an empty 4th span as
+  // a placeholder that occupies that column's width. With 4 equal
+  // flex children + RTL direction, each caption lines up under
+  // its column. `finance-info-box` className drives the mobile
+  // shrink + desktop-hide stylesheet rules.
   const infoBox =
     lang === 'ar' ? (
       <div
         className="finance-info-box"
         style={{
           display: 'flex',
-          justifyContent: 'flex-start',
           gap: 18,
           margin: '18px 0 8px 0',
           textAlign: 'center',
@@ -60,6 +64,7 @@ export function FinanceScreen() {
           fontSize: 15,
         }}
       >
+        <span aria-hidden="true" className="finance-info-box-spacer" />
         <span>أتعاب متفق عليها</span>
         <span>تاريخ وموعد آخر دفعة</span>
         <span>الدين المتبقي للأتعاب</span>
@@ -69,7 +74,6 @@ export function FinanceScreen() {
         className="finance-info-box"
         style={{
           display: 'flex',
-          justifyContent: 'flex-start',
           gap: 18,
           margin: '18px 0 8px 0',
           textAlign: 'center',
@@ -77,6 +81,7 @@ export function FinanceScreen() {
           fontSize: 15,
         }}
       >
+        <span aria-hidden="true" className="finance-info-box-spacer" />
         <span>שכר טרחה מוסכם</span>
         <span>תשלום אחרון ותאריכו</span>
         <span>יתרת שכר הטרחה</span>
@@ -119,9 +124,6 @@ export function FinanceScreen() {
               {filtered.map((c) => {
                 const paidItems = financePaidItemsForCase(c.id, state.finances);
                 const last = paidItems[0];
-                const lastText = last
-                  ? `${money(last.amount)} · ${last.date || ''}`
-                  : noPay;
                 return (
                   <tr
                     key={c.id}
@@ -132,8 +134,7 @@ export function FinanceScreen() {
                     <td>
                       <div className="row-title">{caseName(c, lang)}</div>
                       <div className="sub">
-                        {clientName(c.clientId, state.clients, lang)} ·{' '}
-                        {t('caseNumber')}: {c.caseNumber}
+                        {clientName(c.clientId, state.clients, lang)}
                       </div>
                     </td>
                     <td className="amount">{money(c.agreedFee || 0)}</td>
@@ -143,7 +144,20 @@ export function FinanceScreen() {
                         (last ? '' : ' finance-last-payment-empty')
                       }
                     >
-                      {lastText}
+                      {last ? (
+                        <>
+                          <div className="finance-last-payment-amount">
+                            {money(last.amount)}
+                          </div>
+                          {last.date && (
+                            <div className="finance-last-payment-date">
+                              {last.date}
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        noPay
+                      )}
                     </td>
                     <td className="finance-balance-red">
                       {money(financeCaseBalance(c, state.finances))}

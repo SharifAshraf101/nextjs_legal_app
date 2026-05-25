@@ -161,7 +161,12 @@ export function TasksScreen() {
               data-task-quick-filter={k}
               onClick={() => setQuickFilter(k)}
             >
-              {taskQuickLabel(k, lang)} <span>{counts[k] || 0}</span>
+              {/* Single text node: label + space + Latin digit (forced
+               *  via the toLocaleString('en-US') call). Rendering as
+               *  one text node — not two `<span>`s — eliminates the
+               *  inline-flex border/box artifact the user saw around
+               *  the digit and keeps the whole chip visually flat. */}
+              {`${taskQuickLabel(k, lang)} ${(counts[k] || 0).toLocaleString('en-US')}`}
             </button>
           ))}
         </div>

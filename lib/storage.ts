@@ -206,9 +206,9 @@ export function loadUserSettings(): LoadedSettings {
   if (savedUpcoming === '0') showUpcomingHome = false;
   if (savedUpcoming === '1') showUpcomingHome = true;
 
-  // Default to "classic" for new installs (matches the look the user
-  // designed for the home screen). "modern" is opt-in via Settings.
-  let homeStyle: 'modern' | 'classic' | 'minimalist' = 'classic';
+  // Default to "minimalist" for new installs. Classic + modern are
+  // opt-in via Settings → "עיצוב הבית".
+  let homeStyle: 'modern' | 'classic' | 'minimalist' = 'minimalist';
   const savedHomeStyle = lsGet(LS.HOME_STYLE);
   if (savedHomeStyle === 'classic') homeStyle = 'classic';
   if (savedHomeStyle === 'modern') homeStyle = 'modern';

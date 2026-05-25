@@ -15,6 +15,8 @@ import { Modal } from './Modal';
 import { ClientAvatar } from './ClientAvatar';
 import { ClientEdit } from './ClientEdit';
 import { CaseDetail } from './CaseDetail';
+import { financeCaseBalance } from '@/lib/finance';
+import { money } from '@/lib/cases';
 
 /**
  * Port of showClient (source line 4224).
@@ -294,6 +296,27 @@ export function ClientDetail({ clientId }: ClientDetailProps) {
         </a>
       </div>
 
+      {/* Total outstanding debt — sum of `financeCaseBalance` across
+       *  every case belonging to this client. Placed ABOVE the
+       *  "תיקים" heading so the lawyer sees the cross-case total
+       *  before scanning the case list. Hidden when zero. */}
+      {(() => {
+        const totalDebt = clientCases.reduce(
+          (sum, c) => sum + financeCaseBalance(c, state.finances),
+          0,
+        );
+        if (totalDebt <= 0) return null;
+        const label =
+          lang === 'ar'
+            ? 'إجمالي الدَّين في كل الملفات'
+            : 'יתרת חוב בכל התיקים';
+        return (
+          <div className="client-total-debt-row">
+            <span className="client-total-debt-label">{label}</span>
+            <span className="client-total-debt-amount">{money(totalDebt)}</span>
+          </div>
+        );
+      })()}
       <h3>{t('cases')}</h3>
       <div className="client-case-list">
         {clientCases.length === 0 ? (

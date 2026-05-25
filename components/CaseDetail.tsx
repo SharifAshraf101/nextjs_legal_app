@@ -15,6 +15,7 @@ import { TaskModal } from './TaskModal';
 import { NewEventModal } from './NewEventModal';
 import { CaseDocumentsModal } from './CaseDocumentsModal';
 import { caseDocumentsForCase } from '@/lib/documents';
+import { financeCaseBalance } from '@/lib/finance';
 import {
   caseTaskItems,
   taskDueInfo,
@@ -200,7 +201,13 @@ export function CaseDetail({ caseId }: CaseDetailProps) {
   const court = lang === 'ar' ? c.courtAr || c.court : c.court || c.courtAr;
   const titleStr = caseName(c, lang);
   const clientLabel = clientName(c.clientId, state.clients, lang);
-  const balance = computeBalance(c, state);
+  // Use the canonical financeCaseBalance from lib/finance so the
+  // case-detail "יתרת חוב" matches the Finance screen. The previous
+  // local computeBalance counted draft/unpaid records too, which
+  // caused the wrong total (e.g. agreedFee 5,000 with no actual
+  // payments wrongly showed 2,000 owed when a pending 3,000 draft
+  // existed in finances).
+  const balance = financeCaseBalance(c, state.finances);
 
   /**
    * Wrapper-level drag-and-drop: catch file drops ANYWHERE inside the
@@ -908,15 +915,3 @@ function CaseTimelineSection({
   );
 }
 
-/** Compute remaining balance = agreedFee − sum(payments for this case).
- *  Mirrors the source's financeCaseBalance (in lib/finance.ts in Stage 4b)
- *  but kept inline here so CaseDetail doesn't depend on the unported file. */
-function computeBalance(
-  c: { agreedFee?: number; id: string },
-  state: { finances: { caseId: string; amount: number; type?: string }[] },
-): number {
-  const paid = state.finances
-    .filter((f) => f.caseId === c.id && (f.type === 'fee' || !f.type))
-    .reduce((s, f) => s + Number(f.amount || 0), 0);
-  return Number(c.agreedFee || 0) - paid;
-}
