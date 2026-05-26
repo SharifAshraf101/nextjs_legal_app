@@ -194,7 +194,7 @@ export function taskQuickLabel(key: TaskQuickFilter, lang: Lang): string {
     today: ['להיום', 'لليوم'],
     overdue: ['באיחור', 'متأخرة'],
     urgent: ['דחופות', 'مستعجلة'],
-    open: ['פתוחות בלבד', 'المفتوحة فقط'],
+    open: ['פתוחות', 'مفتوحة'],
     done: ['בוצעו', 'تمت'],
   };
   return lang === 'ar' ? labels[key][1] : labels[key][0];

@@ -751,6 +751,34 @@ body.font-family-calibri{--app-font-family:Calibri, Arial, sans-serif;}
 .case-docs-modal-head{display:flex;align-items:flex-start;justify-content:center;gap:12px;margin:0 0 14px;padding-left:46px;padding-right:46px;text-align:center;}
 .case-docs-modal-head h2{margin:0;font-size:20px;font-weight:950;text-align:center;}
 .case-docs-modal-head > div{flex:1;text-align:center;}
+/* Case-documents modal — hide the bottom "cpm-footer" gray bar
+ * (top border + buttons) per user request. The footer only
+ * showed in pick-mode anyway; hiding it lets the document list
+ * extend to the bottom of the modal without anything covering it. */
+html body .modal.case-docs-modal .cpm-footer,
+html body .modal.case-docs-modal .modal-box .cpm-footer {
+  display: none !important;
+}
+/* Modal box height = content height. No min-height, no extra
+ * bottom padding, no background showing below the documents
+ * list. The empty gray strip the user reported was the modal
+ * box's bottom padding/empty space below the list. */
+html body .modal.case-docs-modal .modal-box {
+  min-height: 0 !important;
+  height: auto !important;
+  max-height: 90vh !important;
+  padding-bottom: 1rem !important;
+  overflow: hidden !important;
+}
+/* The docs list itself — remove the 52vh cap so it can grow to
+ * fill the modal's available height instead of leaving empty
+ * grey area below. */
+html body .modal.case-docs-modal .case-docs-modal-list {
+  max-height: none !important;
+  overflow: auto !important;
+  flex: 1 1 auto !important;
+}
+
 /* Case-documents modal — back-arrow + X close styled EXACTLY
  * like the case-detail screen header. Scoped via the dedicated
  * `.case-docs-modal` class on the Modal root + `.modal.ls × N`
@@ -2121,6 +2149,60 @@ html body .modal.case-docs-modal.ls.ls.ls.ls.ls .modal-box > .modal-mobile-back-
     min-width:0!important;
     overflow:visible!important;
   }
+  /* MOBILE — show all 7 weekday columns at once. Base CSS at
+   * line 34 sets `min-width:760px; minmax(120px,1fr)`, which
+   * pushes the grid wider than the viewport (only ~3 days fit).
+   * Override to 7 equal narrow columns + smaller day cells. */
+  .calendar-week-grid,
+  .content:has(.calendar-week-grid) .calendar-week-grid{
+    min-width:0!important;
+    width:100%!important;
+    grid-template-columns:repeat(7,minmax(0,1fr))!important;
+    gap:clamp(0.15rem,0.6vw,0.3rem)!important;
+  }
+  .calendar-week-day{
+    min-height:clamp(7rem,30vw,10rem)!important;
+    padding:clamp(0.3rem,1.2vw,0.55rem)!important;
+    border-radius:clamp(0.5rem,2vw,0.9rem)!important;
+    overflow:hidden!important;
+  }
+  .calendar-week-day h3{
+    font-size:clamp(0.5rem,2.2vw,0.7rem)!important;
+    margin:0 0 4px!important;
+    line-height:1.15!important;
+    text-align:center!important;
+  }
+  .calendar-week-day h3 .calendar-week-date{
+    font-size:clamp(0.42rem,1.8vw,0.6rem)!important;
+    margin-top:1px!important;
+  }
+  .calendar-week-day .sub,
+  .calendar-week-day .cal-event{
+    font-size:clamp(0.42rem,1.7vw,0.58rem)!important;
+    padding:2px 4px!important;
+  }
+  /* Event chips — force a LIGHT blue background + dark blue text
+   * so they stay readable. The global `.content:not(.home-content)`
+   * rule (line ~14963) overrides `--primary-2` to near-black on
+   * every panel, which made `.cal-event` (which uses --primary-2
+   * as its background and --primary as text color) render as a
+   * dark-on-dark unreadable square. */
+  .calendar-week-day .cal-event,
+  .calendar-week-day .cal-event *,
+  .calendar-grid .cal-event,
+  .calendar-grid .cal-event *{
+    background:#DBEAFE!important;
+    background-color:#DBEAFE!important;
+    color:#1E40AF!important;
+    -webkit-text-fill-color:#1E40AF!important;
+    border:1px solid #BFDBFE!important;
+  }
+  /* Disable the outer scroll wrapper so the grid doesn't slide. */
+  .calendar-screen-panel div[style*="overflow"]:has(> .calendar-week-grid),
+  div[style*="overflow"]:has(> .calendar-week-grid){
+    overflow:visible!important;
+    width:100%!important;
+  }
 
   .global-search-section,
   .clients-scroll-list .list-item,
@@ -3419,6 +3501,47 @@ button[data-settings-toggle],
 .task-calendar-checkbox-row{display:flex!important;align-items:center!important;gap:8px!important;flex-direction:row!important;background:#eff6ff;border:1px solid #bfdbfe;border-radius:14px;padding:10px 12px;color:#1d4ed8;font-size:12px;font-weight:900;}
 .task-calendar-checkbox-row input{width:auto!important;margin:0!important;}
 @media(max-width:720px){.tasks-quick-filters{gap:6px}.tasks-quick-filter-btn{font-size:11px;padding:7px 9px}.task-mini-actions{gap:5px}}
+
+/* ============================================================ *
+ * Tasks quick-filter chips — MOBILE: all 6 chips on ONE row.
+ * Single-row layout with `flex-wrap:nowrap` and equal-flex sizing
+ * so the 6 chips (הכול / להיום / באיחור / דחופות / פתוחות / בוצעו)
+ * share the row in equal slices and the count digit fits inside
+ * each one. Fluid font + tight padding keep the layout legible
+ * down to ~320px. Hebrew + Arabic both covered. */
+@media (max-width: 720px) {
+  html body .tasks-quick-filters {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    width: 100% !important;
+    gap: clamp(0.15rem, 0.8vw, 0.4rem) !important;
+    overflow: hidden !important;
+    align-items: stretch !important;
+  }
+  html body .tasks-quick-filters .tasks-quick-filter-btn {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    width: auto !important;
+    padding: clamp(0.3rem, 1.2vw, 0.55rem) clamp(0.1rem, 0.5vw, 0.3rem) !important;
+    font-size: clamp(0.5rem, 2.1vw, 0.7rem) !important;
+    line-height: 1.1 !important;
+    letter-spacing: 0 !important;
+    gap: clamp(0.1rem, 0.5vw, 0.25rem) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+  }
+  /* Override the Hebrew/Arabic global font-size that targets
+   * .tasks-quick-filter-btn unconditionally so this rule wins. */
+  html[lang="he"] body .tasks-quick-filters .tasks-quick-filter-btn,
+  html[lang="ar"] body .tasks-quick-filters .tasks-quick-filter-btn {
+    font-size: clamp(0.5rem, 2.1vw, 0.7rem) !important;
+    line-height: 1.1 !important;
+  }
+}
 /* RTL-friendly nav button styling */
 .sidebar .nav-btn {
   direction: rtl;
@@ -18123,6 +18246,14 @@ body.dark {
 
 /* ── Case search ── */
 .case-search-meta { color: var(--muted) !important; }
+/* Hint/explanation line under every search input (Clients,
+ * Cases, Documents, Tasks, Finance, Global Search, Portal)
+ * removed per user request. Hidden via CSS so the JSX in each
+ * screen stays untouched (the elements still exist for any
+ * screen-reader pickup but render no visible space). */
+html body .case-search-meta {
+  display: none !important;
+}
 .case-search-wrap label { color: var(--muted) !important; }
 .case-timeline-search {
   border-color: var(--line) !important;
@@ -20400,7 +20531,7 @@ html body:not(.dark) .calendar-grid .cal-event .cal-event-details {
   text-overflow: ellipsis !important;
   /* Font shrunk by 5% per user request — was
    * clamp(0.88rem, 3.9vw, 1.15rem), each value × 0.95. */
-  font-size: clamp(0.84rem, 3.7vw, 1.09rem) !important;
+  font-size: clamp(0.79rem, 3.46vw, 1.02rem) !important;
   font-weight: 900 !important;
   color: #0F172A !important;
   letter-spacing: -0.01em !important;
@@ -20422,7 +20553,7 @@ html body:not(.dark) .calendar-grid .cal-event .cal-event-details {
  * (0.84→0.80, 3.7→3.5, 1.09→1.04). */
 html[lang="ar"] .calendar-list-title,
 html[lang="ar"] .content.content.content.content:not(.home-content) .calendar-list-title {
-  font-size: clamp(0.8rem, 3.5vw, 1.04rem) !important;
+  font-size: clamp(0.75rem, 3.28vw, 0.98rem) !important;
 }
 
 /* Calendar panel — pull the panel-body padding-top back to the
@@ -34463,6 +34594,111 @@ html[lang="ar"] body .modern-portal-auth-card button {
 }
 
 /* ============================================================ *
+ * WhatsApp client chat — equal left/right insets for bubbles.
+ *
+ * Bubbles are distinguished by their tail corner:
+ *   • client bubble   → `.tw-rounded-tl-md`  (visual LEFT side)
+ *   • lawyer bubble   → `.tw-rounded-tr-md`  (visual RIGHT side)
+ *
+ * We add a physical margin on the SIDE the bubble lives on so
+ * both sit exactly the same distance from their respective screen
+ * edges, regardless of cascade noise affecting parent padding.
+ * ============================================================ */
+/* Chat list itself — zero padding on both sides so the bubbles
+ * control their own physical insets via margin-left/right. */
+html body .portal-wa-chat .portal-wa-chat-list,
+html body .portal-wa-chat .portal-wa-chat-list.portal-wa-chat-list {
+  padding-top: 1.25rem !important;
+  padding-bottom: 1.25rem !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  padding-inline-start: 0 !important;
+  padding-inline-end: 0 !important;
+  box-sizing: border-box !important;
+}
+/* Client bubble (`.tw-rounded-tl-md`) — exactly 0.25cm from the
+ * LEFT screen edge. THREE selectors layered so at least one wins
+ * regardless of cascade noise:
+ *   (a) padding-left on the ROW selected by `.tw-justify-end`
+ *       (client-bubble rows use justify-end in RTL = visual LEFT)
+ *   (b) padding-left on the ROW selected by :has() for browsers
+ *       that support the modern selector
+ *   (c) margin-left directly on the bubble itself
+ * Reduce the bubble's max-width to leave room for both the
+ * margin AND the lawyer-bubble's right-flush position. */
+html body .portal-wa-chat .portal-wa-chat-list > .tw-justify-end,
+html body .portal-wa-chat .portal-wa-chat-list > .tw-flex.tw-justify-end {
+  padding-left: 0.25cm !important;
+  padding-inline-start: 0.25cm !important;
+  padding-right: 0 !important;
+  padding-inline-end: 0 !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  overflow: visible !important;
+}
+html body .portal-wa-chat .portal-wa-chat-list > .tw-flex:has(> .tw-rounded-tl-md) {
+  padding-left: 0.25cm !important;
+  padding-inline-start: 0.25cm !important;
+  padding-right: 0 !important;
+  padding-inline-end: 0 !important;
+  box-sizing: border-box !important;
+}
+html body .portal-wa-chat .portal-wa-chat-list .tw-rounded-tl-md.tw-rounded-tl-md {
+  margin: 0 !important;
+  margin-left: 0.25cm !important;
+  margin-inline-start: 0.25cm !important;
+  margin-right: 0 !important;
+  margin-inline-end: 0 !important;
+  /* Slimmer max-width so the bubble + its left margin together
+   * never exceed the available viewport width. */
+  max-width: calc(100% - 0.5cm) !important;
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+}
+/* "היום" / "اليوم" date label — wrapped in a flex
+ * `justify-center` row that spans the full chat width, so the
+ * pill itself sits at the true horizontal center regardless of
+ * any padding/margin asymmetry imposed on the surrounding
+ * bubble rows. */
+html body .portal-wa-chat .portal-wa-chat-list .portal-wa-chat-today-row {
+  display: flex !important;
+  width: 100% !important;
+  justify-content: center !important;
+  align-items: center !important;
+  /* Override any padding inherited from generic row rules above
+   * (e.g. the .tw-justify-end client-bubble padding) so the
+   * center reference stays the FULL viewport width. */
+  padding: 0 !important;
+  padding-inline-start: 0 !important;
+  padding-inline-end: 0 !important;
+  margin: 0 !important;
+  /* No background — the row is just a centering wrapper. */
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+html body .portal-wa-chat .portal-wa-chat-list .portal-wa-chat-today {
+  display: inline-block !important;
+  margin: 0 !important;
+  text-align: center !important;
+}
+/* Lawyer bubble (`.tw-rounded-tr-md`) — FLUSH against the right
+ * screen edge per user request. No margin-right, no padding-right
+ * on the parent. */
+html body .portal-wa-chat .portal-wa-chat-list .tw-rounded-tr-md.tw-rounded-tr-md {
+  margin: 0 !important;
+  margin-right: 0 !important;
+  margin-inline-end: 0 !important;
+  margin-left: 0 !important;
+  margin-inline-start: 0 !important;
+  max-width: 78% !important;
+  box-sizing: border-box !important;
+}
+
+/* ============================================================ *
  * Arabic: undo the global 1.5em inflation inside the WhatsApp
  * one-on-one client chat screen (bubbles, header, quick actions
  * dropdown, voice/file rows, composer). Same root cause + same
@@ -35914,37 +36150,327 @@ html body.dark.dark .tasks-screen-panel .tasks-quick-filters .tasks-quick-filter
  *
  * Scoped to ≤720px (the existing mobile breakpoint for this row). */
 
+/* ============================================================ *
+ * Main screens — mobile: back arrow anchored 0.25cm from the
+ * top-left corner of the screen, per user request. Beats the
+ * base `.main-screen-back-btn { top: 12px; left: 12px }` rule. */
 @media (max-width: 720px) {
+  html body .panel.global-search-panel > .main-screen-back-btn,
+  html body .panel.clients-screen-panel > .main-screen-back-btn,
+  html body .panel.cases-screen-panel > .main-screen-back-btn,
+  html body .panel.documents-screen-panel > .main-screen-back-btn,
+  html body .panel.tasks-screen-panel > .main-screen-back-btn,
+  html body .panel.finance-screen-panel > .main-screen-back-btn,
+  html body .panel:has(.calendar-toolbar) > .main-screen-back-btn,
+  html body .portal-chooser-screen > .main-screen-back-btn,
+  html body .modern-portal-hub > .portal-hub-wa-back,
+  html body .modern-portal-hub > .portal-hub-bot-back,
+  html body .portal-wa-chat > .portal-wa-chat-back,
+  html body .modern-portal-bot-chat > .portal-bot-chat-back {
+    top: 0.25cm !important;
+    left: 0.25cm !important;
+    right: auto !important;
+  }
+  /* Bot-chat back button (inside the sticky header) — overrides
+   * the `.main-screen-back-btn` base position (top:12px, left:12px)
+   * to land 0.25cm from the screen's top-left corner. The header
+   * is `tw-sticky`, so the absolute back button anchors to it
+   * and tracks the viewport top. */
+  html body .modern-portal-bot-chat .portal-bot-chat-back-mobile.portal-bot-chat-back-mobile {
+    position: absolute !important;
+    top: 0.25cm !important;
+    left: 0.25cm !important;
+    right: auto !important;
+    bottom: auto !important;
+    z-index: 50 !important;
+    margin: 0 !important;
+  }
+  /* The hub + chat containers need to be the positioning context
+   * for their absolute back buttons. */
+  html body .modern-portal-hub,
+  html body .portal-wa-chat,
+  html body .modern-portal-bot-chat {
+    position: relative !important;
+  }
+  /* Bump z-index above the sticky TopBar header (z-20) so the
+   * back button stays visible on top of it. */
+  html body .modern-portal-hub > .portal-hub-wa-back,
+  html body .modern-portal-hub > .portal-hub-bot-back,
+  html body .portal-wa-chat > .portal-wa-chat-back,
+  html body .modern-portal-bot-chat > .portal-bot-chat-back {
+    z-index: 50 !important;
+  }
+  /* Bot chat title — single line, vertically centered with the
+   * bot icon. Shrunk so "שיחת הלקוח — לונא אבו ערב" + " · מחובר"
+   * fits on one line between the back button (left) and the bot
+   * icon (right) on every phone width. Ellipsis truncates only if
+   * the viewport is narrower than even the floor font can serve. */
+  html body .modern-portal-bot-chat .portal-bot-chat-title-block > div {
+    max-width: 100% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  html body .modern-portal-bot-chat .portal-bot-chat-title-block span {
+    font-size: clamp(0.72rem, 3vw, 0.92rem) !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+  }
+  html body .modern-portal-bot-chat .portal-bot-chat-title-block span:last-child {
+    font-size: clamp(0.6rem, 2.4vw, 0.78rem) !important;
+  }
+  /* Bot-mode header: title group spans full header width so the
+   * centered title sits between the back button (left) and the
+   * bot icon (right). The h1 wraps the .portal-hub-bot-title
+   * span — make BOTH expand to 100% width. */
+  html body .modern-portal-hub header .tw-flex.tw-justify-between
+    > div:first-child:has(.portal-hub-bot-title) {
+    width: 100% !important;
+    flex: 1 1 auto !important;
+  }
+  html body .modern-portal-hub header h1:has(.portal-hub-bot-title) {
+    width: 100% !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+  }
+  html body .modern-portal-hub .portal-hub-bot-title {
+    width: 100% !important;
+  }
+  /* Spacer width = back button width + its 0.25cm inset, so the
+   * title's centering reference is balanced between the visible
+   * back button (left) and the bot icon (right). The back button
+   * is ~84px (38px height pill + 14px H-padding × 2 + arrow +
+   * "חזרה" label) plus 0.25cm (~9.5px) inset = ~94px total. */
+  html body .modern-portal-hub .portal-hub-bot-title-spacer {
+    width: clamp(5rem, 23vw, 6rem) !important;
+    min-width: clamp(5rem, 23vw, 6rem) !important;
+  }
+  /* Bot-mode SUBTITLE ("מענה אוטומטי ללקוחות" / "إجابات تلقائية
+   * للموكلين") — sits below the title block. Center it on the
+   * screen with full-width + text-align center. */
+  html body .modern-portal-hub header h1:has(.portal-hub-bot-title) + p {
+    width: 100% !important;
+    text-align: center !important;
+    margin-inline-start: 0 !important;
+    margin-inline-end: 0 !important;
+    padding-inline-start: 0 !important;
+    padding-inline-end: 0 !important;
+  }
+  /* Title text centered between bot icon (right) and back-button
+   * area (left). Enlarged per user request so the title fills the
+   * available space and touches the bot-icon / back-button limits
+   * without overlapping them. `white-space: nowrap` keeps it on
+   * one line; the flex `1 1 0` + `min-width: 0` lets the title
+   * shrink to the available width; `text-overflow: ellipsis` is
+   * the last-resort safety net only if the viewport is narrower
+   * than even the floor font can serve. */
+  html body .modern-portal-hub header h1 .portal-hub-bot-title-text,
+  html body .modern-portal-hub .portal-hub-bot-title .portal-hub-bot-title-text,
+  html[lang="he"] body .modern-portal-hub .portal-hub-bot-title-text,
+  html[lang="ar"] body .modern-portal-hub .portal-hub-bot-title-text {
+    font-size: clamp(0.9rem, 4.08vw, 1.26rem) !important;
+    line-height: 1.2 !important;
+    font-weight: 800 !important;
+    letter-spacing: 0 !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    padding: 0 0.2rem !important;
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+  }
+
+  /* Push the WhatsApp icon + title "מרכז תקשורת עם לקוחות" all
+   * the way to the right edge of the screen by zeroing the
+   * header's right padding (mobile only). The leading-icon/title
+   * flex group is the first child of the header's inner flex row,
+   * which in RTL sits on the visual right — removing the right
+   * padding lets it touch the right edge. */
+  html body .modern-portal-hub > header {
+    padding-right: 0 !important;
+  }
+  /* SearchBox rendered directly on the hub (no row wrapper) —
+   * green pill matching Global Search's `.case-search-input`
+   * styling. Inline-sized (max-width) + centered with auto
+   * margins so it doesn't span the full width edge-to-edge. */
+  html body .modern-portal-hub > .portal-hub-wa-search {
+    display: flex !important;
+    align-items: center !important;
+    background: #DCFCE7 !important;
+    background-color: #DCFCE7 !important;
+    border: 1px solid #86EFAC !important;
+    border-radius: 18px !important;
+    /* No internal padding — the inner <input> defines its own
+     * height/width via the SearchBox's `tw-h-12` Tailwind class. */
+    padding: 0 !important;
+    box-shadow: none !important;
+    box-sizing: border-box !important;
+    color: #0F172A !important;
+    width: calc(100% - 1rem) !important;
+    max-width: 28rem !important;
+    /* Match Global Search's distance from the top of the screen.
+     * Global Search's search input top sits at y≈56px. The hub
+     * header is taller than that, so a negative top margin pulls
+     * the search box UP from its natural position below the
+     * header to overlap the header's empty left/center area. */
+    margin: -1.25rem auto 0 auto !important;
+    position: relative !important;
+    z-index: 30 !important;
+  }
+  /* Hide the magnifier SVG — Global Search has no inner icon. */
+  html body .modern-portal-hub > .portal-hub-wa-search svg {
+    display: none !important;
+  }
+  /* Inner input — transparent so the green container shows
+   * through; placeholder uses Global Search's dark green. */
+  html body .modern-portal-hub > .portal-hub-wa-search input,
+  html body .modern-portal-hub > .portal-hub-wa-search input[type="search"],
+  html body .modern-portal-hub > .portal-hub-wa-search input[type="text"] {
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    line-height: 1.4 !important;
+    color: #0F172A !important;
+    outline: none !important;
+    box-shadow: none !important;
+    font: inherit !important;
+  }
+  html body .modern-portal-hub > .portal-hub-wa-search input::placeholder {
+    color: #15803D !important;
+    opacity: 0.7 !important;
+  }
+  /* Focus — matching Global Search's GREEN `:focus` rule. */
+  html body .modern-portal-hub > .portal-hub-wa-search:focus-within {
+    border-color: #22C55E !important;
+    background: #BBF7D0 !important;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.18) !important;
+  }
+}
+
+/* ============================================================ *
+ * Tasks screen MOBILE: explicit stacking order — search row at
+ * the top, the 6 filter chips FLUSH against it underneath (no
+ * gap), then the task list. Forced via flex `order` so cascade
+ * noise can't move the chips elsewhere.
+ * ============================================================ */
+@media (max-width: 720px) {
+  html body .tasks-panel-body {
+    display: flex !important;
+    flex-direction: column !important;
+    /* Kill the global mobile rule's `gap: 12px` between flex
+     * children so the chips can hug the search row directly. */
+    gap: 0 !important;
+    row-gap: 0 !important;
+  }
+  html body .tasks-panel-body > .tasks-toolbar {
+    order: 1 !important;
+    width: 100% !important;
+    /* Zero bottom margin so the chip row sits flush against
+     * the search input. */
+    margin: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  html body .tasks-panel-body > .tasks-toolbar .case-search-wrap {
+    margin: 0 !important;
+    padding: 0 !important;
+    /* Hidden `.case-search-meta` is still a grid child — kill the
+     * grid `gap` so its phantom track doesn't leave space below
+     * the input. */
+    gap: 0 !important;
+    row-gap: 0 !important;
+  }
+  html body .tasks-panel-body > .tasks-toolbar .case-search-wrap label {
+    margin: 0 !important;
+    padding: 0 0 clamp(0.2rem, 0.8vw, 0.35rem) 0 !important;
+  }
+  html body .tasks-panel-body > .tasks-toolbar .case-search-wrap input {
+    margin: 0 !important;
+  }
+  html body .tasks-panel-body > .tasks-quick-filters {
+    order: 2 !important;
+    width: 100% !important;
+    /* Flush against the search input — zero margin/padding above,
+     * and an aggressive negative margin-top so the chip row hugs
+     * the input's bottom edge with no gap. */
+    margin-top: -1px !important;
+    padding-top: 0 !important;
+    border-top: 0 !important;
+    margin-bottom: clamp(0.4rem, 1.6vw, 0.7rem) !important;
+  }
+  /* Search input — zero bottom padding/margin so the chip row
+   * can press up against it without any leftover whitespace. */
+  html body .tasks-panel-body > .tasks-toolbar .case-search-wrap input {
+    margin: 0 !important;
+    padding-bottom: 0 !important;
+    border-bottom: 0 !important;
+  }
+  html body .tasks-panel-body > .tasks-toolbar .case-search-wrap {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  html body .tasks-panel-body > .tasks-toolbar {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  html body .tasks-panel-body > .tasks-scroll-list,
+  html body .tasks-panel-body > #tasksTableWrap {
+    order: 3 !important;
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 720px) {
+  /* All 6 chips on a SINGLE row — equal-width flex items, no wrap.
+   * Sizes shrunk a further 15% per user request (font, padding, gap
+   * each multiplied by 0.85 from the previous single-row values). */
   html body .tasks-screen-panel .tasks-quick-filters,
   html body .tasks-quick-filters.tasks-quick-filters {
     display: flex !important;
     flex-direction: row !important;
-    flex-wrap: wrap !important;
-    align-items: flex-start !important;
-    align-content: flex-start !important;
-    justify-content: flex-start !important;
-    gap: 0.4rem !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    align-content: stretch !important;
+    justify-content: stretch !important;
+    gap: clamp(0.13rem, 0.68vw, 0.34rem) !important;
     width: 100% !important;
     min-width: 0 !important;
     min-height: auto !important;
     height: auto !important;
     max-height: none !important;
-    overflow: visible !important;
+    overflow: hidden !important;
     margin: 0 0 0.75rem !important;
     padding: 0 !important;
-    row-gap: 0.4rem !important;
   }
   html body .tasks-screen-panel .tasks-quick-filters .tasks-quick-filter-btn,
   html body .tasks-quick-filters.tasks-quick-filters .tasks-quick-filter-btn {
-    flex: 0 0 auto !important;
+    flex: 1 1 0 !important;
     min-width: 0 !important;
+    width: auto !important;
+    padding: clamp(0.25rem, 1vw, 0.47rem) clamp(0.08rem, 0.42vw, 0.25rem) !important;
+    font-size: clamp(0.27rem, 1.15vw, 0.38rem) !important;
+    line-height: 1.1 !important;
+    letter-spacing: 0 !important;
+    gap: clamp(0.08rem, 0.42vw, 0.21rem) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    overflow: hidden !important;
     white-space: nowrap !important;
+    text-overflow: ellipsis !important;
   }
-  /* Give the scroll list ~44px less vertical room so the wrapped
-   * second row of filters fits above it without clipping. */
-  html body .tasks-screen-panel .tasks-scroll-list,
-  html body .tasks-scroll-list.tasks-scroll-list {
-    max-height: calc(100vh - 336px) !important;
+  /* Beat the lang-based unconditional font-size rules too. */
+  html[lang="he"] body .tasks-screen-panel .tasks-quick-filters .tasks-quick-filter-btn,
+  html[lang="ar"] body .tasks-screen-panel .tasks-quick-filters .tasks-quick-filter-btn,
+  html[lang="he"] body .tasks-quick-filters.tasks-quick-filters .tasks-quick-filter-btn,
+  html[lang="ar"] body .tasks-quick-filters.tasks-quick-filters .tasks-quick-filter-btn {
+    font-size: clamp(0.27rem, 1.15vw, 0.38rem) !important;
+    line-height: 1.1 !important;
   }
 }
 
@@ -36532,3 +37058,19 @@ body[data-home-style="minimalist"][data-home-style="minimalist"]
   border-color: #1e293b !important;
 }
 
+
+/* ============================================================ *
+ * Home greeting on iPad — raised 1.5cm per user request.
+ * Targets iPad-range viewports (768px-1024px wide). Other
+ * viewport sizes (phone, desktop) are unaffected.
+ * ============================================================ */
+@media (min-width: 768px) and (max-width: 1024px) {
+  html body .home-greeting,
+  html body .home-v2-fluid .home-greeting,
+  html body .content.home-content .home-grid-wrap .home-greeting {
+    /* Keep the original `translateX(-50%)` that centers the
+     * absolutely-positioned greeting, AND add the 1.5cm upward
+     * shift the user asked for on iPad. */
+    transform: translateX(-50%) translateY(-1.5cm) !important;
+  }
+}

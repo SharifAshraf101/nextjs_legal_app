@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import {
-  Bell,
   Bot,
   CalendarDays,
   Check,
@@ -50,6 +49,7 @@ import {
   paymentTypeLabel,
 } from '@/lib/finance';
 import type { Case, Client } from '@/types';
+import { MainScreenBackButton } from '../MainScreenBackButton';
 import { AddPaymentModal } from '../AddPaymentModal';
 import { CaseDetail } from '../CaseDetail';
 import { CaseDocumentsModal } from '../CaseDocumentsModal';
@@ -336,13 +336,11 @@ function TopBar({
    *  the title text (visually "before" it in reading order). */
   leadingIcon?: ReactNode;
 }) {
-  const { dispatch } = useAppState();
   const waLabel = lang === 'ar' ? 'WhatsApp متصل' : 'WhatsApp מחובר';
-  const goToTasks = () => dispatch({ type: 'SET_TAB', tab: 'tasks' });
   return (
     <header className="tw-sticky tw-top-0 tw-z-20 tw-border-b tw-border-slate-200 tw-bg-[#FDFBF5]/95 tw-px-5 tw-py-4 tw-backdrop-blur lg:tw-px-10">
-      {/* All four header elements (leading icon, title, WA-connected
-       *  pill, bell) sit on a single 44px horizontal line. `h-11` on
+      {/* Three header elements (leading icon, title, WA-connected
+       *  pill) sit on a single 44px horizontal line. `h-11` on
        *  both flex groups + `tw-leading-none` on the title force a
        *  consistent height so nothing drifts vertically. */}
       <div className="tw-flex tw-h-11 tw-items-center tw-justify-between tw-gap-4">
@@ -365,17 +363,9 @@ function TopBar({
             {waLabel}
             <span className="tw-h-2 tw-w-2 tw-rounded-full tw-bg-emerald-500" />
           </div>
-          <button
-            type="button"
-            onClick={goToTasks}
-            aria-label={lang === 'ar' ? 'تنبيهات' : 'התראות'}
-            className="tw-relative tw-grid tw-h-11 tw-w-11 tw-place-items-center tw-rounded-full tw-border tw-border-slate-200 tw-bg-white tw-shadow-sm hover:tw-bg-[#F8F2E4]"
-          >
-            <Bell className="tw-h-5 tw-w-5" />
-            <span className="tw-absolute -tw-top-1 -tw-left-1 tw-grid tw-h-5 tw-w-5 tw-place-items-center tw-rounded-full tw-bg-red-500 tw-text-xs tw-font-bold tw-text-white">
-              3
-            </span>
-          </button>
+          {/* Bell/notification button removed per user request — it
+           *  was confusing in the portal context (the rest of the app
+           *  doesn't surface notifications there). */}
         </div>
       </div>
     </header>
@@ -412,12 +402,11 @@ function HubScreen({
         : lang === 'ar'
           ? 'مركز التواصل مع الموكلين'
           : 'מרכז תקשורת עם לקוחות',
-    subtitle:
-      mode === 'bot'
-        ? lang === 'ar'
-          ? 'إجابات تلقائية للموكلين'
-          : 'מענה אוטומטי ללקוחות'
-        : '',
+    // Subtitle moved out of the header per user request — now
+    // rendered as a centered caption ABOVE the FeatureRow pills
+    // in the bot panel below, sitting directly atop "כניסה
+    // מאובטחת ללקוח".
+    subtitle: '',
     searchPh:
       lang === 'ar' ? 'ابحث عن موكل أو رقم ملف...' : 'חיפוש לקוח או מספר תיק...',
     recent: lang === 'ar' ? 'محادثات أخيرة' : 'שיחות אחרונות',
@@ -441,21 +430,66 @@ function HubScreen({
   const backLabel = lang === 'ar' ? 'رجوع' : 'חזרה';
   return (
     <div className="modern-portal-hub">
+      {/* WhatsApp-mode back arrow — visually identical to the
+       *  Global Search `.main-screen-back-btn` (white pill, slate
+       *  border, dark text + arrow, hover inverts to dark slate).
+       *  Position is anchored to the hub via the `portal-hub-wa-back`
+       *  CSS hook (0.25cm from the top-left on mobile, see globals.css).
+       *  Returns to the parent chooser screen ("שער תקשורת"). */}
+      {mode === 'whatsapp' && (
+        <button
+          type="button"
+          className="main-screen-back-btn portal-hub-wa-back"
+          aria-label={backLabel}
+          title={backLabel}
+          onClick={onBack}
+        >
+          <i className="fas fa-arrow-left" />
+          <span>{backLabel}</span>
+        </button>
+      )}
+      {/* Bot-mode back arrow — same look + position as the WhatsApp
+       *  version (Global Search `.main-screen-back-btn` styling,
+       *  0.25cm from top-left on mobile, returns to chooser). */}
+      {mode === 'bot' && (
+        <button
+          type="button"
+          className="main-screen-back-btn portal-hub-bot-back"
+          aria-label={backLabel}
+          title={backLabel}
+          onClick={onBack}
+        >
+          <i className="fas fa-arrow-left" />
+          <span>{backLabel}</span>
+        </button>
+      )}
       <TopBar
         title={
           mode === 'bot' ? (
-            // Bot icon rendered inline immediately before the title
-            // text ("מרכז תקשורת עם בוט לקוחות") — sits inside the
-            // title block, not in the leadingIcon slot. That slot
-            // is now occupied by the back button.
-            <span className="tw-inline-flex tw-items-center tw-gap-2">
+            // 3-column flex: bot icon on the visual RIGHT (first
+            // child in RTL), title text centered in the middle,
+            // spacer matching the back-button width on the visual
+            // LEFT so the centering reference is balanced.
+            <span className="portal-hub-bot-title tw-flex tw-w-full tw-items-center tw-justify-between tw-gap-2">
               <span
                 className="tw-grid tw-h-9 tw-w-9 tw-shrink-0 tw-place-items-center tw-rounded-2xl tw-bg-indigo-500 tw-text-white tw-shadow-sm"
                 aria-label="Bot"
               >
                 <Bot className="tw-h-5 tw-w-5" />
               </span>
-              <span>{T.title}</span>
+              <span className="portal-hub-bot-title-text tw-flex-1 tw-min-w-0 tw-text-center">
+                {T.title}
+              </span>
+              {/* Spacer matching the back button's width (~84px = 38px
+               *  height button + ~14px H padding × 2 + arrow + label
+               *  + 0.25cm inset). Equalising the side reservations
+               *  makes the centered title sit visually mid-way
+               *  between the back button (left) and the bot icon
+               *  (right) on the SCREEN — not just on the row. */}
+              <span
+                className="portal-hub-bot-title-spacer tw-h-9 tw-shrink-0"
+                aria-hidden="true"
+              />
             </span>
           ) : (
             T.title
@@ -481,41 +515,17 @@ function HubScreen({
        *  TopBar above). `flex-row-reverse` in RTL puts the first
        *  JSX child on the visual LEFT. */}
       {mode === 'whatsapp' && (
-        <div className="tw-flex tw-flex-row-reverse tw-items-center tw-gap-3 tw-px-5 tw-pt-4 lg:tw-px-10">
-          <button
-            type="button"
-            onClick={onBack}
-            className="tw-flex tw-shrink-0 tw-items-center tw-gap-2 tw-rounded-2xl tw-border tw-border-slate-200 tw-bg-white tw-px-3 tw-py-2 tw-text-sm tw-font-semibold tw-text-slate-700 hover:tw-bg-[#F8F2E4]"
-          >
-            <ChevronLeft className="tw-h-4 tw-w-4" />
-            {backLabel}
-          </button>
-          <div className="tw-flex-1">
-            <SearchBox placeholder={T.searchPh} />
-          </div>
-        </div>
+        // Search box rendered directly — no wrapping row/flex
+        // containers. The SearchBox component renders its own
+        // pill-shaped div; styling lives on the
+        // `.portal-hub-wa-search` CSS hook (see globals.css).
+        <SearchBox
+          placeholder={T.searchPh}
+          className="portal-hub-wa-search"
+        />
       )}
-      {mode === 'bot' && (
-        // Back button sits directly under the bell (top-LEFT of the
-        // screen in RTL — flex-row-reverse on RTL puts the single
-        // child at the left edge). Styling matches `.main-screen-back-btn`
-        // visually but written inline so we don't inherit the
-        // `position: absolute !important` from that class — which
-        // would yank the button out of the flex layout and anchor
-        // it to <body> instead of sitting in this row.
-        <div className="tw-flex tw-flex-row-reverse tw-items-center tw-gap-3 tw-px-5 tw-pt-4 lg:tw-px-10">
-          <button
-            type="button"
-            onClick={onBack}
-            aria-label={backLabel}
-            title={backLabel}
-            className="tw-inline-flex tw-h-[38px] tw-items-center tw-gap-2 tw-rounded-xl tw-border tw-border-slate-200 tw-bg-white tw-px-3.5 tw-text-sm tw-font-semibold tw-text-slate-700 tw-shadow-sm hover:tw-bg-slate-900 hover:tw-text-white hover:tw-border-slate-900"
-          >
-            <i className="fas fa-arrow-left" />
-            <span>{backLabel}</span>
-          </button>
-        </div>
-      )}
+      {/* Bot-mode back button removed per user request. Back nav
+       *  is handled at the parent chooser-screen level. */}
       <div
         className={
           'tw-grid tw-flex-1 tw-gap-5 tw-px-5 tw-pb-5 tw-pt-3 lg:tw-px-10 lg:tw-pb-10 ' +
@@ -551,6 +561,11 @@ function HubScreen({
 
         {mode === 'bot' && (
         <Panel className="tw-min-h-[520px]">
+          {/* Caption that moved here from the TopBar — sits
+           *  directly above the first FeatureRow per user request. */}
+          <div className="tw-mb-3 tw-text-center tw-text-sm tw-font-medium tw-text-slate-500">
+            {lang === 'ar' ? 'إجابات تلقائية للموكلين' : 'מענה אוטומטי ללקוחות'}
+          </div>
           <div className="tw-space-y-5 tw-text-slate-600">
             <FeatureRow icon={<Lock className="tw-h-5 tw-w-5" />} title={T.bullets[0]} />
             <FeatureRow icon={<Users className="tw-h-5 tw-w-5" />} title={T.bullets[1]} />
@@ -616,7 +631,8 @@ function ChooserScreen({
   // matter how short the device is. Width-based clamps would leave the
   // bot card below the fold on a narrow tall phone.
   return (
-    <div className="tw-flex tw-min-h-full tw-flex-col tw-items-center tw-justify-center tw-px-4 tw-py-[clamp(0.5rem,1.5vh,2.5rem)]">
+    <div className="portal-chooser-screen tw-relative tw-flex tw-min-h-full tw-flex-col tw-items-center tw-justify-center tw-px-4 tw-py-[clamp(0.5rem,1.5vh,2.5rem)]">
+      <MainScreenBackButton />
       <div className="tw-mb-[clamp(0.5rem,1.5vh,2rem)] tw-text-center">
         <h1 className="tw-font-bold tw-text-indigo-900 tw-text-[clamp(1.125rem,2.4vh,1.875rem)]">
           {T.title}
@@ -1321,7 +1337,22 @@ function ClientChatScreen({
     today: lang === 'ar' ? 'اليوم' : 'היום',
   };
   return (
-    <div className="tw-flex tw-min-h-full tw-flex-col tw-bg-[#FDFBF5]">
+    <div className="portal-wa-chat tw-flex tw-min-h-full tw-flex-col tw-bg-[#FDFBF5]">
+      {/* Back arrow — visually identical to the Global Search
+       *  `.main-screen-back-btn` (white pill, slate border, dark
+       *  text + arrow, hover inverts). Positioned at 0.25cm from
+       *  the top-left on mobile via the `.portal-wa-chat-back`
+       *  CSS hook in globals.css. Returns to the WhatsApp hub. */}
+      <button
+        type="button"
+        className="main-screen-back-btn portal-wa-chat-back"
+        aria-label={lang === 'ar' ? 'رجوع' : 'חזרה'}
+        title={lang === 'ar' ? 'رجوع' : 'חזרה'}
+        onClick={onBack}
+      >
+        <i className="fas fa-arrow-left" />
+        <span>{lang === 'ar' ? 'رجوع' : 'חזרה'}</span>
+      </button>
       <header className="tw-sticky tw-top-0 tw-z-20 tw-border-b tw-border-slate-200 tw-bg-[#FDFBF5]/95 tw-px-4 tw-py-3 tw-backdrop-blur">
         {/* In RTL: first JSX child = visual RIGHT, last = visual LEFT.
          *  WhatsApp icon sits on the right (replaces the old arrow),
@@ -1331,33 +1362,34 @@ function ClientChatScreen({
          *  main screen). `items-center` aligns the WhatsApp icon's
          *  vertical center with the midline of the two-line text
          *  block (client name on top, case info on bottom). */}
-        <div className="tw-flex tw-items-center tw-gap-3">
-          <div
-            className="tw-grid tw-h-10 tw-w-10 tw-place-items-center tw-rounded-2xl tw-bg-emerald-500 tw-text-white tw-shadow-sm"
-            aria-label="WhatsApp"
-          >
-            <MessageCircle className="tw-h-5 tw-w-5" />
+        <div className="tw-flex tw-items-start tw-gap-3">
+          {/* WhatsApp icon column — icon on top, "מחובר" below. */}
+          <div className="tw-flex tw-flex-col tw-items-center tw-gap-1">
+            <div
+              className="tw-grid tw-h-10 tw-w-10 tw-place-items-center tw-rounded-2xl tw-bg-emerald-500 tw-text-white tw-shadow-sm"
+              aria-label="WhatsApp"
+            >
+              <MessageCircle className="tw-h-5 tw-w-5" />
+            </div>
+            <span className="tw-text-[10px] tw-font-semibold tw-text-emerald-600 tw-leading-none">
+              {T.online}
+            </span>
           </div>
+          {/* Avatar + 3-line name/case block: name → case number → case type. */}
           <div className="tw-flex tw-flex-1 tw-items-center tw-gap-3">
             <Avatar label={client.avatar} />
             <div>
               <div className="tw-font-bold">{client.name}</div>
               <div className="tw-text-xs tw-text-slate-500">
-                {T.case} {headerCaseNumber} · {headerCaseTitle} ·{' '}
-                <span className="tw-text-emerald-600">{T.online}</span>
+                {T.case} {headerCaseNumber}
+              </div>
+              <div className="tw-text-xs tw-text-slate-500">
+                {headerCaseTitle}
               </div>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={onBack}
-            aria-label={lang === 'ar' ? 'رجوع' : 'חזרה'}
-            title={lang === 'ar' ? 'رجوع' : 'חזרה'}
-            className="tw-flex tw-h-10 tw-shrink-0 tw-items-center tw-gap-2 tw-rounded-xl tw-border tw-border-slate-200 tw-bg-white tw-px-3 tw-text-sm tw-font-semibold tw-text-slate-700 tw-shadow-sm hover:tw-bg-slate-900 hover:tw-text-white hover:tw-border-slate-900"
-          >
-            <i className="fas fa-arrow-left" />
-            <span>{lang === 'ar' ? 'رجوع' : 'חזרה'}</span>
-          </button>
+          {/* Back button removed per user request — back navigation
+           *  is now handled at the parent hub level. */}
         </div>
       </header>
 
@@ -1431,9 +1463,15 @@ function ClientChatScreen({
             )}
           </div>
 
-          <div className="tw-flex-1 tw-space-y-4 tw-overflow-y-auto tw-p-5">
-            <div className="tw-mx-auto tw-w-fit tw-rounded-full tw-bg-slate-100 tw-px-4 tw-py-1 tw-text-xs tw-font-medium tw-text-slate-500">
-              {T.today}
+          <div className="portal-wa-chat-list tw-flex-1 tw-space-y-4 tw-overflow-y-auto tw-p-5">
+            {/* "היום" pill — wrapped in a flex `justify-center` row
+             *  so it lands at the true horizontal center of the
+             *  chat area regardless of any padding asymmetry on
+             *  the surrounding bubbles or scroll list. */}
+            <div className="portal-wa-chat-today-row tw-flex tw-w-full tw-justify-center">
+              <div className="portal-wa-chat-today tw-w-fit tw-rounded-full tw-bg-slate-100 tw-px-4 tw-py-1 tw-text-xs tw-font-medium tw-text-slate-500">
+                {T.today}
+              </div>
             </div>
             {messages.map((m) => (
               <MessageBubble
@@ -1517,7 +1555,8 @@ function BotLoginScreen({
       title={T.title}
       subtitle={T.sub}
       icon={<Bot className="tw-h-8 tw-w-8" />}
-      onBack={onBack}
+      /* Back button removed from the secure-login screen per
+       *  user request — pass no `onBack` so AuthShell skips it. */
     >
       <Field
         label={T.id}
@@ -2545,20 +2584,6 @@ function BotChatScreen({
   return (
     <div className="modern-portal-bot-chat tw-mx-auto tw-flex tw-min-h-full tw-w-full tw-max-w-4xl tw-flex-col tw-bg-[#FDFBF5]">
       <header className="tw-sticky tw-top-0 tw-z-20 tw-border-b tw-border-slate-200 tw-bg-[#FDFBF5]/95 tw-px-4 tw-py-3 tw-backdrop-blur">
-        {/* Position-swapped per spec: in RTL with `justify-between`,
-         *  the first JSX child renders on the visual RIGHT and the
-         *  last on the visual LEFT. So Bot icon is now FIRST (→
-         *  visual right, where the back arrow used to live) and the
-         *  back button is LAST (→ visual left, where the Bot icon
-         *  used to live). The back button reuses the
-         *  `.main-screen-back-btn` class from globals.css so its
-         *  structure is identical to the global-search screen one. */}
-        {/* Title is absolutely centered to the screen midline (not
-         *  the midpoint between the two side elements) so an
-         *  asymmetric icon vs back-button width can't drift it
-         *  sideways. `relative` on the container anchors the
-         *  absolute title; `pointer-events: none` keeps the side
-         *  buttons clickable even where the title overlaps. */}
         <div className="tw-relative tw-flex tw-items-center tw-justify-between">
           <div className="tw-grid tw-h-10 tw-w-10 tw-place-items-center tw-rounded-full tw-bg-indigo-500 tw-text-white">
             <Bot className="tw-h-5 tw-w-5" />
@@ -2575,14 +2600,18 @@ function BotChatScreen({
             onClick={onBack}
             aria-label={lang === 'ar' ? 'رجوع' : 'חזרה'}
             title={lang === 'ar' ? 'رجوع' : 'חזרה'}
-            className="main-screen-back-btn"
-            style={{ position: 'static' }}
+            className="main-screen-back-btn portal-bot-chat-back-mobile"
           >
             <i className="fas fa-arrow-left" />
             <span>{lang === 'ar' ? 'رجوع' : 'חזרה'}</span>
           </button>
         </div>
       </header>
+      {/* Back arrow — visually identical to Global Search
+       *  `.main-screen-back-btn` (white pill, slate border, dark
+       *  text + arrow, hover inverts). Anchored 0.25cm from the
+       *  top-left of the bot chat container via the
+       *  `.portal-bot-chat-back` CSS hook in globals.css. */}
       {lawyerView && (
         <div className="tw-flex tw-items-center tw-justify-center tw-gap-2 tw-border-b tw-border-amber-200 tw-bg-amber-50 tw-px-4 tw-py-2 tw-text-xs tw-font-medium tw-text-amber-800">
           <ShieldCheck className="tw-h-4 tw-w-4" />
@@ -2924,8 +2953,11 @@ function ClientChatCard({
 
 function FeatureRow({ icon, title }: { icon: ReactNode; title: string }) {
   return (
-    <div className="tw-flex tw-items-center tw-justify-between tw-rounded-2xl tw-bg-[#F8F2E4] tw-px-4 tw-py-4">
-      <div className="tw-text-sm tw-font-medium">{title}</div>
+    // Vertical padding halved from `tw-py-4` (16 px each side, ~32 px
+    // total) to `tw-py-2` (8 px each side, ~16 px total) per user
+    // request — cuts the pill height by roughly 50%.
+    <div className="tw-flex tw-items-center tw-justify-between tw-rounded-2xl tw-bg-[#F8F2E4] tw-px-4 tw-py-2">
+      <div className="tw-text-sm tw-font-medium tw-leading-tight">{title}</div>
       <div className="tw-text-indigo-600">{icon}</div>
     </div>
   );
@@ -3165,7 +3197,7 @@ function MessageBubble({
         className={cn(
           'tw-max-w-[78%] tw-rounded-3xl tw-p-4 tw-text-sm tw-shadow-sm',
           office
-            ? 'tw-rounded-tr-md tw-bg-blue-50 tw-text-slate-800'
+            ? 'tw-rounded-tr-md tw-bg-emerald-100 tw-text-slate-800'
             : 'tw-rounded-tl-md tw-bg-slate-100 tw-text-slate-700',
         )}
       >
