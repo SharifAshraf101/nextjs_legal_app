@@ -51,7 +51,18 @@ const V155_EARLY_MOBILE_RESIZE_GUARD = `
 export const metadata: Metadata = {
   title: 'Legal Office - Ashraf Sharif',
   description: 'Legal Office Management',
+  // Run chromeless when added to the home screen on iOS Safari
+  // (Chrome/Edge/Android picks this up automatically from the
+  // Next.js manifest.ts). The black-translucent status bar style
+  // lets the page background bleed under the notch on iPhones.
+  appleWebApp: {
+    capable: true,
+    title: 'Legal Office',
+    statusBarStyle: 'black-translucent',
+  },
   other: {
+    // Older Android Chrome flag — same effect as `manifest.display = 'standalone'`.
+    'mobile-web-app-capable': 'yes',
     // Cache-control meta tags preserved from the source HTML so behavior on
     // the same hosting matches: every visit re-fetches the entry document.
     'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
@@ -63,6 +74,10 @@ export const metadata: Metadata = {
 export const viewport = {
   width: 'device-width',
   initialScale: 1,
+  // Lets the body background extend behind the iPhone notch / Android
+  // status bar when running as an installed PWA.
+  viewportFit: 'cover',
+  themeColor: '#FDFBF5',
 };
 
 export default function RootLayout({
