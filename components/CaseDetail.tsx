@@ -1190,12 +1190,18 @@ function CaseBrainScreen({ caseId }: { caseId: string }) {
       onClose={close}
       className="case-brain-modal modern-portal-root"
       hideCloseX={true}
+      hideBackBtn={true}
     >
       <div className="case-brain-screen tw-flex tw-flex-col tw-gap-4">
         {/* HEADER — "חזרה לפרטי תיק" pill on left, centered
          *  title+subtitle, "פעיל AI" pill on right. Same layout
-         *  on mobile + desktop; padding scales up on lg. */}
-        <div className="tw-relative tw-pt-1">
+         *  on mobile + desktop; padding scales up on lg.
+         *  `case-brain-sticky-header` marker class makes this row
+         *  position:sticky inside the scrolling modal-box, so the
+         *  back button + title + AI pill stay pinned at the top
+         *  while the body (info cards, tabs, doc list) scrolls
+         *  underneath. */}
+        <div className="case-brain-sticky-header tw-relative tw-pt-1">
           <button
             type="button"
             onClick={close}
@@ -1234,6 +1240,14 @@ function CaseBrainScreen({ caseId }: { caseId: string }) {
           </div>
         </div>
 
+        {/* Scroll body: everything BELOW the sticky header lives in
+         *  this scrolling flex child. The header is the modal's
+         *  non-scrolling row; this body owns ALL vertical scroll, so
+         *  the header naturally stays in place (it's a sibling, not
+         *  a sticky child) and its opaque background always sits
+         *  above scrolling content. Pattern mirrors the working
+         *  `client-detail-stable-v229` modal in this codebase. */}
+        <div className="case-brain-scroll-body tw-flex tw-flex-col tw-gap-4 tw-flex-1 tw-min-h-0 tw-overflow-y-auto">
         {/* Info cards — 2 cols on mobile, 4 cols on desktop. */}
         <div className="tw-grid tw-grid-cols-2 lg:tw-grid-cols-4 tw-gap-3">
           {infoCards.map((card, i) => (
@@ -1590,6 +1604,7 @@ function CaseBrainScreen({ caseId }: { caseId: string }) {
             )}
           </div>
         </div>
+        </div>{/* /case-brain-scroll-body */}
       </div>
     </Modal>
   );

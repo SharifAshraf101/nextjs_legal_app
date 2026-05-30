@@ -38189,9 +38189,26 @@ html body .modal.case-brain-modal.case-brain-modal.case-brain-modal.case-brain-m
  * + the absolute AI pill at top:0 right:0 — adds extra
  * top-padding so the centered title/subtitle don't tuck under
  * either floating element. */
+/* Brain modal-box: KEEP its existing padding (18px mobile / 28px
+ * desktop) so the absolute back-button + AI pill inside the header
+ * continue to land at the same visual position they always have
+ * (top:0/left:0 and top:0/right:0 of the header's padding-box).
+ *
+ * Convert it to a flex column with `overflow: hidden`. The header
+ * is a non-scrolling `flex: 0 0 auto` row at the top; the body is
+ * a separate `flex: 1` row underneath that owns ALL vertical
+ * scroll. Header therefore stays put — not via `position: sticky`
+ * but by being a sibling outside the scroll viewport — and its
+ * opaque background can NEVER be punched through by scrolling
+ * content because that content scrolls in a completely separate
+ * flex child. Same proven pattern used by client-detail-stable-v229
+ * at line ~37427. */
 html body .modal.case-brain-modal .modal-box {
   padding-top: 18px !important;
   position: relative !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
 }
 @media (min-width: 1024px) {
   html body .modal.case-brain-modal .modal-box {
@@ -38199,5 +38216,66 @@ html body .modal.case-brain-modal .modal-box {
     max-width: min(1440px, 96vw) !important;
     max-height: 96vh !important;
     padding: 28px 32px !important;
+  }
+}
+
+/* case-brain-screen: flex column that fills the modal-box content
+ * area. No gap — children draw their own separation (header has a
+ * bottom border; scroll-body has padding-top). Keeps the natural
+ * width of the modal-box content area so absolute children of the
+ * header (back-btn at top:0/left:0, AI pill at top:0/right:0)
+ * land at the same visual position they had before this refactor. */
+html body .modal.case-brain-modal .case-brain-screen {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+}
+
+/* HEADER row: flex: 0 0 auto so it keeps its natural height and
+ * never scrolls. Opaque cream background (#FDFBF5) matches the
+ * modal surface; the body below can scroll behind nothing because
+ * the header is a sibling outside the scroll viewport, not an
+ * overlay. Padding kept to bottom-only — top/inline padding stays
+ * with the modal-box so absolute children resolve correctly. */
+html body .modal.case-brain-modal .case-brain-sticky-header {
+  flex: 0 0 auto !important;
+  position: relative !important;
+  background: #FDFBF5 !important;
+  background-color: #FDFBF5 !important;
+  background-image: linear-gradient(#FDFBF5, #FDFBF5) !important;
+  padding: 4px 0 14px !important;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.85) !important;
+  box-shadow: 0 6px 12px -8px rgba(15, 23, 42, 0.18) !important;
+  z-index: 2 !important;
+}
+@media (min-width: 1024px) {
+  html body .modal.case-brain-modal .case-brain-sticky-header {
+    padding: 4px 0 18px !important;
+  }
+}
+body.dark .modal.case-brain-modal .case-brain-sticky-header {
+  background: #1E293B !important;
+  background-color: #1E293B !important;
+  background-image: linear-gradient(#1E293B, #1E293B) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* SCROLL body: takes the remaining vertical space and owns
+ * vertical scrolling. min-height: 0 is essential for the flex
+ * child to be allowed to shrink below content size, which is
+ * what enables overflow scroll. */
+html body .modal.case-brain-modal .case-brain-scroll-body {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+  padding: 16px 16px calc(20px + env(safe-area-inset-bottom)) !important;
+}
+@media (min-width: 1024px) {
+  html body .modal.case-brain-modal .case-brain-scroll-body {
+    padding: 18px 32px 32px !important;
   }
 }
